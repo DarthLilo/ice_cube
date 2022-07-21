@@ -6,7 +6,7 @@ def credits_ui_panel(self, context):
     layout = self.layout
     box = layout.box()
     b = box.row(align=True)
-    b.label(text= "Ice Cube v1.3.8", icon= 'OUTLINER_OB_ARMATURE')
+    b.label(text= "Ice Cube v1.4.0", icon= 'OUTLINER_OB_ARMATURE')
     credit_labels = {
           "Created by DarthLilo": "lilocredits.link",
           "Got a problem with the rig?": "discordserver.link",
