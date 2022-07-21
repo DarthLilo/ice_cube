@@ -1,7 +1,7 @@
 bl_info ={
     "name": "Ice Cube",
     "author": "DarhtLilo",
-    "version": (1, 4, 0),
+    "version": (1, 4, 1),
     "blender": (3, 0, 0),
     "location": "View3D > Tool",
     "description": "A custom python script for Ice Cube! Credit to \"@KJMineImator\" and \"@RealMineAPI\" on twitter for helping me with the code!",
