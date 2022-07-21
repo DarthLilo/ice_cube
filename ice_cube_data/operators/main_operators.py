@@ -1,11 +1,13 @@
+import json
 import bpy
 import os
 import sys
+import shutil
 from bpy.props import EnumProperty
 
 
 #Custom Functions
-from ice_cube import root_folder, dlc_id,dlc_type,dlc_author
+from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info
 
 from ice_cube_data.utils.general_func import GetListIndex, IsVersionUpdated
 from ice_cube_data.utils.file_manage import getFiles, ClearDirectory, GetRootFolder
@@ -26,28 +28,62 @@ from ice_cube_data.properties import properties
 import ice_cube
 
 #file variables
-final_list = []
-files_list = []
+rig_pack_list = []
+rig_pack_names = []
 rig_id = "ice_cube"
 
 
 internalfiles = os.path.join(root_folder, "ice_cube_data/internal_files/user_packs/rigs")
 user_packs = os.path.normpath(internalfiles)
-get_test_files = getFiles(user_packs)
-count = 0
-try:
-    for file in get_test_files:
-        count += 1
-        addition_map = ["rig_", str(count)]
-        ID = "".join(addition_map)
-        description = "Rig ID Number: " + ID
-        test_thing = (ID, file, description)
-        final_list.append(test_thing)
-        files_list.append(file)
-except:
-    pass
+
+def RefreshRigList():
+    items = []
+    items = rig_pack_list
+    return items
+    
+bpy.types.Scene.selected_rig_preset = EnumProperty(
+        name = "Selected Pack",
+        items = [('NONE', 'REFRESH','REFRESH')]
+        )
 
 #Classes
+class refresh_rigs_list(bpy.types.Operator):
+    bl_idname = "refresh.rig_list"
+    bl_label = "refresh rig list"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    
+    def execute(self, context):
+        #Clearing the old lists
+        rig_pack_list.clear()
+        rig_pack_names.clear()
+        
+        #variables
+        count = 1
+
+        #Updating the list of installed packs
+        for file in getFiles(user_packs):
+            description = f"Rig ID: {count}"
+            item_descriptor = (file, file, description)
+            rig_pack_list.append(item_descriptor)
+            rig_pack_names.append(file)
+            count += 1
+        
+        
+        #Drawing the custom property
+        bpy.types.Scene.selected_rig_preset = EnumProperty(
+        name = "Selected Rig",
+        items = RefreshRigList()
+        )
+
+        try:
+            context.scene.selected_rig_preset = rig_pack_names[0]
+        except:
+            pass
+
+        return{'FINISHED'}
+
+
 class rig_baked_class(bpy.types.Operator): #A boolean that controls whether to use _NORMAL or _BAKED
     """Changes whether the imported rig is baked or not"""
     bl_idname = "rig.bakedbutton"
@@ -70,9 +106,8 @@ class append_preset(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        append_preset_func(self, context, files_list, properties.global_rig_baked)
+        append_preset_func(self, context, properties.global_rig_baked)
         return{'FINISHED'}
-
 
 class append_defaultrig(bpy.types.Operator): #Appends the default version of the rig
     """Appends the default rig into your scene"""
@@ -287,8 +322,6 @@ class delete_backup(bpy.types.Operator):
         delete_backup_func(self, context)
         return{'FINISHED'}
 
-
-
 class refresh_dlc(bpy.types.Operator):
     """Checks the Ice Cube GitHub for new DLC"""
     bl_idname = "refresh.dlc"
@@ -313,7 +346,6 @@ class download_dlc(bpy.types.Operator):
     def execute(self, context):
         download_dlc_func(self, context, dlc_id)
         return{'FINISHED'}
-
 
 class export_settings_data_class(bpy.types.Operator):
     """Exports the current rig settings"""
@@ -347,7 +379,7 @@ class update_backups_list(bpy.types.Operator):
         return{'FINISHED'}
 
 class reset_all_settings(bpy.types.Operator):
-    """Updates the list of current backups!"""
+    """Resets all the rig settings to default!"""
     bl_idname = "reset.settings"
     bl_label = "Update Backups"
     bl_options = {'REGISTER', 'UNDO'}
@@ -356,22 +388,217 @@ class reset_all_settings(bpy.types.Operator):
         reset_all_settings_func(self,context)
         return{'FINISHED'}
 
+class generate_asset_pack(bpy.types.Operator):
+    """Generates an asset pack"""
+    bl_idname = "generate.asest_pack"
+    bl_label = "Generate Asset Pack"
+    bl_options = {'REGISTER', 'UNDO'}
 
-try:
-    bpy.types.Scene.selected_asset = EnumProperty(
-        name = "Selected Pack",
-        default = 'rig_1',
-        items = final_list
-    )
-except:
-    bpy.types.Scene.selected_asset = EnumProperty(
-        name = "Selected Pack",
-        default = 'rig_1',
-        items = [('rig_1', "NO PACKS FOUND", 'Please install or create an asset pack!')]
-    )
+    def execute(self,context):
+        obj = context.object
+        scene = context.scene
+        if obj.get("ipaneltab6") is 0:
+            #CHECKING FOR VARS
+            if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "" and os.path.exists(obj.target_thumbnail_generate) is True:
+                #folder generation
+                inventory = f"{root_folder}/ice_cube_data/internal_files/user_packs/inventory"
 
+                asset_pack_path = f"{inventory}/{obj.asset_pack_name}"
+
+                list_of_dirs_to_gen = ["","assets","thumbnails",f"assets/{obj.entry_name_asset}"]
+
+                for folder in list_of_dirs_to_gen:
+                    if os.path.exists(f"{asset_pack_path}/{folder}") is False:
+                        os.mkdir(f"{asset_pack_path}/{folder}")
+
+                #settings json generation
+                settings_json_data = {
+                    "pack_name": obj.asset_pack_name,
+                    "author": obj.asset_author,
+                    "version": obj.asset_version,
+                	"default": obj.entry_name_asset
+                }
+
+                #info json generation
+                info_json_data = {
+                    "asset_name": obj.entry_name_asset,
+                    "author": obj.asset_author,
+                    "asset_version": obj.asset_version
+                }
+
+                converted_settings_json = json.dumps(settings_json_data,indent=4)
+                with open(f"{asset_pack_path}/settings.json", "w") as json_file:
+                    json_file.write(converted_settings_json)
+
+                converted_info_json = json.dumps(info_json_data,indent=4)
+                with open(f"{asset_pack_path}/assets/{obj.entry_name_asset}/info.json", "w") as json_file:
+                    json_file.write(converted_info_json)
+
+
+                #saving a copy of the file
+                if bpy.data.is_saved is True and obj.asset_pack_name != "" and obj.entry_name_asset != "":
+                    filepath = f"{inventory}/{obj.asset_pack_name}/assets/{obj.entry_name_asset}/{obj.entry_name_asset}.blend"
+                    bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
+
+                #thumbnail management
+                if obj.target_thumbnail_generate != "" and str(obj.target_thumbnail_generate).__contains__(".png"): #Copy Thumbnail
+                    shutil.copyfile(obj.target_thumbnail_generate,f"{inventory}/{obj.asset_pack_name}/thumbnails/{obj.entry_name_asset}.png")
+
+            elif obj.asset_pack_name == "":
+                CustomErrorBox("Please enter a name for the pack!",'Invalid Name','ERROR')
+                return{'FINISHED'}
+            elif obj.entry_name_asset == "":
+                CustomErrorBox("Please enter an asset name!","Invalid Name",'ERROR')
+                return{'FINISHED'}
+            elif obj.asset_author == "":
+                CustomErrorBox("Please enter an author!","Invalid Author",'ERROR')
+                return{'FINISHED'}
+            elif obj.asset_version == "":
+                CustomErrorBox("Please enter a valid version!","Invalid Version",'ERROR')
+                return{'FINISHED'}
+            elif os.path.exists(obj.target_thumbnail_generate) is False:
+                CustomErrorBox("Please select a valid thumbnail!")
+                return{'FINISHED'}
+
+        if obj.get("ipaneltab6") is 1:
+            #CHECKING FOR VARS
+            if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "":
+                
+                if obj.has_baked_version is True and os.path.exists(obj.baked_version_filepath) is False:
+                    CustomErrorBox("Please enter a valid thumbnail path!",'Invalid Thumbnail','ERROR')
+                    return{'FINISHED'}
+                
+                if os.path.exists(obj.target_thumbnail_generate) is False and obj.generate_thumbnail is False:
+                    CustomErrorBox("Invalid Thumbnail Path!",'Invalid Thumbnail','ERROR')
+                    return{'FINISHED'}
+
+                #folder generation
+                rigs = f"{root_folder}/ice_cube_data/internal_files/user_packs/rigs"
+
+                rig_pack_path = f"{rigs}/{obj.asset_pack_name}"
+
+                list_of_dirs_to_gen = ["","rigs","thumbnails",f"rigs/{obj.entry_name_asset}"]
+
+                for folder in list_of_dirs_to_gen:
+                    if os.path.exists(f"{rig_pack_path}/{folder}") is False:
+                        os.mkdir(f"{rig_pack_path}/{folder}")
+
+                #settings json generation
+                settings_json_data = {
+                    "pack_name": obj.asset_pack_name,
+                    "author": obj.asset_author,
+                    "version": obj.asset_version,
+                	"default": obj.entry_name_asset
+                }
+
+                #info json generation
+                info_json_data = {
+                    "rig_name": obj.entry_name_asset,
+                	"base_rig": "Ice Cube",
+                	"base_rig_vers": f"{bl_info['version']}",
+                    "author": obj.asset_author,
+                    "rig_version": obj.asset_version,
+                	"has_baked": f"{obj.has_baked_version}"
+                }
+
+                converted_settings_json = json.dumps(settings_json_data,indent=4)
+                with open(f"{rig_pack_path}/settings.json", "w") as json_file:
+                    json_file.write(converted_settings_json)
+
+                converted_info_json = json.dumps(info_json_data,indent=4)
+                with open(f"{rig_pack_path}/rigs/{obj.entry_name_asset}/info.json", "w") as json_file:
+                    json_file.write(converted_info_json)
+
+
+                #saving a copy of the file
+                if bpy.data.is_saved is True:
+                    filepath = f"{rigs}/{obj.asset_pack_name}/rigs/{obj.entry_name_asset}/{obj.entry_name_asset}_NORMAL.blend"
+                    bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
+                
+                if obj.has_baked_version is True:
+                    baked_path = f"{rigs}/{obj.asset_pack_name}/rigs/{obj.entry_name_asset}/{obj.entry_name_asset}_BAKED.blend"
+                    shutil.copyfile(obj.baked_version_filepath,baked_path)
+
+                #thumbnail management
+                if obj.target_thumbnail_generate != "" and str(obj.target_thumbnail_generate).__contains__(".png"): #Copy Thumbnail
+                    shutil.copyfile(obj.target_thumbnail_generate,f"{rigs}/{obj.asset_pack_name}/thumbnails/{obj.entry_name_asset}.png")
+
+                #generating thumbnail
+                if obj.generate_thumbnail is True:
+
+                    
+
+                    #setting save loc
+                    sce = bpy.context.scene.name
+                    org_save_loc = bpy.data.scenes[sce].render.filepath
+                    bpy.data.scenes[sce].render.filepath = f"{rig_pack_path}/thumbnails/{obj.entry_name_asset}.png"
+
+                    #generating camera
+                    camera_data = bpy.data.cameras.new(name='AutoGenCam')
+                    camera_object = bpy.data.objects.new('AutoGenCam', camera_data)
+                    bpy.context.scene.collection.objects.link(camera_object)
+
+                    #setting camera data
+                    auto_cam = bpy.data.objects["AutoGenCam"]
+                    auto_cam.location = (3.53542, -7.55179, 2.08197)
+                    auto_cam.rotation_euler = (1.5252,-0.0000,0.4321)
+                    bpy.data.cameras["AutoGenCam"].lens = 80
+
+                    #setting resolution
+                    for scene_thing in bpy.data.scenes:
+                        org_trans_setting = scene_thing.render.film_transparent
+                        org_res_x = scene_thing.render.resolution_x
+                        org_res_y = scene_thing.render.resolution_y
+                        scene_thing.render.resolution_x = 1920
+                        scene_thing.render.resolution_y = 1920
+                        scene_thing.render.film_transparent = True
+                        scene_thing.camera = auto_cam
+                    
+                    #setting view
+                    for area in bpy.context.screen.areas:
+                        if area.type == 'VIEW_3D':
+                            area.spaces[0].region_3d.view_perspective = 'CAMERA'
+                            break
+
+                    #disabling overlays
+                    bpy.context.space_data.overlay.show_overlays = False
+
+                    #rendering img
+                    bpy.ops.render.opengl(write_still=True)
+
+                    #fixing scene
+
+                    bpy.context.space_data.overlay.show_overlays = True
+
+                    bpy.data.objects.remove(auto_cam)
+                    bpy.data.cameras.remove(bpy.data.cameras["AutoGenCam"])
+
+                    bpy.data.scenes[sce].render.filepath = org_save_loc
+
+                    for scene_thing in bpy.data.scenes:
+                        scene_thing.render.film_transparent = org_trans_setting
+                        scene_thing.render.resolution_x = org_res_x
+                        scene_thing.render.resolution_y = org_res_y
+            elif obj.asset_pack_name == "":
+                CustomErrorBox("Please enter a name for the pack!",'Invalid Name','ERROR')
+                return{'FINISHED'}
+            elif obj.entry_name_asset == "":
+                CustomErrorBox("Please enter an asset name!","Invalid Name",'ERROR')
+                return{'FINISHED'}
+            elif obj.asset_author == "":
+                CustomErrorBox("Please enter an author!","Invalid Author",'ERROR')
+                return{'FINISHED'}
+            elif obj.asset_version == "":
+                CustomErrorBox("Please enter a valid version!","Invalid Version",'ERROR')
+                return{'FINISHED'}
+            elif os.path.exists(obj.target_thumbnail_generate) is False and obj.generate_thumbnail is False:
+                CustomErrorBox("Please select a valid thumbnail!")
+                return{'FINISHED'}
+
+        return{'FINISHED'}
 
 classes = [
+    refresh_rigs_list,
     rig_baked_class,
     append_preset,
     append_defaultrig,
@@ -400,6 +627,7 @@ classes = [
     import_settings_data_class,
     update_backups_list,
     reset_all_settings,
+    generate_asset_pack,
            ]
 
 def register():

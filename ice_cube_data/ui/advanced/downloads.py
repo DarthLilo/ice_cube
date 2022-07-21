@@ -10,7 +10,7 @@ from bpy.props import EnumProperty
 from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,dlc_date,dlc_enum_data
 
 from ice_cube_data.utils.file_manage import getFiles
-from ice_cube_data.utils.general_func import GetListIndex
+
 
 import ice_cube
 
@@ -47,8 +47,6 @@ def downloads_UI(self, context, layout, obj):
     else:
         virtual_ice_cube = root_folder+""
         virtual_ice_cube = os.path.normpath(virtual_ice_cube)
-        dlc_folder_preset = root_folder+"/ice_cube_data/internal_files/user_packs/rigs"
-        dlc_folder_asset = root_folder+"/ice_cube_data/internal_files/user_packs/inventory"
         if os.path.exists(backups_folder):
             pass
         else:
@@ -93,58 +91,12 @@ def downloads_UI(self, context, layout, obj):
             b1 = box.row(align=True)
             b1.label(text = selected_backup, icon = 'FILE_BACKUP')
             b1.label(text = f"Created:  [{creation_date}]")
-        box = layout.box()
-        b = box.row(align=True)
-        b.label(text = "DLC Manager",icon='IMPORT')
-        b = box.row(align=True)
-
-        b.prop(obj,"dlc_list",text="")
-        b.operator("download.dlc", text="", icon= 'IMPORT')
-        b.operator("refresh.dlc", text="", icon= 'FILE_REFRESH')
-        b = box.row(align=True)
-        
-        #start of box
-        box2 = b.box()
-        b1 = box2.row(align=True)
-
-        b1.label(text="Type:", icon ='FILE_BACKUP')
-        b1.label(text="Author:")
-        b1.label(text="Date:")
-        b1 = box2.row(align=True)
-        try:
-            selected_dlc = getattr(obj,"dlc_list")
-            dlc_number = GetListIndex(str(selected_dlc), dlc_id)
-            
-            b1.label(text=f"{dlc_type[dlc_number]}", icon ='FILE_BACKUP')
-            b1.label(text=f"{dlc_author[dlc_number]}")
-            b1.label(text=f"{dlc_date[dlc_number]}")
-            b1 = box2.row(align=True)
-        except:
-            b1.label(text="REFRESH")
-            b1 = box2.row(align=True)
 
 
 
 
         #end of box
-        b = box.row(align=True)
-        b.label(text = "Installed DLC:")
-        b = box.row(align=True)
-        #start of box
-        box2 = b.box()
-        b1 = box2.row(align=True)
-        dlc_preset_scan = os.listdir(dlc_folder_preset)
-        dlc_asset_scan = os.listdir(dlc_folder_asset)
-        if len(dlc_preset_scan) + len(dlc_asset_scan) == 0:
-            b1 = box2.row(align=True)
-            b1.label(text = "NO DLC FOUND", icon = 'FILE_BACKUP')
-        else:
-            for dlc in getFiles(dlc_folder_asset):
-                b1 = box2.row(align=True)
-                b1.label(text = dlc, icon = 'FILE_BACKUP')
-            for dlc in getFiles(dlc_folder_preset):
-                b1 = box2.row(align=True)
-                b1.label(text = dlc, icon = 'FILE_BACKUP')
+        
 
 
 classes = [

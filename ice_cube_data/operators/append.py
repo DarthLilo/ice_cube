@@ -7,13 +7,14 @@ from ice_cube_data.utils.file_manage import getFiles
 from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.selectors import isRigSelected
 
-def append_preset_func(self, context, files_list, rig_baked):
+def append_preset_func(self, context, rig_baked):
+        files_list = []
         #sets up variables
         normals = {};
         baked = {};
         obj = context.object
         try:
-            selected_file = files_list[context.scene.get("selected_asset")]
+            selected_file = context.scene.selected_rig_preset
             asset_directory = root_folder+"/ice_cube_data/internal_files/user_packs/rigs/"+selected_file+"/rigs"
             thumbnails_directory = root_folder+"/ice_cube_data/internal_files/user_packs/rigs/"+selected_file+"/thumbnails"
         except:

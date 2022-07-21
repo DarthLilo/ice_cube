@@ -9,24 +9,59 @@ from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.file_manage import getFiles
 
 #File Variables
-inventory_list = []
-inv_files_list = []
-count = 0
+asset_pack_list = []
+asset_pack_names = []
 
 #File Definition
 internalfiles = os.path.join(root_folder, "ice_cube_data/internal_files/user_packs/inventory")
 user_packs = os.path.normpath(internalfiles)
-get_test_files = getFiles(user_packs)
+
+def RefreshInvList():
+    items = []
+    items = asset_pack_list
+    return items
+
+bpy.types.Scene.selected_inv_asset = EnumProperty(
+        name = "Selected Pack",
+        items = [('NONE', 'REFRESH','REFRESH')]
+        )
 
 #Gets a list of assets in the "inventory" folder
-for file in get_test_files:
-    count += 1
-    addition_map = ["asset_", str(count)]
-    ID = "".join(addition_map)
-    description = "Asset ID Number: " + ID
-    test_thing = (ID, file, description)
-    inventory_list.append(test_thing)
-    inv_files_list.append(file)
+class refresh_inventory_list(bpy.types.Operator):
+    bl_idname = "refresh.inv_list"
+    bl_label = "refresh inv list"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    
+    def execute(self, context):
+        #Clearing the old lists
+        asset_pack_list.clear()
+        asset_pack_names.clear()
+        
+        #variables
+        count = 1
+
+        #Updating the list of installed packs
+        for file in getFiles(user_packs):
+            description = f"Asset ID: {count}"
+            item_descriptor = (file, file, description)
+            asset_pack_list.append(item_descriptor)
+            asset_pack_names.append(file)
+            count += 1
+        
+        
+        #Drawing the custom property
+        bpy.types.Scene.selected_inv_asset = EnumProperty(
+        name = "Selected Pack",
+        items = RefreshInvList()
+        )
+
+        try:
+            context.scene.selected_inv_asset = asset_pack_names[0]
+        except:
+            pass
+
+        return{'FINISHED'}
 
 #Append Asset Class
 class append_asset(bpy.types.Operator):
@@ -41,7 +76,7 @@ class append_asset(bpy.types.Operator):
 
         #Tries to get a list of all files in [SELECTED ASSET PACK], if none is found it defaults to a backup.
         try:
-            selected_file = inv_files_list[context.scene.get("selected_inv_asset")]
+            selected_file = context.scene.selected_inv_asset
             asset_directory = root_folder+"/ice_cube_data/internal_files/user_packs/inventory/"+selected_file+"/assets"
             thumbnails_directory = root_folder+"/ice_cube_data/internal_files/user_packs/inventory/"+selected_file+"/thumbnails"
         except:
@@ -91,22 +126,12 @@ class append_asset(bpy.types.Operator):
 
 
 #Attempts to create the enumerator property, if it fails it goes to a backup version.
-try:
-    bpy.types.Scene.selected_inv_asset = EnumProperty(
-        name = "Selected Pack",
-        default = 'asset_1',
-        items = inventory_list
-    )
-except:
-    bpy.types.Scene.selected_inv_asset = EnumProperty(
-        name = "Selected Pack",
-        default = 'asset_1',
-        items = [('asset_1', "NO ASSETS FOUND", 'Please install or create an asset!')]
-    )
+
 
 
 
 classes = [
+    refresh_inventory_list,
     append_asset,
 ]
 

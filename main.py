@@ -35,14 +35,16 @@ rig_id = "ice_cube"
 def presets_menu(self, context):
     """presets menu thing"""
     enum_items = []
+    scene = context.scene
 
     if context is None:
         return enum_items
+    
+    cur_selected_rig = scene.selected_rig_preset
 
-    try:
-        selected_file = main_operators.files_list[context.scene.get("selected_asset")]
-        thumbnail_directory = root_folder+"/ice_cube_data/internal_files/user_packs/rigs/"+selected_file+"/thumbnails"
-    except:
+    if cur_selected_rig != "NONE":
+        thumbnail_directory = root_folder+"/ice_cube_data/internal_files/user_packs/rigs/"+cur_selected_rig+"/thumbnails"
+    else:
         thumbnail_directory = root_folder+"/ice_cube_data/internal_files/important/thumbnails"
 
     filepath  = thumbnail_directory
@@ -79,15 +81,15 @@ def presets_menu(self, context):
 def inventory_menu(self, context):
     """inventory menu thing"""
     enum_items = []
+    cur_selected_asset = context.scene.selected_inv_asset
 
     if context is None:
         return enum_items
 
 
-    try:
-        selected_file = inventory_system.inv_files_list[context.scene.get("selected_inv_asset")]
-        thumbnail_directory = root_folder+"/ice_cube_data/internal_files/user_packs/inventory/"+selected_file+"/thumbnails"
-    except:
+    if cur_selected_asset != "NONE":
+        thumbnail_directory = root_folder+"/ice_cube_data/internal_files/user_packs/inventory/"+cur_selected_asset+"/thumbnails"
+    else:
         thumbnail_directory = root_folder+"/ice_cube_data/internal_files/important/thumbnails"
 
     filepath  = thumbnail_directory
@@ -200,9 +202,6 @@ class IC_Panel(bpy.types.Panel):
         for i in range(0,4):
             if obj.get("ipaneltab1") == i:
                 b.prop(obj, f"ipaneltab{str(i + 2)}", text = "the funny", expand=True)
-        if obj.get("ipaneltab1") == 3 and obj.get("ipaneltab5") == 0:
-            b = box.row(align=True)
-            b.prop(obj, "ipaneltab6", text = "the funny", expand=True)
         
         #tabs/Main
         if obj.get("ipaneltab1") == 0: #Main
@@ -229,10 +228,7 @@ class IC_Panel(bpy.types.Panel):
         #tabs/Advanced
         if obj.get("ipaneltab1") == 3: #Advanced
             if obj.get("ipaneltab5") == 0: #DLC
-                if obj.get("ipaneltab6") == 0: #Assets
-                    dlc_ui.dlc_assets_UI(self, context, layout, inventory_system.inv_files_list)
-                if obj.get("ipaneltab6") == 1: #Presets
-                    dlc_ui.dlc_presets_UI(self, context, layout, main_operators.files_list, properties.global_rig_baked)
+                dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked)
             if obj.get("ipaneltab5") == 1: #Parenting
                 parenting.parenting_UI(self, context, layout, properties.global_rig_baked)
             if obj.get("ipaneltab5") == 2: #Downloads
@@ -272,7 +268,7 @@ class ToolsAppendMenu(bpy.types.Panel):
         obj = context.object
         row = layout.row()
 
-        dlc_ui.dlc_presets_UI(self, context, layout, main_operators.files_list, properties.global_rig_baked)
+        dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked)
 
 
 

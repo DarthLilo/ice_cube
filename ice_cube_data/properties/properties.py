@@ -6,6 +6,8 @@ from bpy.props import (StringProperty,
                         FloatProperty,
                         EnumProperty,
                         )  
+
+from ice_cube_data.systems import inventory_system
                  
 
 #war crimewar crimewar crimewar crimewar crimewar crime fuck you
@@ -158,6 +160,13 @@ bpy.types.Object.L_L_Half = BoolProperty(
 
 bpy.types.Object.Body_Bend_Half = BoolProperty(
     name = "Body_Bend_Half", description="Determines which half of the Body the mesh should be parented to",default=False)
+
+bpy.types.Object.generate_thumbnail = BoolProperty(
+    name = "generate_thumbnail", description="Decides whether to generate a thumbnail in the current scene",default=False)
+
+bpy.types.Object.has_baked_version = BoolProperty(
+    name = "has_baked_version", description="Decides whether to put True or False in the baked part of info.json",default=False)
+
 
 global_rig_baked = False
 global_parent_half = False
@@ -353,6 +362,15 @@ bpy.types.Object.arm_ik_parent_l = EnumProperty(
              ('three', 'Torso', 'IK PARENT')
              ])
 
+bpy.types.Object.dlc_menu_switcher = EnumProperty(
+    name = "DLC Menu Switcher",
+    default = 'one',
+    items = [
+             ('one', 'Append', 'Append Downloaded Asset'),
+             ('two', 'Download', 'Download New Asset'),
+             ('three', 'Generate', 'Generate Asset Pack')
+             ])
+
 #string properties
 bpy.types.Scene.minecraft_username = StringProperty(name="username", description="username slot", default="")
 
@@ -375,6 +393,38 @@ bpy.types.Object.import_settings_filepath = StringProperty(
 bpy.types.Object.export_settings_name = StringProperty(
     name="export_settings_name",
     description="Defines a name for the export settings",
+    default="")
+
+bpy.types.Object.target_thumbnail_generate = StringProperty(
+    name="target_thumbnail_generate",
+    description="Defines a png file to generate an asset pack from",
+    subtype='FILE_PATH',
+    default="")
+
+bpy.types.Object.asset_pack_name = StringProperty(
+    name="asset_pack_name",
+    description="Defines a name to use when generating the asset pack",
+    default="Pack Name")
+
+bpy.types.Object.entry_name_asset = StringProperty(
+    name="entry_name_asset",
+    description="Defines a name for the asset pack entry",
+    default="Entry Name")
+
+bpy.types.Object.asset_author = StringProperty(
+    name="asset_author",
+    description="Defines a name for the author in settings.json",
+    default="Your Name")
+
+bpy.types.Object.asset_version = StringProperty(
+    name="asset_version",
+    description="Defines a version number in settings.json",
+    default="1.0.0")
+
+bpy.types.Object.baked_version_filepath = StringProperty(
+    name="baked_version_filepath",
+    description="Defines a filepath for the baked version",
+    subtype='FILE_PATH',
     default="")
 
 classes = [
