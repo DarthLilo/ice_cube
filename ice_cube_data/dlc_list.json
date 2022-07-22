@@ -12,10 +12,10 @@
             "dlc_id" : "beta_tester_dlc",
             "dlc_name" : "Beta Testers DLC",
             "dlc_type" : "rigs",
-            "dlc_date" : "2022-6-4",
+            "dlc_date" : "2022-7-22",
             "author" : "IC Beta Testers",
             "dlc_enum_data" : ["beta_tester_dlc","Beta DLC","A preset pack containing some members of the beta testing team"],
-            "download_link" : "https://www.dropbox.com/s/f3dhnsfkjhq0n7z/beta_tester_dlc.zip?dl=1"
+            "download_link" : "https://www.dropbox.com/s/yelcqke8uawn60d/beta_tester_dlc.zip?dl=1"
         },
         {
             "dlc_id" : "3D_Armor",
