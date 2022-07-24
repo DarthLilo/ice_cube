@@ -239,11 +239,11 @@ class IC_Panel(bpy.types.Panel):
 def menu_function_thing(self, context):
     pcoll = preview_collections["main"]
     my_icon = pcoll["DarthLilo"]
-    self.layout.menu("IceCubeAppendMenu", text = "Ice Cube Rig", icon_value = my_icon.icon_id)
+    self.layout.menu("SCENE_MT_IceCubeAppendMenu", text = "Ice Cube Rig", icon_value = my_icon.icon_id)
 
 class IceCubeAppendMenu(bpy.types.Menu):
         bl_label = "Append Rig"
-        bl_idname = "SCENE_PT_IceCubeAppendMenu"
+        bl_idname = "SCENE_MT_IceCubeAppendMenu"
         bl_options = bl_options = {'REGISTER', 'UNDO'}
         
         def draw(self, context):
@@ -257,7 +257,7 @@ class IceCubeAppendMenu(bpy.types.Menu):
 
 class ToolsAppendMenu(bpy.types.Panel):
     bl_label = "Append Preset"
-    bl_idname = "Scene_PT_     ToolsAppendIceCube"
+    bl_idname = "SCENE_PT_ToolsAppendIceCube"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'Tool'
