@@ -29,7 +29,7 @@ from ice_cube_data.ui.advanced import dlc_ui, parenting, downloads, adv_misc
 
 
 #File Variables
-rig_id = "ice_cube"
+RIG_ID = "ice_cube"
 
 #InFileDefs
 def presets_menu(self, context):
@@ -173,7 +173,7 @@ class IC_Panel(bpy.types.Panel):
     def poll(self, context):
         rig = isRigSelected(context)
         try:
-            return (rig.data.get("rig_id") == rig_id)
+            return (rig.data.get("rig_id") == RIG_ID)
         except (AttributeError, KeyError, TypeError):
             return False
         
