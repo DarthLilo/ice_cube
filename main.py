@@ -207,33 +207,33 @@ class IC_Panel(bpy.types.Panel):
         if obj.get("ipaneltab1") == 0: #Main
             if obj.get("ipaneltab2") == 0: #Bone Layers
                 bone_layers.bone_layers_UI(self, context, layout)
-            if obj.get("ipaneltab2") == 1: #General Settings
+            elif obj.get("ipaneltab2") == 1: #General Settings
                 general_settings.general_settings_main_UI(self, context, layout, obj, preview_collections)
         #tabs/Customization
-        if obj.get("ipaneltab1") == 1: #Customization
+        elif obj.get("ipaneltab1") == 1: #Customization
             if obj.get("ipaneltab3") == 0: #General
                 custom_general.customization_general_UI(self, context, layout, obj)
-            if obj.get("ipaneltab3") == 1: #Mesh
+            elif obj.get("ipaneltab3") == 1: #Mesh
                 mesh.custom_mesh_UI(self, context, layout, obj)
-            if obj.get("ipaneltab3") == 2: #Misc
+            elif obj.get("ipaneltab3") == 2: #Misc
                 misc.custom_misc_UI(self, context, layout, obj)
         #tabs/Materials
-        if obj.get("ipaneltab1") == 2: #Materials
+        elif obj.get("ipaneltab1") == 2: #Materials
             if obj.get("ipaneltab4") == 0: #Skin
                 skin_material.skin_material_UI(self, context, layout, skin_mat, face)
-            if obj.get("ipaneltab4") == 1: #Eyes
+            elif obj.get("ipaneltab4") == 1: #Eyes
                 eye_material.eye_material_UI(self, context, layout, obj, face)
-            if obj.get("ipaneltab4") == 2: #Misc
+            elif obj.get("ipaneltab4") == 2: #Misc
                 misc_material.misc_material_UI(self, context, layout, face)
         #tabs/Advanced
-        if obj.get("ipaneltab1") == 3: #Advanced
+        elif obj.get("ipaneltab1") == 3: #Advanced
             if obj.get("ipaneltab5") == 0: #DLC
                 dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, True)
-            if obj.get("ipaneltab5") == 1: #Parenting
+            elif obj.get("ipaneltab5") == 1: #Parenting
                 parenting.parenting_UI(self, context, layout, properties.global_rig_baked)
-            if obj.get("ipaneltab5") == 2: #Downloads
+            elif obj.get("ipaneltab5") == 2: #Downloads
                 downloads.downloads_UI(self, context, layout, obj)
-            if obj.get("ipaneltab5") == 3: #Misc
+            elif obj.get("ipaneltab5") == 3: #Misc
                 adv_misc.advanced_misc_UI(self, context, layout, obj)
 
 def menu_function_thing(self, context):
