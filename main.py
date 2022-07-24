@@ -164,7 +164,7 @@ def skins_menu(self, context):
 
 class IC_Panel(bpy.types.Panel):
     bl_label = "Ice Cube"
-    bl_idname = "ice_cube_panel"
+    bl_idname = "SCENE_PT_ice_cube_panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'Ice Cube'
@@ -243,7 +243,7 @@ def menu_function_thing(self, context):
 
 class IceCubeAppendMenu(bpy.types.Menu):
         bl_label = "Append Rig"
-        bl_idname = "IceCubeAppendMenu"
+        bl_idname = "SCENE_PT_IceCubeAppendMenu"
         bl_options = bl_options = {'REGISTER', 'UNDO'}
         
         def draw(self, context):
@@ -257,7 +257,7 @@ class IceCubeAppendMenu(bpy.types.Menu):
 
 class ToolsAppendMenu(bpy.types.Panel):
     bl_label = "Append Preset"
-    bl_idname = "ToolsAppendIceCube"
+    bl_idname = "Scene_PT_     ToolsAppendIceCube"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'Tool'
