@@ -397,9 +397,9 @@ class generate_asset_pack(bpy.types.Operator):
     def execute(self,context):
         obj = context.object
         scene = context.scene
-        if obj.get("ipaneltab6") is 0:
+        if obj.get("ipaneltab6") == 0:
             #CHECKING FOR VARS
-            if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "" and os.path.exists(obj.target_thumbnail_generate) is True:
+            if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "" and os.path.exists(obj.target_thumbnail_generate) == True:
                 #folder generation
                 inventory = f"{root_folder}/ice_cube_data/internal_files/user_packs/inventory"
 
@@ -460,7 +460,7 @@ class generate_asset_pack(bpy.types.Operator):
                 CustomErrorBox("Please select a valid thumbnail!")
                 return{'FINISHED'}
 
-        if obj.get("ipaneltab6") is 1:
+        if obj.get("ipaneltab6") == 1:
             #CHECKING FOR VARS
             if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "":
                 
