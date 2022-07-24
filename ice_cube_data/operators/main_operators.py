@@ -4,7 +4,7 @@ import os
 import sys
 import shutil
 from bpy.props import EnumProperty
-from ....main import print_information
+from ....ice_cube import print_information
 
 
 #Custom Functions
