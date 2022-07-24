@@ -4,6 +4,7 @@ import os
 import sys
 import shutil
 from bpy.props import EnumProperty
+from ....main import print_information
 
 
 #Custom Functions
@@ -330,8 +331,8 @@ class refresh_dlc(bpy.types.Operator):
 
     def execute(self, context):
         refresh_dlc_func(self, context)
-
-        print(f"DLC IDs : {dlc_id}\nDLC TYPE : {dlc_type}\nDLC AUTHOR : {dlc_author}")
+        if print_information:
+            print(f"DLC IDs : {dlc_id}\nDLC TYPE : {dlc_type}\nDLC AUTHOR : {dlc_author}")
         downloads_path = f"{root_folder}/ice_cube_data/ui/advanced/downloads.py"
         exec(open(downloads_path).read())
         
