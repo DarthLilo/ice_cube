@@ -33,8 +33,9 @@ required_dirsmain = ["backups","downloads"]
 
 for dir in required_dirsmain:
     dir_path = os.path.normpath(f"{root_folder}/{dir}")
-    if os.path.exists(dir_path) and print_information:
-        print(f"Found path {dir_path}")
+    if os.path.exists(dir_path):
+        if print_information:
+            print(f"Found path {dir_path}")
     else:
         os.mkdir(dir_path)
         if print_information:
@@ -44,8 +45,9 @@ for dir in required_dirsmain:
 required_dirs = ["skins","user_packs", "user_packs/rigs", "user_packs/inventory"]
 for dir in required_dirs:
     dir_path = os.path.normpath(f"{root_folder}/ice_cube_data/internal_files/{dir}")
-    if os.path.exists(dir_path) and print_information:
-        print(f"Found path {dir_path}")
+    if os.path.exists(dir_path):
+        if print_information:
+            print(f"Found path {dir_path}")
     else:
         os.mkdir(dir_path)
         if print_information:

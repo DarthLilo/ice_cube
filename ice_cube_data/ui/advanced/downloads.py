@@ -5,17 +5,16 @@ import os
 from sys import platform
 import pathlib
 from bpy.props import EnumProperty
-from ....ice_cube import print_informatin
 
 
-from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,dlc_date,dlc_enum_data
+from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,dlc_date,dlc_enum_data, print_information
 
 from ice_cube_data.utils.file_manage import getFiles
 
 
 import ice_cube
 
-if print_informatin:
+if print_information:
     print(ice_cube.dlc_enum_data)
 
 
@@ -53,7 +52,7 @@ def downloads_UI(self, context, layout, obj):
             pass
         else:
             os.mkdir(backups_folder)
-            if print_informatin:
+            if print_information:
                 print("Created Backups Folder")
 
         b = box.row(align=True)

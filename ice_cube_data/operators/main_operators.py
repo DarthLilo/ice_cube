@@ -4,11 +4,9 @@ import os
 import sys
 import shutil
 from bpy.props import EnumProperty
-from ....ice_cube import print_information
-
 
 #Custom Functions
-from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info
+from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info, print_information
 
 from ice_cube_data.utils.general_func import GetListIndex, IsVersionUpdated
 from ice_cube_data.utils.file_manage import getFiles, ClearDirectory, GetRootFolder

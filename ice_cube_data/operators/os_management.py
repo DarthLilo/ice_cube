@@ -9,9 +9,8 @@ import shutil
 import distutils.dir_util
 import datetime
 import pathlib
-from ....ice_cube import print_information
 
-from ice_cube import root_folder, latest_dlc, github_url
+from ice_cube import root_folder, latest_dlc, github_url, print_information
 
 from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.file_manage import ClearDirectory, getFiles, open_json
@@ -96,7 +95,7 @@ def install_update_func(self, context):
             print("Error while downloading file.")
     #unzips the file
     try:
-        if print_informatin:
+        if print_information:
             print(f"Unzipping File")
         with zipfile.ZipFile(download_file_loc, 'r') as zip_ref:
             zip_ref.extractall(download_folder)
@@ -113,7 +112,7 @@ def install_update_func(self, context):
             print("Cleaned Folder")
     except Exception as e:
         CustomErrorBox(str(e), "Error unpacking update file.", icon="CANCEL")
-        if print_informatin:
+        if print_information:
             print("Unknown Error")
     #Rename the downloaded file to Ice Cube
     for file in getFiles(download_folder):
@@ -124,11 +123,11 @@ def install_update_func(self, context):
     #Install the downloaded addon
     try:
         distutils.dir_util.copy_tree(download_folder+"/Ice Cube", install_loc)
-        if print_informatin:
+        if print_information:
             print("Finished Install!")
         CustomErrorBox("Finished installing update! Restart Blender before continuing!","Updated Finished",'INFO')
     except Exception as e:
-        if print_informatin:
+        if print_information:
             print("Error Completing Install.")
         CustomErrorBox(str(e),"Error installing update file.",'ERROR')
 
@@ -182,7 +181,7 @@ def create_backup_func(self, context):
 
 
 
-    if print_informatin:
+    if print_information:
         print(files_nopath)
         print(folders_nopath)
 
@@ -281,11 +280,11 @@ def download_dlc_func(self, context, dlc_id):
                 downloads_folder = root_folder+"/downloads"
                 dlc_folder = root_folder+"/ice_cube_data/internal_files/user_packs/"+dlc_type+"/"+dlc_id_name
             #checks if a folder for the selected dlc exists, if not, create one.
-            if os.path.exists(dlc_folder) and print_informatin::
+            if os.path.exists(dlc_folder) and print_information:
                 print("Path Found")
             else:
                 os.mkdir(dlc_folder)
-                if print_informatin:
+                if print_information:
                     print(f"Created {dlc_id_name} Folder")
             download_folder = os.path.normpath(downloads_folder)
             #clear folder
@@ -296,13 +295,13 @@ def download_dlc_func(self, context, dlc_id):
             #download the zip
             try:
                 request.urlretrieve(dlc_download, download_file_loc)
-                if print_informatin:
+                if print_information:
                     print("File Downloaded!")
             except:
                 CustomErrorBox("An unknown error has occured, canceled download.","Downloading Error","ERROR")
             #unzips the file
             try:
-                if print_informatin:
+                if print_information:
                     print(f"Unzipping File")
                 try:
                     shutil.rmtree(download_folder+"/"+dlc_id_name)
@@ -310,24 +309,24 @@ def download_dlc_func(self, context, dlc_id):
                     pass
                 with zipfile.ZipFile(download_file_loc, 'r') as zip_ref:
                     zip_ref.extractall(download_folder)
-                if print_informatin:
+                if print_information:
                     print("Successfully Unzipped File!")
                 #remove the zip file when done
                 os.remove(download_file_loc)
-                if print_informatin:
+                if print_information:
                     print("Cleaned Folder")
             except:
-                if print_informatin:
+                if print_information:
                     print("Unknown Error")
             
             try:
                 #install the new DLC
                 distutils.dir_util.copy_tree(download_folder+"/"+dlc_id_name, dlc_folder)
-                if print_informatin:
+                if print_information:
                     print("Finished Install!")
                 CustomErrorBox("Finished installing DLC! Restart Blender before continuing!","Updated Finished",'INFO')
             except:
-                if print_informatin:
+                if print_information:
                     print("Error Completing Install.")
                 CustomErrorBox("Error Completing Install.","Updated Cancelled",'ERROR')
 
@@ -420,7 +419,7 @@ def import_settings_data(self, context):
         for prop in prop_data:
             try:
                 setattr(obj, prop, prop_data[prop])
-                if print_informatin:
+                if print_information:
                     print(f"{prop} == {prop_data[prop]}")
             except:
                 pass
@@ -443,7 +442,7 @@ def reset_all_settings_func(self, context):
     for prop in prop_data:
         try:
             setattr(obj, prop, prop_data[prop])
-            if print_informatin:
+            if print_information:
                 print(f"{prop} == {prop_data[prop]}")
         except:
             pass
