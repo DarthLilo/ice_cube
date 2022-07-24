@@ -22,10 +22,10 @@ def dlc_menu(self, context, layout, rig_baked, main_menu):
 
     
 
-        if obj.get("dlc_menu_switcher") is 0: #APPEND MENU
+        if obj.get("dlc_menu_switcher") == 0: #APPEND MENU
             b.prop(obj,"ipaneltab6",text="")
 
-            if obj.get("ipaneltab6") is 0:
+            if obj.get("ipaneltab6") == 0:
                 thumbnail = bpy.data.window_managers["WinMan"].inventory_preview
                 thumbnailnopng = thumbnail.split(".")[0]
                 cur_asset = context.scene.get("selected_inv_asset")
@@ -111,7 +111,7 @@ def dlc_menu(self, context, layout, rig_baked, main_menu):
                 b = box.row(align=True)
                 b.label(text="Version: " + asset_json_asset_version)
 
-            if obj.get("ipaneltab6") is 1:
+            if obj.get("ipaneltab6") == 1:
                 thumbnail = bpy.data.window_managers["WinMan"].my_previews_presets
                 thumbnailnopng = thumbnail.split(".")[0]
                 cur_asset = context.scene.get("selected_rig_preset")
@@ -216,7 +216,7 @@ def dlc_menu(self, context, layout, rig_baked, main_menu):
                 b = box.row(align=True)
                 b.label(text="Has \"BAKED\" version?: " + json_rig_baked)
 
-        if obj.get("dlc_menu_switcher") is 1: #DOWNLOAD MENU
+        if obj.get("dlc_menu_switcher") == 1: #DOWNLOAD MENU
             dlc_folder_preset = root_folder+"/ice_cube_data/internal_files/user_packs/rigs"
             dlc_folder_asset = root_folder+"/ice_cube_data/internal_files/user_packs/inventory"
 
@@ -269,11 +269,11 @@ def dlc_menu(self, context, layout, rig_baked, main_menu):
                     b1 = box2.row(align=True)
                     b1.label(text = dlc, icon = 'FILE_BACKUP')
 
-        if obj.get("dlc_menu_switcher") is 2: #GENERATE MENU
+        if obj.get("dlc_menu_switcher") == 2: #GENERATE MENU
             b.prop(obj,"ipaneltab6",text="")
             b = box.row(align=True)
 
-            if obj.get("ipaneltab6") is 0: #ASSETS
+            if obj.get("ipaneltab6") == 0: #ASSETS
                 b.label(text="Generate Asset Pack")
                 b1 = b.row(align=True)
                 b1.prop(obj,"generate_thumbnail",text="Generate Thumbnail?")
@@ -289,7 +289,7 @@ def dlc_menu(self, context, layout, rig_baked, main_menu):
                 b = box.row(align=True)
                 b.operator("generate.asest_pack",text="Generate Pack")
 
-            if obj.get("ipaneltab6") is 1: #PRESETS
+            if obj.get("ipaneltab6") == 1: #PRESETS
                 b.label(text="Generate Preset Pack")
                 b.prop(obj,"generate_thumbnail",text="Generate Thumbnail?")
                 b = box.row(align=True)
