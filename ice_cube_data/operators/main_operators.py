@@ -30,7 +30,7 @@ import ice_cube
 #file variables
 rig_pack_list = []
 rig_pack_names = []
-rig_id = "ice_cube"
+RIG_ID = "ice_cube"
 
 
 internalfiles = os.path.join(root_folder, "ice_cube_data/internal_files/user_packs/rigs")
