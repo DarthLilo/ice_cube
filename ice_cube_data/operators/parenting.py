@@ -5,6 +5,7 @@ import sys
 from ice_cube_data.utils.selectors import isRigSelected
 from ice_cube_data.utils.general_func import GetListIndex
 from ice_cube_data.utils.ui_tools import CustomErrorBox
+from ice_cube import print_information
 
 def parent_left_arm(self, context):
     #lists
@@ -294,8 +295,9 @@ def parent_right_arm(self, context):
 
         #Arm Bulge
         modifier = right_leg_parent.modifiers.new(name="Arm Bulge", type='LATTICE')
-        print(f"{right_leg_parent.name} MESH NAME")
-        print(dynamic_obj_R_list[GetListIndex("Arm Bulge LAT R", dynamic_obj_R_list)] + "LIST INDEX THING")
+        if print_information:
+            print(f"{right_leg_parent.name} MESH NAME")
+            print(dynamic_obj_R_list[GetListIndex("Arm Bulge LAT R", dynamic_obj_R_list)] + "LIST INDEX THING")
         modifier.object = bpy.data.objects[dynamic_obj_R_list[GetListIndex("Arm Bulge LAT R", dynamic_obj_R_list)]]
 
         #twist

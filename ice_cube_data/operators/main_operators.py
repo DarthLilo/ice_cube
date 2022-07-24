@@ -5,9 +5,8 @@ import sys
 import shutil
 from bpy.props import EnumProperty
 
-
 #Custom Functions
-from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info
+from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info, print_information
 
 from ice_cube_data.utils.general_func import GetListIndex, IsVersionUpdated
 from ice_cube_data.utils.file_manage import getFiles, ClearDirectory, GetRootFolder
@@ -30,7 +29,7 @@ import ice_cube
 #file variables
 rig_pack_list = []
 rig_pack_names = []
-rig_id = "ice_cube"
+RIG_ID = "ice_cube"
 
 
 internalfiles = os.path.join(root_folder, "ice_cube_data/internal_files/user_packs/rigs")
@@ -330,8 +329,8 @@ class refresh_dlc(bpy.types.Operator):
 
     def execute(self, context):
         refresh_dlc_func(self, context)
-
-        print(f"DLC IDs : {dlc_id}\nDLC TYPE : {dlc_type}\nDLC AUTHOR : {dlc_author}")
+        if print_information:
+            print(f"DLC IDs : {dlc_id}\nDLC TYPE : {dlc_type}\nDLC AUTHOR : {dlc_author}")
         downloads_path = f"{root_folder}/ice_cube_data/ui/advanced/downloads.py"
         exec(open(downloads_path).read())
         
@@ -397,9 +396,9 @@ class generate_asset_pack(bpy.types.Operator):
     def execute(self,context):
         obj = context.object
         scene = context.scene
-        if obj.get("ipaneltab6") is 0:
+        if obj.get("ipaneltab6") == 0:
             #CHECKING FOR VARS
-            if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "" and os.path.exists(obj.target_thumbnail_generate) is True:
+            if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "" and os.path.exists(obj.target_thumbnail_generate) == True:
                 #folder generation
                 inventory = f"{root_folder}/ice_cube_data/internal_files/user_packs/inventory"
 
@@ -460,7 +459,7 @@ class generate_asset_pack(bpy.types.Operator):
                 CustomErrorBox("Please select a valid thumbnail!")
                 return{'FINISHED'}
 
-        if obj.get("ipaneltab6") is 1:
+        if obj.get("ipaneltab6") == 1:
             #CHECKING FOR VARS
             if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "":
                 

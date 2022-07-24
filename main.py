@@ -29,7 +29,7 @@ from ice_cube_data.ui.advanced import dlc_ui, parenting, downloads, adv_misc
 
 
 #File Variables
-rig_id = "ice_cube"
+RIG_ID = "ice_cube"
 
 #InFileDefs
 def presets_menu(self, context):
@@ -164,7 +164,7 @@ def skins_menu(self, context):
 
 class IC_Panel(bpy.types.Panel):
     bl_label = "Ice Cube"
-    bl_idname = "ice_cube_panel"
+    bl_idname = "SCENE_PT_ice_cube_panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'Ice Cube'
@@ -173,7 +173,7 @@ class IC_Panel(bpy.types.Panel):
     def poll(self, context):
         rig = isRigSelected(context)
         try:
-            return (rig.data.get("rig_id") == rig_id)
+            return (rig.data.get("rig_id") == RIG_ID)
         except (AttributeError, KeyError, TypeError):
             return False
         
@@ -207,43 +207,43 @@ class IC_Panel(bpy.types.Panel):
         if obj.get("ipaneltab1") == 0: #Main
             if obj.get("ipaneltab2") == 0: #Bone Layers
                 bone_layers.bone_layers_UI(self, context, layout)
-            if obj.get("ipaneltab2") == 1: #General Settings
+            elif obj.get("ipaneltab2") == 1: #General Settings
                 general_settings.general_settings_main_UI(self, context, layout, obj, preview_collections)
         #tabs/Customization
-        if obj.get("ipaneltab1") == 1: #Customization
+        elif obj.get("ipaneltab1") == 1: #Customization
             if obj.get("ipaneltab3") == 0: #General
                 custom_general.customization_general_UI(self, context, layout, obj)
-            if obj.get("ipaneltab3") == 1: #Mesh
+            elif obj.get("ipaneltab3") == 1: #Mesh
                 mesh.custom_mesh_UI(self, context, layout, obj)
-            if obj.get("ipaneltab3") == 2: #Misc
+            elif obj.get("ipaneltab3") == 2: #Misc
                 misc.custom_misc_UI(self, context, layout, obj)
         #tabs/Materials
-        if obj.get("ipaneltab1") == 2: #Materials
+        elif obj.get("ipaneltab1") == 2: #Materials
             if obj.get("ipaneltab4") == 0: #Skin
                 skin_material.skin_material_UI(self, context, layout, skin_mat, face)
-            if obj.get("ipaneltab4") == 1: #Eyes
+            elif obj.get("ipaneltab4") == 1: #Eyes
                 eye_material.eye_material_UI(self, context, layout, obj, face)
-            if obj.get("ipaneltab4") == 2: #Misc
+            elif obj.get("ipaneltab4") == 2: #Misc
                 misc_material.misc_material_UI(self, context, layout, face)
         #tabs/Advanced
-        if obj.get("ipaneltab1") == 3: #Advanced
+        elif obj.get("ipaneltab1") == 3: #Advanced
             if obj.get("ipaneltab5") == 0: #DLC
                 dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, True)
-            if obj.get("ipaneltab5") == 1: #Parenting
+            elif obj.get("ipaneltab5") == 1: #Parenting
                 parenting.parenting_UI(self, context, layout, properties.global_rig_baked)
-            if obj.get("ipaneltab5") == 2: #Downloads
+            elif obj.get("ipaneltab5") == 2: #Downloads
                 downloads.downloads_UI(self, context, layout, obj)
-            if obj.get("ipaneltab5") == 3: #Misc
+            elif obj.get("ipaneltab5") == 3: #Misc
                 adv_misc.advanced_misc_UI(self, context, layout, obj)
 
 def menu_function_thing(self, context):
     pcoll = preview_collections["main"]
     my_icon = pcoll["DarthLilo"]
-    self.layout.menu("IceCubeAppendMenu", text = "Ice Cube Rig", icon_value = my_icon.icon_id)
+    self.layout.menu("SCENE_MT_IceCubeAppendMenu", text = "Ice Cube Rig", icon_value = my_icon.icon_id)
 
 class IceCubeAppendMenu(bpy.types.Menu):
         bl_label = "Append Rig"
-        bl_idname = "IceCubeAppendMenu"
+        bl_idname = "SCENE_MT_IceCubeAppendMenu"
         bl_options = bl_options = {'REGISTER', 'UNDO'}
         
         def draw(self, context):
@@ -257,7 +257,7 @@ class IceCubeAppendMenu(bpy.types.Menu):
 
 class ToolsAppendMenu(bpy.types.Panel):
     bl_label = "Append Preset"
-    bl_idname = "ToolsAppendIceCube"
+    bl_idname = "SCENE_PT_ToolsAppendIceCube"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'Tool'

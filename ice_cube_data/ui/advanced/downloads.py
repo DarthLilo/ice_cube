@@ -7,14 +7,15 @@ import pathlib
 from bpy.props import EnumProperty
 
 
-from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,dlc_date,dlc_enum_data
+from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,dlc_date,dlc_enum_data, print_information
 
 from ice_cube_data.utils.file_manage import getFiles
 
 
 import ice_cube
 
-print(ice_cube.dlc_enum_data)
+if print_information:
+    print(ice_cube.dlc_enum_data)
 
 
 #creating backups list
@@ -51,7 +52,8 @@ def downloads_UI(self, context, layout, obj):
             pass
         else:
             os.mkdir(backups_folder)
-            print("Created Backups Folder")
+            if print_information:
+                print("Created Backups Folder")
 
         b = box.row(align=True)
         b.label(text= "Update Manager", icon='FILE_REFRESH')
