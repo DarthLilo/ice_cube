@@ -1,10 +1,10 @@
 bl_info ={
     "name": "Ice Cube",
     "author": "DarhtLilo",
-    "version": (1, 4, 2),
+    "version": (1, 4, 4),
     "blender": (3, 0, 0),
     "location": "View3D > Tool",
-    "description": "A custom python script for Ice Cube! Credit to \"@KJMineImator\" and \"@RealMineAPI\" on twitter for helping me with the code!",
+    "description": "The official python panel for Ice Cube!",
     "tracker_url": "https://discord.gg/3G44QQM",
     "category": "Lilo's Rigs",
 }
