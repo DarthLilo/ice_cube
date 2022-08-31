@@ -222,7 +222,7 @@ class IC_Panel(bpy.types.Panel):
             if obj.get("ipaneltab4") == 0: #Skin
                 skin_material.skin_material_UI(self, context, layout, skin_mat, face)
             if obj.get("ipaneltab4") == 1: #Eyes
-                eye_material.eye_material_UI(self, context, layout, obj, face)
+                eye_material.eye_mat_UI(self, context, face)
             if obj.get("ipaneltab4") == 2: #Misc
                 misc_material.misc_material_UI(self, context, layout, face)
         #tabs/Advanced

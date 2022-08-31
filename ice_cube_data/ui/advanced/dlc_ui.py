@@ -292,8 +292,10 @@ def dlc_menu(self, context, layout, rig_baked, main_menu):
             if obj.get("ipaneltab6") is 1: #PRESETS
                 b.label(text="Generate Preset Pack")
                 b.prop(obj,"generate_thumbnail",text="Generate Thumbnail?")
-                b = box.row(align=True)
-                b.prop(obj, "target_thumbnail_generate", text="Thumbnail")
+                b1 = box.row(align=True)
+                b1.prop(obj, "target_thumbnail_generate", text="Thumbnail")
+                if obj.get("generate_thumbnail") == True:
+                    b1.enabled = False
                 b = box.row(align=True)
                 b.prop(obj, "has_baked_version", text="Has Baked?")
                 b1 = b.row(align=True)

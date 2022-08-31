@@ -55,6 +55,20 @@ def getIndexCustom(strV = "", indexlist = []):
 
         return index
 
+def BlenderVersConvert(version, has_v = False):
+    new_version = []
+    for number in version:
+        new_version.append(str(number))
+
+    new_version = ".".join(new_version)
+
+    if has_v is True:
+        new_version = f"v{new_version}"
+
+
+    return new_version
+
+
 classes = [
            ]
 

@@ -9,7 +9,7 @@ from bpy.props import EnumProperty
 #Custom Functions
 from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info
 
-from ice_cube_data.utils.general_func import GetListIndex, IsVersionUpdated
+from ice_cube_data.utils.general_func import GetListIndex, IsVersionUpdated, BlenderVersConvert
 from ice_cube_data.utils.file_manage import getFiles, ClearDirectory, GetRootFolder
 from ice_cube_data.utils.selectors import isRigSelected
 from ice_cube_data.utils.ui_tools import CustomErrorBox
@@ -465,7 +465,7 @@ class generate_asset_pack(bpy.types.Operator):
             if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "":
                 
                 if obj.has_baked_version is True and os.path.exists(obj.baked_version_filepath) is False:
-                    CustomErrorBox("Please enter a valid thumbnail path!",'Invalid Thumbnail','ERROR')
+                    CustomErrorBox("Please enter a valid baked file path!",'Invalid Thumbnail','ERROR')
                     return{'FINISHED'}
                 
                 if os.path.exists(obj.target_thumbnail_generate) is False and obj.generate_thumbnail is False:
@@ -495,7 +495,7 @@ class generate_asset_pack(bpy.types.Operator):
                 info_json_data = {
                     "rig_name": obj.entry_name_asset,
                 	"base_rig": "Ice Cube",
-                	"base_rig_vers": f"{bl_info['version']}",
+                	"base_rig_vers": BlenderVersConvert(bl_info['version']),
                     "author": obj.asset_author,
                     "rig_version": obj.asset_version,
                 	"has_baked": f"{obj.has_baked_version}"
@@ -559,6 +559,12 @@ class generate_asset_pack(bpy.types.Operator):
                         if area.type == 'VIEW_3D':
                             area.spaces[0].region_3d.view_perspective = 'CAMERA'
                             break
+                    
+                    #setting solid mode
+                    old_shading = bpy.context.space_data.shading.type
+                    bpy.context.space_data.shading.type = 'SOLID'
+
+
 
                     #disabling overlays
                     bpy.context.space_data.overlay.show_overlays = False
@@ -579,6 +585,10 @@ class generate_asset_pack(bpy.types.Operator):
                         scene_thing.render.film_transparent = org_trans_setting
                         scene_thing.render.resolution_x = org_res_x
                         scene_thing.render.resolution_y = org_res_y
+                    
+                    bpy.context.space_data.shading.type = old_shading
+                    
+
             elif obj.asset_pack_name == "":
                 CustomErrorBox("Please enter a name for the pack!",'Invalid Name','ERROR')
                 return{'FINISHED'}

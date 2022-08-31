@@ -1,12 +1,17 @@
 #Libraries
 import bpy
 
+from ice_cube import bl_info
+from ice_cube_data.utils.general_func import BlenderVersConvert
+
+
 def credits_ui_panel(self, context):
     obj = context.object
     layout = self.layout
     box = layout.box()
     b = box.row(align=True)
-    b.label(text= "Ice Cube v1.4.0", icon= 'OUTLINER_OB_ARMATURE')
+    version_text = f"Ice Cube {BlenderVersConvert(bl_info['version'], has_v=True)}"
+    b.label(text= version_text, icon= 'OUTLINER_OB_ARMATURE')
     credit_labels = {
           "Created by DarthLilo": "lilocredits.link",
           "Got a problem with the rig?": "discordserver.link",

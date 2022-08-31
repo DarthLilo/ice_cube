@@ -307,7 +307,7 @@ def download_dlc_func(self, context, dlc_id):
                 #install the new DLC
                 distutils.dir_util.copy_tree(download_folder+"/"+dlc_id_name, dlc_folder)
                 print("Finished Install!")
-                CustomErrorBox("Finished installing DLC! Restart Blender before continuing!","Updated Finished",'INFO')
+                CustomErrorBox("Finished installing DLC!","Updated Finished",'INFO')
             except:
                 print("Error Completing Install.")
                 CustomErrorBox("Error Completing Install.","Updated Cancelled",'ERROR')
