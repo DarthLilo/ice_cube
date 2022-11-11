@@ -1,7 +1,7 @@
 bl_info ={
     "name": "Ice Cube",
     "author": "DarhtLilo",
-    "version": (1, 4, 4),
+    "version": (1, 4, 6),
     "blender": (3, 0, 0),
     "location": "View3D > Tool",
     "description": "The official python panel for Ice Cube!",
