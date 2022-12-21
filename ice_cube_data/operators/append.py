@@ -80,6 +80,8 @@ def append_preset_func(self, context, rig_baked):
             filename  = obj
             bpy.ops.wm.append(filepath=filepath,filename=filename,directory=directory,link=False,active_collection=True)
             CustomErrorBox("Appended \""+thumbnailnopng+"\" from \""+blendfile_name+"\" in \""+selected_file+"\"", "Operation Completed", 'CHECKMARK')
+        except RuntimeError:
+            CustomErrorBox("Please delete any \".blend1\" files from the directory!", "Directory Error", 'ERROR')
         except:
             CustomErrorBox("An unknown error has occured.", "Unknown Error", 'ERROR')
 

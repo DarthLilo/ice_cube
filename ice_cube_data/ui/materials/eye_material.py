@@ -45,6 +45,8 @@ def eye_mat_UI(self, context, face):
     b.prop(obj, "toggleemission", icon = "LAYER_USED", text = "Toggle Emission")
     if obj.get("toggleemission") == True:
         b = box1.row(align=True)
+        b.prop(obj, "emissioneye", text = "Emission Eye",expand=True)
+        b = box1.row(align=True)
         b.prop(face.material_slots[1].material.node_tree.nodes['eyenode'].inputs[22], 'default_value', text="Real Light", slider=True)
         b.prop(face.material_slots[1].material.node_tree.nodes['eyenode'].inputs[23], 'default_value', text="Texture Light", slider=True)
 
@@ -58,6 +60,7 @@ def eye_mat_UI(self, context, face):
     if obj.get("togglepupil") == True:
         b = box1.row(align=True)
         b.prop(face.material_slots[1].material.node_tree.nodes['eyenode'].inputs[11], 'default_value', text="", slider=True)
+        b.prop(face.material_slots[1].material.node_tree.nodes['eyenode'].inputs[26], 'default_value', text="", slider=True)
         b = box1.row(align=True)
         b.prop(face.material_slots[1].material.node_tree.nodes['eyenode'].inputs[10], 'default_value', text="Pupil Size")
         b = box1.row(align=True)

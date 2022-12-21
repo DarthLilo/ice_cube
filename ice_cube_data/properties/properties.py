@@ -119,9 +119,6 @@ name="Toggle 1", description="Toggle one, on by default.", default=True)
 bpy.types.Object.toggle_2 = BoolProperty(
 name="Toggle 2", description="Toggle two, off by default.", default=False)
 
-bpy.types.Object.squaremouth = BoolProperty(
-name="squaremouth", description="Changes the mouth transforms to it more rounded on the edges.", default=False)
-
 bpy.types.Object.mouthrotate = BoolProperty(
 name="mouthrotate", description="Rotates the mouthe edges based on position", default=False)
 
@@ -166,6 +163,12 @@ bpy.types.Object.generate_thumbnail = BoolProperty(
 
 bpy.types.Object.has_baked_version = BoolProperty(
     name = "has_baked_version", description="Decides whether to put True or False in the baked part of info.json",default=False)
+
+bpy.types.Object.thumbfill_L = BoolProperty(
+    name = "thumbfill_L", description="Toggles the thumbfill on the left hand",default=True)
+
+bpy.types.Object.thumbfill_R = BoolProperty(
+    name = "thumbfill_R", description="Toggles the thumbfill on the right hand",default=True)
 
 
 global_rig_baked = False
@@ -234,7 +237,10 @@ bpy.types.Object.bulge_leg_l = FloatProperty(
 name="bulge_leg_l", description="Left Leg Bulge", default=0, min=0, max=1)
 
 bpy.types.Object.eyebrowheight = FloatProperty(
-name="eyebrowheight", description="Changes the size of the eyebrows", default=0, min=-.5 ,max=1)
+name="eyebrowheight", description="Changes the height of the eyebrows", default=0, min=-.5 ,max=1)
+
+bpy.types.Object.eyebrowlength = FloatProperty(
+name="eyebrowlength", description="Changes the length of the eyebrows", default=0, min=-1 ,max=1)
 
 bpy.types.Object.eyebrowtaper1 = FloatProperty(
 name="eyebrowtaper1", description="Changes the taper of the eyebrows", default=0, min=-.5 ,max=1)
@@ -268,9 +274,6 @@ bpy.types.Object.breastweight = FloatProperty(
 
 bpy.types.Object.bodytopround = FloatProperty(
     name="bodytopround", description="Rounded Body Top", default=0, min=0, max=2)
-
-bpy.types.Object.breath = FloatProperty(
-    name="breath", description="Deforms the body to look like its breathing", default=0, min=0, max=2)
 
 #Enum Prop 
 
@@ -370,6 +373,26 @@ bpy.types.Object.dlc_menu_switcher = EnumProperty(
              ('two', 'Download', 'Download New Asset'),
              ('three', 'Generate', 'Generate Asset Pack')
              ])
+
+bpy.types.Object.emissioneye = EnumProperty(
+    name = "emissioneye",
+    default= 'one',
+    items = [
+             ('one', 'Both', 'Both'),
+             ('two', 'Right', 'Right Eye'),
+             ('three', 'Left', 'Left Eye')
+             ]
+)
+
+bpy.types.Object.mouthtypes = EnumProperty(
+    name = "mouthtypes",
+    default= 'one',
+    items = [
+             ('one', 'Ice Cube', 'Ice Cube'),
+             ('two', 'Mine-Imator', 'Mine-Imator'),
+             ('three', 'Square', 'Square')
+             ]
+)
 
 #string properties
 bpy.types.Scene.minecraft_username = StringProperty(name="username", description="username slot", default="")

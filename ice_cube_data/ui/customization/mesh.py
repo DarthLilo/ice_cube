@@ -100,32 +100,24 @@ def custom_mesh_UI(self, context, layout, obj):
         if obj.get("lowerbodywidth") == 0:
             b.prop(obj, "lowerbodywidth", icon = "RIGHTARROW", text = "Normal")
         else:
-            if obj.get("lowerbodywidth") == -1:
-                b.prop(obj, "lowerbodywidth", icon = "RIGHTARROW", text = "Wider")
+            if obj.get("lowerbodywidth") < 0:
+                b.prop(obj, "lowerbodywidth", text = "Thinner")
+            elif obj.get("lowerbodywidth") > 0:
+                b.prop(obj, "lowerbodywidth", text = "Wider")
             else:
-                b.prop(obj, "lowerbodywidth", icon = "DOWNARROW_HLT", text = "Thinner")
+                b.prop(obj, "lowerbodywidth", text = "Normal")
         b.prop(obj, "bodytopround", icon = "RIGHTARROW", text = "Rounded Body Top")
-        b = box1.row(align=True)
-        b.prop(obj, "breath", text = "Breath Slider",slider=True)
     b = box1.row(align=True)
     if obj.get("eyebrowdeform") == 0:
         b.prop(obj, "eyebrowdeform", icon = "RIGHTARROW", text = "Eyebrow Deforms")
     else:
         b.prop(obj, "eyebrowdeform", icon = "DOWNARROW_HLT", text = "Eyebrow Deforms")
         b = box1.row(align=True)
-        if obj.get("eyebrowheight") == 0:
-            b.prop(obj, "eyebrowheight", icon = "RIGHTARROW", text = "Eyebrow Height")
-        else:
-            b.prop(obj, "eyebrowheight", icon = "DOWNARROW_HLT", text = "Eyebrow Height")
+        b.prop(obj, "eyebrowheight", text = "Eyebrow Height")
+        b.prop(obj, "eyebrowlength", text = "Eyebrow Length")
         b = box1.row(align=True)
-        if obj.get("eyebrowtaper1") == 0:
-            b.prop(obj, "eyebrowtaper1", icon = "RIGHTARROW", text = "Taper 1")
-        else:
-            b.prop(obj, "eyebrowtaper1", icon = "DOWNARROW_HLT", text = "Taper 1")
-        if obj.get("eyebrowtaper2") == 0:
-            b.prop(obj, "eyebrowtaper2", icon = "RIGHTARROW", text = "Taper 2")
-        else:
-            b.prop(obj, "eyebrowtaper2", icon = "DOWNARROW_HLT", text = "Taper 2")
+        b.prop(obj, "eyebrowtaper1", text = "Taper 1")
+        b.prop(obj, "eyebrowtaper2", text = "Taper 2")
     box1 = box.box()
     box1.label(text= "Face", icon= 'CAMERA_STEREO')
     b = box1.row(align=True)

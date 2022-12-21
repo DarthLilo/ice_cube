@@ -63,7 +63,7 @@ def bone_layers_UI(self, context, layout):
     b = box1.row(align=True)
     b.prop(layers, 'layers', index=6, toggle=True, text='Dynamic Hair')
     b = box1.row(align=True)
-    b.prop(layers, 'layers', index=22, toggle=True, text='Flip Bone')
+    b.prop(layers, 'layers', index=22, toggle=True, text='Extras')
     b = box1.row(align=True)
     b.prop(layers, 'layers', index=26, toggle=True, text='Footroll')
     b = box1.row(align=True)
