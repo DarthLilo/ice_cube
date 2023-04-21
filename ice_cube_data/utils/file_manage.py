@@ -27,6 +27,18 @@ def ClearDirectory(dir = ""): #completely clears a folder
         filepath = os.path.normpath(filepath)
         shutil.rmtree(filepath)
 
+def ClearDirectoryOfFiles(dir = ""): #completely clears a folder
+    for folder in os.listdir(dir):
+        filepath = os.path.join(dir, folder)
+        filepath = os.path.normpath(filepath)
+        try:
+            if os.path.isfile(filepath) or os.path.islink(filepath):
+                os.unlink(filepath)
+            elif os.path.isdir(filepath):
+                shutil.rmtree(filepath)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (filepath, e))
+
 def GetRootFolder(path, folder_up): #Get a str to the root folder
     path = os.path.normpath(os.path.realpath(__file__))
     if path.__contains__("\\"):

@@ -31,12 +31,15 @@ def append_preset_func(self, context, rig_baked):
                 newDir = os.path.join(asset_directory, dir);
 
                 for file in os.listdir(newDir):
-                
-                    newFile = os.path.join(newDir, file)
-                    if (file.__contains__('BAKED')):
-                        baked[dir] = newFile;
-                    elif (file.__contains__('NORMAL')):
-                        normals[dir] = newFile;
+
+                    if file.endswith(".blend1"):
+                        pass
+                    else:
+                        newFile = os.path.join(newDir, file)
+                        if (file.__contains__('BAKED')):
+                            baked[dir] = newFile;
+                        elif (file.__contains__('NORMAL')):
+                            normals[dir] = newFile;
         except:
             CustomErrorBox(message="Unknown Error", title="Append Exception", icon='ERROR')
         
@@ -71,6 +74,8 @@ def append_preset_func(self, context, rig_baked):
         blendfile_name = thumbnailnopng+isBaked+".blend"
         section = "Collection"
         obj = thumbnailnopng
+
+        print(blendfile)
 
 
         #Attemps to append it based on the previously established variables, if not, draw a custom error box

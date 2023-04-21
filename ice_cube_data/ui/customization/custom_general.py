@@ -45,6 +45,12 @@ def customization_general_UI(self, context, layout, obj):
         b.prop(obj, "dynamichair", icon = "LAYER_USED", text = "Dynamic Hair")
     else:
         b.prop(obj, "dynamichair", icon = "LAYER_ACTIVE", text = "Dynamic Hair")
+    
+    b = box.row(align=True)
+    b.prop(obj,"eye_influence",text="Eye Influence",slider=True)
+    b.prop(obj,"eyebrow_influence",text="Eyebrow Influence",slider=True)
+    b = box.row(align=True)
+    b.prop(obj,"mouth_influence",text="Mouth Influence",slider=True)
 
 classes = [
            ]

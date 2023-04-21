@@ -6,7 +6,8 @@
             "dlc_date" : "2022-6-3",
             "author" : "DarthLilo",
             "dlc_enum_data" : ["lilo_preset","Lilo Preset","A preset of DarthLilo"],
-            "download_link" : "https://www.dropbox.com/s/hz7i7qd1n501ono/lilo_preset.zip?dl=1"
+            "download_link" : "https://www.dropbox.com/s/hz7i7qd1n501ono/lilo_preset.zip?dl=1",
+            "thumbnail" : "https://cdn.discordapp.com/attachments/1096005360797634620/1096005845155840050/1_lilo_v48.png"
         },
         {
             "dlc_id" : "beta_tester_dlc",
@@ -15,7 +16,8 @@
             "dlc_date" : "2022-7-22",
             "author" : "IC Beta Testers",
             "dlc_enum_data" : ["beta_tester_dlc","Beta DLC","A preset pack containing some members of the beta testing team"],
-            "download_link" : "https://www.dropbox.com/s/jz8rg4jrb810g5z/beta_tester_dlc.zip?dl=1"
+            "download_link" : "https://www.dropbox.com/s/jz8rg4jrb810g5z/beta_tester_dlc.zip?dl=1",
+            "thumbnail" : "https://cdn.discordapp.com/attachments/1096005360797634620/1096006492244680704/beta_team.png"
         },
         {
             "dlc_id" : "3D_Armor",
@@ -24,6 +26,7 @@
             "dlc_date" : "2022-6-3",
             "author" : "DarthLilo",
             "dlc_enum_data" : ["3D_Armor","3D Armor","An asset pack containing 3D Armor meshes"],
-            "download_link" : "https://www.dropbox.com/s/9yxicz317h9607o/3D_Armor.zip?dl=1"
+            "download_link" : "https://www.dropbox.com/s/9yxicz317h9607o/3D_Armor.zip?dl=1",
+            "thumbnail" : "https://cdn.discordapp.com/attachments/1096005360797634620/1096006581679816704/generic_2_chestplate.png"
         }
     ]

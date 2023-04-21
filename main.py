@@ -5,18 +5,20 @@ import bpy.utils.previews
 from bpy.props import EnumProperty
 from bpy.types import WindowManager
 from sys import platform
+import json
 
-from ice_cube import root_folder, dlc_id,dlc_type,dlc_author
+from ice_cube import root_folder, dlc_id,dlc_type,dlc_author, settings_file, cur_date, valid_dlcs
 
 #Custom Files
 from ice_cube_data.properties import properties
-from ice_cube_data.operators import main_operators
+from ice_cube_data.operators import main_operators, os_management
+from ice_cube_data.operators.web import check_for_updates_func, check_for_updates_auto
 from ice_cube_data.systems import inventory_system, skin_downloader
 
 
 #Custom Functions
 from ice_cube_data.utils.selectors import isRigSelected, main_face
-from ice_cube_data.utils.file_manage import getFiles
+from ice_cube_data.utils.file_manage import getFiles, open_json
 from ice_cube_data.utils.general_func import GetListIndex
 
 #UI Panels
@@ -26,7 +28,7 @@ from ice_cube_data.ui.customization import custom_general, mesh, misc
 from ice_cube_data.ui.materials import skin_material, eye_material, misc_material
 from ice_cube_data.ui.advanced import dlc_ui, parenting, downloads, adv_misc
 
-
+import ice_cube
 
 #File Variables
 rig_id = "ice_cube"
@@ -162,6 +164,56 @@ def skins_menu(self, context):
     pcoll.skins_folder_dir = directory
     return pcoll.skins_folder
 
+def dlc_img_cache(self, context):
+    """dlc img cache thing"""
+    enum_items = []
+
+    if context is None:
+        return enum_items
+
+    filepath = root_folder+"/cache"
+
+    wm = context.window_manager
+    directory = filepath
+
+    pcoll = preview_collections["main"]
+
+    if directory == pcoll.dlc_img_cache_folder:
+        return pcoll.dlc_img_cache_folder
+    
+    obj=context.object
+    dlc_storage = obj.ic_dlc_i
+    dlc_index = obj.ic_dlc_active_index
+    dlc_data_list = []
+
+    try:
+        if directory and os.path.exists(directory):
+            image_paths = []
+            for img in os.listdir(directory):
+
+                img_name = str(img).split(".png")[0]
+                for i in dlc_storage:
+                    dlc_data_list.append(str(i.name).split("|")[3])
+                selected_dlc = dlc_data_list[dlc_index]
+                cur_dlc_data = valid_dlcs[selected_dlc]['dlc_id']
+                if img_name == cur_dlc_data:
+                    image_paths.append(img)
+
+            for i, name in enumerate(image_paths):
+                filepath = os.path.join(directory, name)
+                icon = pcoll.get(name)
+                if not icon:
+                    thumb = pcoll.load(name, filepath, 'IMAGE')
+                else:
+                    thumb = pcoll[name]
+                enum_items.append((name, name, "", thumb.icon_id, i))
+    except:
+        pass
+
+    pcoll.dlc_img_cache_folder = enum_items
+    pcoll.dlc_img_cache_folder_dir = directory
+    return pcoll.dlc_img_cache_folder
+
 class IC_Panel(bpy.types.Panel):
     bl_label = "Ice Cube"
     bl_idname = "ice_cube_panel"
@@ -183,6 +235,11 @@ class IC_Panel(bpy.types.Panel):
         obj = context.object
         row = layout.row()
 
+        if ice_cube.has_checked_for_updates == False:
+            check_for_updates_auto()
+        
+        
+
         #custom variables
         rig = isRigSelected(context)
         face = main_face(rig)
@@ -190,7 +247,7 @@ class IC_Panel(bpy.types.Panel):
         skin_mat = skin_nodes.nodes['Skin Tex']
 
         #Draw the panel
-        credits_info.credits_ui_panel(self,context)
+        credits_info.credits_ui_panel(self,context,preview_collections)
 
         #tab switcher
         box = layout.box() #UNCOMMENTING WILL DRAW BOX
@@ -206,7 +263,7 @@ class IC_Panel(bpy.types.Panel):
         #tabs/Main
         if obj.get("ipaneltab1") == 0: #Main
             if obj.get("ipaneltab2") == 0: #Bone Layers
-                bone_layers.bone_layers_UI(self, context, layout)
+                bone_layers.bone_layers_UI(self, context, layout, obj)
             if obj.get("ipaneltab2") == 1: #General Settings
                 general_settings.general_settings_main_UI(self, context, layout, obj, preview_collections)
         #tabs/Customization
@@ -237,23 +294,10 @@ class IC_Panel(bpy.types.Panel):
                 adv_misc.advanced_misc_UI(self, context, layout, obj)
 
 def menu_function_thing(self, context):
+    layout = self.layout
     pcoll = preview_collections["main"]
-    my_icon = pcoll["DarthLilo"]
-    self.layout.menu("IceCubeAppendMenu", text = "Ice Cube Rig", icon_value = my_icon.icon_id)
-
-class IceCubeAppendMenu(bpy.types.Menu):
-        bl_label = "Append Rig"
-        bl_idname = "IceCubeAppendMenu"
-        bl_options = bl_options = {'REGISTER', 'UNDO'}
-        
-        def draw(self, context):
-        
-            layout = self.layout
-            
-            pcoll = preview_collections["main"]
-            
-            my_icon = pcoll["Steve"]
-            layout.operator("append.defaultrig", icon_value = my_icon.icon_id)
+    my_icon = pcoll["Ice_Cube"]
+    layout.operator("append.defaultrig", icon_value = my_icon.icon_id)
 
 class ToolsAppendMenu(bpy.types.Panel):
     bl_label = "Append Preset"
@@ -275,8 +319,7 @@ class ToolsAppendMenu(bpy.types.Panel):
 #Register
 
 classes = [IC_Panel,
-           ToolsAppendMenu,
-           IceCubeAppendMenu
+           ToolsAppendMenu
            ]
            
 modules = (
@@ -291,6 +334,9 @@ def register():
 
     WindowManager.skins_folder = EnumProperty(
         items=skins_menu)
+
+    WindowManager.dlc_img_cache_folder = EnumProperty(
+        items=dlc_img_cache)
     
     WindowManager.inventory_preview = EnumProperty(
        items=inventory_menu)
@@ -301,6 +347,7 @@ def register():
     pcoll.load("DarthLilo", os.path.join(my_icons_dir, "DarthLilo.png"), 'IMAGE')
     pcoll.load("Alex", os.path.join(my_icons_dir, "Alex.png"), 'IMAGE')
     pcoll.load("Steve", os.path.join(my_icons_dir, "Steve.png"), 'IMAGE')
+    pcoll.load("Ice_Cube", os.path.join(my_icons_dir, "ice_cube.png"), 'IMAGE')
     
     
     
@@ -309,6 +356,9 @@ def register():
 
     pcoll.skins_folder = ""
     pcoll.skins_folder= ()
+
+    pcoll.dlc_img_cache_folder = ""
+    pcoll.dlc_img_cache_folder= ()
 
     pcoll.inventory_preview = ""
     pcoll.inventory_preview = ()

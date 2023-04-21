@@ -1,5 +1,6 @@
 import webbrowser
 import bpy
+import urllib.request
 
 def CustomLink(url = ""): #Opens a URL in the default browser of the user
     http = ["http://"]
@@ -21,6 +22,17 @@ def CustomLink(url = ""): #Opens a URL in the default browser of the user
     
     
     webbrowser.open_new(http_str + url)
+
+
+
+def ICDownloadImage(url, filepath, filename):
+
+    full_path = filepath + filename + '.png'
+    opener = urllib.request.build_opener()
+    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+    urllib.request.install_opener(opener)
+    urllib.request.urlretrieve(url, full_path)
+    
 
 classes = [
            ]

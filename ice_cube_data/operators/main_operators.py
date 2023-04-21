@@ -3,23 +3,26 @@ import bpy
 import os
 import sys
 import shutil
-from bpy.props import EnumProperty
+from bpy.props import EnumProperty, CollectionProperty
 
 
 #Custom Functions
-from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info
+from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info,valid_dlcs
 
-from ice_cube_data.utils.general_func import GetListIndex, IsVersionUpdated, BlenderVersConvert
+from ice_cube_data.utils.general_func import GetListIndex, IsVersionUpdated, BlenderVersConvert, IC_FKIK_Switch
 from ice_cube_data.utils.file_manage import getFiles, ClearDirectory, GetRootFolder
 from ice_cube_data.utils.selectors import isRigSelected
 from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.web_tools import CustomLink
+from ice_cube_data.operators import web
+
+from . import os_management
 
 #Operator Functions
 from .append import append_preset_func, append_default_rig, append_emotion_line_func
 from .parenting import parent_left_arm, parent_right_arm, parent_right_leg, parent_left_leg, parent_body_func, parent_head_func
-from .os_management import open_user_packs, install_update_func, create_backup_func, load_backup_func, delete_backup_func, download_dlc_func, export_settings_data, import_settings_data, reset_all_settings_func
-from .web import check_for_updates_func, refresh_dlc_func
+from .os_management import open_user_packs, install_update_func, create_backup_func, refresh_backups_func, load_backup_func, delete_backup_func, export_settings_data, import_settings_data, reset_all_settings_func, IC_download_dlc
+from .web import check_for_updates_func, refresh_dlc_func, IC_refresh_dlc
 
 
 #Custom Libraries
@@ -112,7 +115,7 @@ class append_preset(bpy.types.Operator):
 class append_defaultrig(bpy.types.Operator): #Appends the default version of the rig
     """Appends the default rig into your scene"""
     bl_idname = "append.defaultrig"
-    bl_label = "Ice Cube [DEFAULT]"
+    bl_label = "Ice Cube Rig"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -179,15 +182,15 @@ class parent_head(bpy.types.Operator):
         parent_head_func(self, context)
         return{'FINISHED'}
     
-class lilocredits(bpy.types.Operator):
-    """Opens a link to my credits page"""
-    bl_idname = "lilocredits.link"
-    bl_label = "About the Creator"
+class rigpage(bpy.types.Operator):
+    """Opens a link to the Ice Cube page"""
+    bl_idname = "rigpage.link"
+    bl_label = "Ice Cube Carrd"
     bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
         
-        CustomLink("https://darthlilo.carrd.co/")
+        CustomLink("https://ice-cube-rig.carrd.co/")
         
         return {'FINISHED'}
 
@@ -242,7 +245,7 @@ class open_wiki(bpy.types.Operator):
 class open_custom_presets(bpy.types.Operator):
     """Opens the DLC folder"""
     bl_idname = "custom_presets.open"
-    bl_label = "Open DLC Folder"
+    bl_label = "DLC Folder"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -261,12 +264,12 @@ class append_emotion_line(bpy.types.Operator):
 
 class check_for_updates(bpy.types.Operator):
     """Checks the Ice Cube GitHub for updates"""
-    bl_idname = "check.updates"
+    bl_idname = "ice_cube_check.updates"
     bl_label = "Check for updates"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        ice_cube.update_available = check_for_updates_func(self, context)
+        ice_cube.update_available = check_for_updates_func()
         return{'FINISHED'}
 
 class install_update(bpy.types.Operator):
@@ -322,6 +325,16 @@ class delete_backup(bpy.types.Operator):
         delete_backup_func(self, context)
         return{'FINISHED'}
 
+class refresh_backups(bpy.types.Operator):
+    """Refreshes the backups list"""
+    bl_idname = "refresh.backup"
+    bl_label = "Refresh Backup"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        refresh_backups_func(self, context)
+        return{'FINISHED'}
+
 class refresh_dlc(bpy.types.Operator):
     """Checks the Ice Cube GitHub for new DLC"""
     bl_idname = "refresh.dlc"
@@ -336,15 +349,26 @@ class refresh_dlc(bpy.types.Operator):
         exec(open(downloads_path).read())
         
         return{'FINISHED'}
+    
+class grab_dlc(bpy.types.Operator):
+    """Checks the Ice Cube GitHub for new DLC"""
+    bl_idname = "refresh_grab.dlc"
+    bl_label = "Grabs the latest DLC"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        IC_refresh_dlc(self, context)
+        
+        return{'FINISHED'}
 
 class download_dlc(bpy.types.Operator):
     """Downloads the selected DLC from GitHub"""
-    bl_idname = "download.dlc"
+    bl_idname = "download_selected.dlc"
     bl_label = "Download DLC"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        download_dlc_func(self, context, dlc_id)
+        IC_download_dlc(self, context, valid_dlcs)
         return{'FINISHED'}
 
 class export_settings_data_class(bpy.types.Operator):
@@ -607,6 +631,152 @@ class generate_asset_pack(bpy.types.Operator):
 
         return{'FINISHED'}
 
+
+class r_arm_ik_to_fk(bpy.types.Operator):
+    """TESTING"""
+    bl_idname = "fk_arm_r.snapping"
+    bl_label = "testing operator thing"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self,context):
+        IC_FKIK_Switch(context,"IK_TO_FK","ARM_R")
+        return{'FINISHED'}
+
+class l_arm_ik_to_fk(bpy.types.Operator):
+    """TESTING"""
+    bl_idname = "fk_arm_l.snapping"
+    bl_label = "testing operator thing"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self,context):
+        IC_FKIK_Switch(context,"IK_TO_FK","ARM_L")
+        return{'FINISHED'}
+
+class r_arm_fk_to_ik(bpy.types.Operator):
+    """TESTING"""
+    bl_idname = "ik_arm_r.snapping"
+    bl_label = "testing operator thing"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self,context):
+        IC_FKIK_Switch(context,"FK_TO_IK","ARM_R")
+        return{'FINISHED'}
+
+class l_arm_fk_to_ik(bpy.types.Operator):
+    """TESTING"""
+    bl_idname = "ik_arm_l.snapping"
+    bl_label = "testing operator thing"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self,context):
+        IC_FKIK_Switch(context,"FK_TO_IK","ARM_L")
+        return{'FINISHED'}
+
+class r_leg_ik_to_fk(bpy.types.Operator):
+    """TESTING"""
+    bl_idname = "fk_leg_r.snapping"
+    bl_label = "testing operator thing"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self,context):
+        IC_FKIK_Switch(context,"IK_TO_FK","LEG_R")
+        return{'FINISHED'}
+
+class l_leg_ik_to_fk(bpy.types.Operator):
+    """TESTING"""
+    bl_idname = "fk_leg_l.snapping"
+    bl_label = "testing operator thing"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self,context):
+        IC_FKIK_Switch(context,"IK_TO_FK","LEG_L")
+
+        return{'FINISHED'}
+
+class r_leg_fk_to_ik(bpy.types.Operator):
+    """TESTING"""
+    bl_idname = "ik_leg_r.snapping"
+    bl_label = "testing operator thing"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self,context):
+        IC_FKIK_Switch(context,"FK_TO_IK","LEG_R")
+        return{'FINISHED'}
+
+class l_leg_fk_to_ik(bpy.types.Operator):
+    """TESTING"""
+    bl_idname = "ik_leg_l.snapping"
+    bl_label = "testing operator thing"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self,context):
+        IC_FKIK_Switch(context,"FK_TO_IK","LEG_L")
+        return{'FINISHED'}
+
+#Backups Classes
+
+#Collection Classes
+
+class ICBackupsListClass(bpy.types.PropertyGroup):
+    value: bpy.props.FloatProperty(
+        name="value",
+        description="value",
+        default=1.0,
+        min=0.0, max=1,
+        soft_min=0.0, soft_max=1.0,
+    )
+
+class ICDLC_ListClass(bpy.types.PropertyGroup):
+    value: bpy.props.FloatProperty(
+        name="value",
+        description="value",
+        default=1.0,
+        min=0.0, max=1,
+        soft_min=0.0, soft_max=1.0,
+    )
+
+#UI Classes
+
+
+
+class IC_backups_list_i(bpy.types.UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        
+        if self.layout_type in {'DEFAULT', 'COMPACT'}:
+
+            col = layout.column()
+            colrow = col.row()
+            colrow.label(
+                text=item.name,
+                icon='FILE_BACKUP',
+            )
+            colrow.label(
+                text=f"Created: [{os_management.backup_dates[item.name]}]",
+            )
+        elif self.layout_type in {'GRID'}:
+            layout.alignment = 'CENTER'
+            layout.label(text="", icon_value=icon)
+
+
+class IC_DLC_available_list_i(bpy.types.UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        
+        if self.layout_type in {'DEFAULT', 'COMPACT'}:
+            split_name = str(item.name).split("|")
+            col = layout.column()
+            colrow = col.row()
+            colrow.label(
+                text=split_name[0],
+                icon=split_name[1],
+            )
+            colrow.label(
+                text=f"Uploaded: [{split_name[2]}]",
+            )
+
+        elif self.layout_type in {'GRID'}:
+            layout.alignment = 'CENTER'
+            layout.label(text="", icon_value=icon)
+
 classes = [
     refresh_rigs_list,
     rig_baked_class,
@@ -618,7 +788,7 @@ classes = [
     parent_leftleg,
     parent_body,
     parent_head,
-    lilocredits,
+    rigpage,
     discord_link,
     download_template_1,
     download_template_2,
@@ -629,20 +799,41 @@ classes = [
     install_update,
     open_update_page,
     create_backup,
+    refresh_backups,
     load_backup,
     delete_backup,
     refresh_dlc,
+    grab_dlc,
     download_dlc,
     export_settings_data_class,
     import_settings_data_class,
     update_backups_list,
     reset_all_settings,
     generate_asset_pack,
-           ]
+    r_arm_ik_to_fk,
+    l_arm_ik_to_fk,
+    r_arm_fk_to_ik,
+    l_arm_fk_to_ik,
+    r_leg_ik_to_fk,
+    l_leg_ik_to_fk,
+    r_leg_fk_to_ik,
+    l_leg_fk_to_ik,
+    IC_backups_list_i,
+    IC_DLC_available_list_i,
+    ICBackupsListClass,
+    ICDLC_ListClass,
+    
+]
 
 def register():
+
     for cls in classes:
         bpy.utils.register_class(cls)
+
+    bpy.types.Object.ic_backups_i = bpy.props.CollectionProperty(type=ICBackupsListClass)
+    bpy.types.Object.ic_dlc_i = bpy.props.CollectionProperty(type=ICDLC_ListClass)
+    bpy.types.Object.ic_backups_active_index = bpy.props.IntProperty(name="IC Backups List Active Item Index")
+    bpy.types.Object.ic_dlc_active_index = bpy.props.IntProperty(name="IC DLC List Active Item Index")
         
 def unregister():
     for cls in classes:

@@ -10,6 +10,13 @@ def CustomErrorBox(message = "", title = "Custom Error Box", icon = 'INFO'): #Dr
     
     bpy.context.window_manager.popup_menu(draw, title = title, icon = icon)
 
+def button_toggle(obj,space,name):
+    if(getattr(obj, name, True)):
+        space.prop(obj, name, toggle=True, text="", icon="CHECKBOX_HLT")
+    else:
+        space.prop(obj, name, toggle=True, text="", icon="CHECKBOX_DEHLT")
+    return getattr(obj, name, True)
+
 classes = [
            ]
 

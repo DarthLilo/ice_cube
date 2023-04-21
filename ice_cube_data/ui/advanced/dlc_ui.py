@@ -9,6 +9,7 @@ from ice_cube_data.systems import inventory_system
 
 from ice_cube_data.utils.general_func import GetListIndex
 from ice_cube_data.utils.file_manage import getFiles
+from ice_cube_data.utils.selectors import isRigSelected
 
 def dlc_menu(self, context, layout, rig_baked, main_menu):
     scene = context.scene
@@ -217,57 +218,17 @@ def dlc_menu(self, context, layout, rig_baked, main_menu):
                 b.label(text="Has \"BAKED\" version?: " + json_rig_baked)
 
         if obj.get("dlc_menu_switcher") is 1: #DOWNLOAD MENU
-            dlc_folder_preset = root_folder+"/ice_cube_data/internal_files/user_packs/rigs"
-            dlc_folder_asset = root_folder+"/ice_cube_data/internal_files/user_packs/inventory"
-
             box = layout.box()
             b = box.row(align=True)
+            rig = isRigSelected(context)
             b.label(text = "DLC Manager",icon='IMPORT')
             b = box.row(align=True)
-
-            b.prop(obj,"dlc_list",text="")
-            b.operator("download.dlc", text="", icon= 'IMPORT')
-            b.operator("refresh.dlc", text="", icon= 'FILE_REFRESH')
+            b.template_icon_view(wm, "dlc_img_cache_folder")
             b = box.row(align=True)
-
-            #start of box
-            box2 = b.box()
-            b1 = box2.row(align=True)
-
-            b1.label(text="Type:", icon ='FILE_BACKUP')
-            b1.label(text="Author:")
-            b1.label(text="Date:")
-            b1 = box2.row(align=True)
-            try:
-                selected_dlc = getattr(obj,"dlc_list")
-                dlc_number = GetListIndex(str(selected_dlc), dlc_id)
-
-                b1.label(text=f"{dlc_type[dlc_number]}", icon ='FILE_BACKUP')
-                b1.label(text=f"{dlc_author[dlc_number]}")
-                b1.label(text=f"{dlc_date[dlc_number]}")
-                b1 = box2.row(align=True)
-            except:
-                b1.label(text="REFRESH")
-                b1 = box2.row(align=True)
-
-            b = box.row(align=True)
-            b.label(text = "Installed DLC:")
-            b = box.row(align=True)
-            #start of box
-            box2 = b.box()
-            b1 = box2.row(align=True)
-            dlc_preset_scan = os.listdir(dlc_folder_preset)
-            dlc_asset_scan = os.listdir(dlc_folder_asset)
-            if len(dlc_preset_scan) + len(dlc_asset_scan) == 0:
-                b1 = box2.row(align=True)
-                b1.label(text = "NO DLC FOUND", icon = 'FILE_BACKUP')
-            else:
-                for dlc in getFiles(dlc_folder_asset):
-                    b1 = box2.row(align=True)
-                    b1.label(text = dlc, icon = 'FILE_BACKUP')
-                for dlc in getFiles(dlc_folder_preset):
-                    b1 = box2.row(align=True)
-                    b1.label(text = dlc, icon = 'FILE_BACKUP')
+            b.template_list("IC_DLC_available_list_i", "", rig, "ic_dlc_i", rig, "ic_dlc_active_index")
+            colb = b.column()
+            colb.operator("refresh_grab.dlc", text="", icon='FILE_REFRESH')
+            colb.operator("download_selected.dlc", text="", icon='IMPORT')
 
         if obj.get("dlc_menu_switcher") is 2: #GENERATE MENU
             b.prop(obj,"ipaneltab6",text="")

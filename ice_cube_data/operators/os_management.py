@@ -21,6 +21,8 @@ properties_to_export = ["r_arm_ik","l_arm_ik","r_leg_ik","l_leg_ik","ankle_r","a
     "squish_leg_l","squish_body","squish_head","breastshape","jaw_strength","bevelmouthstrength","leg_taper_strength","hip","upperbodywidth","lowerbodywidth","bulge_arm_r","bulge_arm_l","bulge_leg_r","bulge_leg_l","eyebrowheight","eyebrowtaper1","eyebrowtaper2","leg_taper_strength2","armtaper","bodybulge","eyedepth","mouthdepth",
     "innermouthdepth","breastsize","breastweight","bodytopround","breath","armtype_enum","bendstyle","arm_ik_parent_r","arm_ik_parent_l"]
 
+backup_dates = {}
+
 def open_user_packs(self, context):
     #addon location
     #opens a popup if you're using windows
@@ -137,6 +139,7 @@ def create_backup_func(self, context):
     folders_nopath = []
 
     backup_name = obj.backup_name
+
     #check for a folder in the backups folder with the name entered, if none, create it.
     if obj.get("backup_name"):
         if obj.get("backup_name") == "":
@@ -203,29 +206,53 @@ def create_backup_func(self, context):
     except:
         CustomErrorBox(f"An Error Has Occured: [{backup_name}]", "Unknown Error", 'ERROR')
     
-    downloads_path = f"{root_folder}/ice_cube_data/ui/advanced/downloads.py"
-    exec(open(downloads_path).read())
+    refresh_backups_func(self,context)
 
     return{'FINISHED'}
+
+def refresh_backups_func(self, context):
+
+    obj = context.object
+    virtual_ice_cube = root_folder+""
+    virtual_ice_cube = os.path.normpath(virtual_ice_cube)
+    backups_folder = root_folder+"/backups"
+    backup_folder_scan = os.listdir(backups_folder)
+
+    #test = obj.ic_backups_i.add()
+
+    obj.ic_backups_i.clear()
+
+    for backup in backup_folder_scan:
+        try:
+            add_backup = obj.ic_backups_i.add()
+            add_backup.name = backup
+            creation_date = pathlib.Path(f"{backups_folder}/{backup}").stat().st_mtime
+            creation_date = str(datetime.datetime.fromtimestamp(creation_date)).split(" ")[0]
+            backup_dates[backup] = creation_date
+        except:
+            pass
+
 
 def load_backup_func(self, context):
     #set up the variables
     obj = context.object
+    backup_storage = obj.ic_backups_i
+    backup_index = obj.ic_backups_active_index
+    backup_list = []
     virtual_ice_cube = root_folder+""
-    selected_backup = getattr(obj,"backups_list")
-    backups_folder = root_folder+"/backups/"+selected_backup
-    #check if you've entered a backup name, if not, give a prompt, if so, check if that folder exists and create one if it doesn't exist.
-    if obj.get("backup_name"):
-        if obj.get("backup_name") == "":
-            CustomErrorBox("NO BACKUP FOUND","Selection Error",'ERROR')
-        else:
-            if os.path.exists(backups_folder):
-                distutils.dir_util.copy_tree(backups_folder, virtual_ice_cube)
-                CustomErrorBox(f"Loaded Backup: [{selected_backup}], restart Blender for changes!", "Loaded Backup", 'INFO')
-            else:
-                CustomErrorBox("INVALID BACKUP","Selection Error",'ERROR')
+    for i in backup_storage:
+        backup_list.append(i.name)
+    selected_backup = backup_list[backup_index]
+    backup_loc = root_folder+"/backups/"+selected_backup
+    
+    #loading backup folder
+
+    if os.path.exists(backup_loc):
+        print(selected_backup)
+        distutils.dir_util.copy_tree(backup_loc, virtual_ice_cube)
+        CustomErrorBox(f"Loaded Backup: [{selected_backup}], restart Blender for changes!", "Loaded Backup", 'INFO')
     else:
-        CustomErrorBox("NO BACKUP FOUND","Selection Error",'ERROR')
+        CustomErrorBox("INVALID BACKUP","Selection Error",'ERROR')
 
 
     return{'FINISHED'}
@@ -236,8 +263,17 @@ def delete_backup_func(self, context):
         virtual_ice_cube = root_folder+""
         virtual_ice_cube = os.path.normpath(virtual_ice_cube)
         backups_folder = root_folder+"/backups"
+        backup_storage = obj.ic_backups_i
+        backup_index = obj.ic_backups_active_index
+        backup_list = []
+        for i in backup_storage:
+            backup_list.append(i.name)
+        try:
+            selected_backup = backup_list[backup_index]
+        except:
+            CustomErrorBox("No backup found!","Invalid Backup",'ERROR')
+            return{'FINISHED'}
 
-        selected_backup = getattr(obj,"backups_list")
         #check if you've entered a name, if not, give a prompt, if so, delete the entered name if a backup exists for it
         backup_to_remove = os.path.dirname(backups_folder)+"/backups/"+selected_backup
         if os.path.exists(backup_to_remove) and backup_to_remove != backups_folder and backup_to_remove != backups_folder+"/":
@@ -246,76 +282,79 @@ def delete_backup_func(self, context):
         else:
             CustomErrorBox("No backup found!","Invalid Backup",'ERROR')
 
-        downloads_path = f"{root_folder}/ice_cube_data/ui/advanced/downloads.py"
-        exec(open(downloads_path).read())
+        refresh_backups_func(self,context)
 
         return{'FINISHED'}
 
-def download_dlc_func(self, context, dlc_id):
-        obj = context.object
-        selected_dlc = getattr(obj,"dlc_list")
-        if selected_dlc == "":
-            CustomErrorBox("Select a valid DLC!","INVALID DLC",'ERROR')
-            return{'FINISHED'}
-        #gets the latest data from the github "dlc_list.json" file
-        github_repo = json.loads(request.urlopen(latest_dlc).read().decode())
-        #checks if you entered the name of a valid DLC
+
+def IC_download_dlc(self, context, valid_dlcs):
+    obj = context.object
+
+    dlc_storage = obj.ic_dlc_i
+    dlc_index = obj.ic_dlc_active_index
+    dlc_data_list = []
+    try:
+        for i in dlc_storage:
+            dlc_data_list.append(str(i.name).split("|")[3])
+        selected_dlc = dlc_data_list[dlc_index]
+        cur_dlc_data = valid_dlcs[selected_dlc]
+
+        dlc_type = cur_dlc_data['dlc_type']
+        dlc_id_name = cur_dlc_data['dlc_id']
+        dlc_download = cur_dlc_data['download_link']
+
+
+        downloads_folder = root_folder+"/downloads"
+        dlc_folder = root_folder+"/ice_cube_data/internal_files/user_packs/"+dlc_type+"/"+dlc_id_name
+
+        #checks if a folder for the selected dlc exists, if not, create one.
+        if os.path.exists(dlc_folder):
+            print("Path Found")
+        else:
+            os.mkdir(dlc_folder)
+            print(f"Created {dlc_id_name} Folder")
+        download_folder = os.path.normpath(downloads_folder)
+        #clear folder
+        ClearDirectory(download_folder)
+
+        download_file_loc = str(download_folder+"/dlc.zip")
+
+        #download the zip
         try:
-            #sets up variables depending on what is entered in the textbox
-            for dlc in github_repo:
-                dlc_number = getIndexCustom(selected_dlc,dlc_id)
-                dlc_type = github_repo[dlc_number]['dlc_type']
-                dlc_id_name = github_repo[dlc_number]['dlc_id']
-                dlc_download = github_repo[dlc_number]['download_link']
-                downloads_folder = root_folder+"/downloads"
-                dlc_folder = root_folder+"/ice_cube_data/internal_files/user_packs/"+dlc_type+"/"+dlc_id_name
-            #checks if a folder for the selected dlc exists, if not, create one.
-            if os.path.exists(dlc_folder):
-                print("Path Found")
-            else:
-                os.mkdir(dlc_folder)
-                print(f"Created {dlc_id_name} Folder")
-            download_folder = os.path.normpath(downloads_folder)
-            #clear folder
-            ClearDirectory(download_folder)
-            
-            download_file_loc = str(download_folder+"/dlc.zip")
-
-            #download the zip
-            try:
-                request.urlretrieve(dlc_download, download_file_loc)
-                print("File Downloaded!")
-            except:
-                CustomErrorBox("An unknown error has occured, canceled download.","Downloading Error","ERROR")
-            #unzips the file
-            try:
-                print(f"Unzipping File")
-                try:
-                    shutil.rmtree(download_folder+"/"+dlc_id_name)
-                except:
-                    pass
-                with zipfile.ZipFile(download_file_loc, 'r') as zip_ref:
-                    zip_ref.extractall(download_folder)
-                print("Successfully Unzipped File!")
-                #remove the zip file when done
-                os.remove(download_file_loc)
-                print("Cleaned Folder")
-            except:
-                print("Unknown Error")
-            
-            try:
-                #install the new DLC
-                distutils.dir_util.copy_tree(download_folder+"/"+dlc_id_name, dlc_folder)
-                print("Finished Install!")
-                CustomErrorBox("Finished installing DLC!","Updated Finished",'INFO')
-            except:
-                print("Error Completing Install.")
-                CustomErrorBox("Error Completing Install.","Updated Cancelled",'ERROR')
-
+            request.urlretrieve(dlc_download, download_file_loc)
+            print("File Downloaded!")
         except:
-            CustomErrorBox("Invalid DLC","Selection Error",'ERROR')
+            CustomErrorBox("An unknown error has occured, canceled download.","Downloading Error","ERROR")
+        #unzips the file
+        try:
+            print(f"Unzipping File")
+            try:
+                shutil.rmtree(download_folder+"/"+dlc_id_name)
+            except:
+                pass
+            with zipfile.ZipFile(download_file_loc, 'r') as zip_ref:
+                zip_ref.extractall(download_folder)
+            print("Successfully Unzipped File!")
+            #remove the zip file when done
+            os.remove(download_file_loc)
+            print("Cleaned Folder")
+        except:
+            print("Unknown Error")
 
-        return{'FINISHED'}
+        try:
+            #install the new DLC
+            distutils.dir_util.copy_tree(download_folder+"/"+dlc_id_name, dlc_folder)
+            print("Finished Install!")
+            CustomErrorBox("Finished installing DLC!","Updated Finished",'INFO')
+        except:
+            print("Error Completing Install.")
+            CustomErrorBox("Error Completing Install.","Updated Cancelled",'ERROR')
+    except:
+            CustomErrorBox("Invalid DLC","Selection Error",'ERROR')
+    
+    return{'FINISHED'}
+
+
 
 def export_settings_data(self, context):
 
@@ -431,6 +470,22 @@ def reset_all_settings_func(self, context):
 
     return{'FINISHED'}
 
+def generate_settings_json():
+
+    settings_json_path = f"{root_folder}\\ice_cube_data\\settings.json"
+
+    settings_json_data = {
+        "last_check_date" : ""
+    }
+
+    converted_settings_data = json.dumps(settings_json_data, indent=4)
+
+    
+    with open(settings_json_path, "w") as json_file:
+        json_file.write(converted_settings_data)
+    
+
+    return{'FINISHED'}
 
 classes = [
            ]

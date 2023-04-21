@@ -5,12 +5,12 @@ from bpy.props import (StringProperty,
                         IntProperty,
                         FloatProperty,
                         EnumProperty,
-                        )  
+                        )
 
-from ice_cube_data.systems import inventory_system
-                 
 
-#war crimewar crimewar crimewar crimewar crimewar crime fuck you
+# classes
+
+
 
 #Bool Prop
 
@@ -170,6 +170,96 @@ bpy.types.Object.thumbfill_L = BoolProperty(
 bpy.types.Object.thumbfill_R = BoolProperty(
     name = "thumbfill_R", description="Toggles the thumbfill on the right hand",default=True)
 
+bpy.types.Object.eyetracker = BoolProperty(
+    name = "eyetracker", description="Toggles an eye tracker that will operate in global space",default=False)
+
+bpy.types.Object.teeth_follow = BoolProperty(
+    name = "teeth_follow", description="Teeth will follow and rotate with the mouth control",default=True)
+
+
+#menu props
+ckbox = bpy.types.Object
+
+ckbox.bone_set_face = BoolProperty(
+    name = "bone_set_face",
+    default=True
+)
+
+ckbox.bone_set_arm = BoolProperty(
+    name = "bone_set_arm",
+    default=True
+)
+
+ckbox.bone_set_leg = BoolProperty(
+    name = "bone_set_leg",
+    default=True
+)
+
+ckbox.bone_set_tweak = BoolProperty(
+    name = "bone_set_tweak",
+    default=True
+)
+
+ckbox.bone_set_misc = BoolProperty(
+    name = "bone_set_misc",
+    default=False
+)
+
+ckbox.gen_set_main = BoolProperty(
+    name = "gen_set_main",
+    default=True
+)
+
+ckbox.gen_set_arm = BoolProperty(
+    name = "gen_set_arm",
+    default=True
+)
+
+ckbox.gen_set_leg = BoolProperty(
+    name = "gen_set_leg",
+    default=True
+)
+
+ckbox.gen_set_snap = BoolProperty(
+    name = "gen_set_snap",
+    default=False
+)
+
+ckbox.mesh_set_bulge = BoolProperty(
+    name = "mesh_set_bulge",
+    default=True
+)
+
+ckbox.mesh_set_squish = BoolProperty(
+    name = "mesh_set_squish",
+    default=True
+)
+
+ckbox.mesh_set_taper = BoolProperty(
+    name = "mesh_set_taper",
+    default=True
+)
+
+ckbox.mesh_set_face = BoolProperty(
+    name = "mesh_set_face",
+    default=True
+)
+
+ckbox.mat_set_iris = BoolProperty(
+    name = "mat_set_iris",
+    default=True
+)
+
+ckbox.mat_set_pupil = BoolProperty(
+    name = "mat_set_iris",
+    default=True
+)
+
+ckbox.mat_set_sparkle = BoolProperty(
+    name = "mat_set_sparkle",
+    default=True
+)
+
 
 global_rig_baked = False
 global_parent_half = False
@@ -275,6 +365,15 @@ bpy.types.Object.breastweight = FloatProperty(
 bpy.types.Object.bodytopround = FloatProperty(
     name="bodytopround", description="Rounded Body Top", default=0, min=0, max=2)
 
+bpy.types.Object.eye_influence = FloatProperty(
+    name="eye_influence", description="Controls how much the eyes should be influenced by the eye controls", default=0, min=0, max=1)
+
+bpy.types.Object.eyebrow_influence = FloatProperty(
+    name="eyebrow_influence", description="Controls how much the eyes should be influenced by the eyebrow controls", default=0, min=0, max=1)
+
+bpy.types.Object.mouth_influence = FloatProperty(
+    name="mouth_influence", description="Controls how much the eyes should be influenced by the mouth controls", default=0, min=0, max=1)
+
 #Enum Prop 
 
 bpy.types.Object.armtype_enum = EnumProperty(
@@ -322,7 +421,7 @@ bpy.types.Object.ipaneltab5 = EnumProperty(
     default = 'one',
     items = [('one', 'DLC', 'The DLC management menu'),
              ('two', 'Parenting', 'The advanced parenting panel'),
-             ('three', 'Downloads', 'A panel dedicated to managing downloads'),
+             ('three', 'Updates', 'A panel dedicated to managing downloads'),
              ('four', 'Misc', 'The misc functions panel')
              ])
 
