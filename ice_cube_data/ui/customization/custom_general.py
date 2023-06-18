@@ -32,10 +32,18 @@ def customization_general_UI(self, context, layout, obj):
         b.prop(obj, "teeth_cartoon", icon = "LAYER_USED", text = "Teeth Cartoon")
     else:
         b.prop(obj, "teeth_cartoon", icon = "LAYER_ACTIVE", text = "Teeth Cartoon")
+
     if obj.get("teeth_bool") == 0:
         b.prop(obj, "teeth_bool", icon = "LAYER_USED", text = "Teeth Bool")
     else:
         b.prop(obj, "teeth_bool", icon = "LAYER_ACTIVE", text = "Teeth Bool")
+    b = box.row(align=True)
+
+    if obj.get("teeth_curve") == 0:
+        b.prop(obj, "teeth_curve", icon = "LAYER_USED", text = "Teeth Curve", slider = True)
+    else:
+        b.prop(obj, "teeth_curve", icon = "LAYER_ACTIVE", text = "Teeth Curve", slider = True)
+
     b = box.row(align=True)
     if obj.get("tongue") == 0:
         b.prop(obj, "tongue", icon = "LAYER_USED", text = "Tongue")

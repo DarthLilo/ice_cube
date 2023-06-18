@@ -273,24 +273,6 @@ update_available = False
 
 #Int Prop
 
-bpy.types.Object.squish_arm_r = IntProperty(
-name="squish_arm_r", description="Right Arm Squish", default=0, min=0, max=1)
-
-bpy.types.Object.squish_arm_l = IntProperty(
-name="squish_arm_l", description="Left Arm Squish", default=0, min=0, max=1)
-
-bpy.types.Object.squish_leg_r = IntProperty(
-name="squish_leg_r", description="Right Leg Squish", default=0, min=0, max=1)
-
-bpy.types.Object.squish_leg_l = IntProperty(
-name="squish_leg_l", description="Left Leg Squish", default=0, min=0, max=1)
-
-bpy.types.Object.squish_body = IntProperty(
-name="squish_body", description="Body Squish", default=0, min=0, max=1)
-
-bpy.types.Object.squish_head = IntProperty(
-name="squish_head", description="Head Squish", default=0, min=0, max=1)
-
 bpy.types.Object.breastshape = IntProperty(
 name="breast_shape", description="Extends the chest down one pixel", default=0, min=0, max=1)
 
@@ -373,6 +355,27 @@ bpy.types.Object.eyebrow_influence = FloatProperty(
 
 bpy.types.Object.mouth_influence = FloatProperty(
     name="mouth_influence", description="Controls how much the eyes should be influenced by the mouth controls", default=0, min=0, max=1)
+
+bpy.types.Object.squish_arm_r = FloatProperty(
+name="squish_arm_r", description="Right Arm Squish", default=0, min=0, max=1)
+
+bpy.types.Object.squish_arm_l = FloatProperty(
+name="squish_arm_l", description="Left Arm Squish", default=0, min=0, max=1)
+
+bpy.types.Object.squish_leg_r = FloatProperty(
+name="squish_leg_r", description="Right Leg Squish", default=0, min=0, max=1)
+
+bpy.types.Object.squish_leg_l = FloatProperty(
+name="squish_leg_l", description="Left Leg Squish", default=0, min=0, max=1)
+
+bpy.types.Object.squish_body = FloatProperty(
+name="squish_body", description="Body Squish", default=0, min=0, max=1)
+
+bpy.types.Object.squish_head = FloatProperty(
+name="squish_head", description="Head Squish", default=0, min=0, max=1)
+
+bpy.types.Object.teeth_curve = FloatProperty(
+name="teeth_curve", description="Teeth Curve", default=0, min=0, max=1)
 
 #Enum Prop 
 

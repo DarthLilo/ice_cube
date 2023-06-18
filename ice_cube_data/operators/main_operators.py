@@ -1,17 +1,15 @@
 import json
 import bpy
 import os
-import sys
 import shutil
-from bpy.props import EnumProperty, CollectionProperty
+from bpy.props import EnumProperty
 
 
 #Custom Functions
 from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info,valid_dlcs
 
-from ice_cube_data.utils.general_func import GetListIndex, IsVersionUpdated, BlenderVersConvert, IC_FKIK_Switch
-from ice_cube_data.utils.file_manage import getFiles, ClearDirectory, GetRootFolder
-from ice_cube_data.utils.selectors import isRigSelected
+from ice_cube_data.utils.general_func import BlenderVersConvert, IC_FKIK_Switch
+from ice_cube_data.utils.file_manage import getFiles
 from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.web_tools import CustomLink
 from ice_cube_data.operators import web

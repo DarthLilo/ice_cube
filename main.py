@@ -321,10 +321,6 @@ class ToolsAppendMenu(bpy.types.Panel):
 classes = [IC_Panel,
            ToolsAppendMenu
            ]
-           
-modules = (
-            main_operators,
-          )
 
 preview_collections = {}
 
@@ -365,10 +361,6 @@ def register():
     
     preview_collections["main"] = pcoll
     
-    
-    for m in modules:
-        m.register()
-    
     from bpy.utils import register_class
     for cls in classes:
         bpy.utils.register_class(cls)
@@ -380,9 +372,6 @@ def unregister():
     for pcoll in preview_collections.values():
         bpy.utils.previews.remove(pcoll)
     preview_collections.clear()
-    
-    for m in modules:
-        m.unregister()
     
     from bpy.utils import unregister_class
     for cls in classes:
