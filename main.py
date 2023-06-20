@@ -312,7 +312,7 @@ class ToolsAppendMenu(bpy.types.Panel):
         obj = context.object
         row = layout.row()
 
-        dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, False)
+        dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, False,preview_collections)
 
 
 

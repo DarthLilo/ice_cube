@@ -79,6 +79,8 @@ def bone_layers_UI(self, context, layout, obj):
         b.prop(layers, 'layers', index=26, toggle=True, text='Footroll')
         b = box1.row(align=True)
         b.prop(layers, 'layers', index=15, toggle=True, text='Emotion Bones')
+        b = box1.row(align=True)
+        b.prop(layers, 'layers', index=27, toggle=True, text='Cartoon Mouth')
 
 classes = [
            ]
