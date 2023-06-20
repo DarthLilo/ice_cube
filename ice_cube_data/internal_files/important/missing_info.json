@@ -6,5 +6,7 @@
     "rig_version": "MISSING FILE",
 	"has_baked": "MISSING FILE",
 	"asset_name": "MISSING FILE",
-	"asset_version": "MISSING FILE"
+	"asset_id": "MISSING_FILE_MISSING_FILE",
+	"asset_version": "MISSING FILE",
+	"customizable" : false
 }

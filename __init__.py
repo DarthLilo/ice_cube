@@ -1,3 +1,9 @@
+import importlib
+import sys
+import os
+import datetime
+
+
 bl_info ={
     "name": "Ice Cube",
     "author": "DarthLilo",
@@ -9,13 +15,6 @@ bl_info ={
     "category": "Lilo's Rigs",
 }
 
-import bpy
-import importlib
-import sys
-import os
-import json
-import datetime
-import time
 
 #File Variables
 root_folder = os.path.dirname(os.path.abspath(__file__))
@@ -32,6 +31,7 @@ update_available = False
 get_time = datetime.datetime.now()
 cur_date = f"{get_time.year}-{get_time.month}-{get_time.day}"
 has_checked_for_updates = False
+cur_asset_id = ["ice_cube"]
 
 #Folder Creation
 required_dirsmain = ["backups","downloads","cache"]

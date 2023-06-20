@@ -2,8 +2,9 @@
 import bpy
 import os
 import json
+from bpy.props import EnumProperty
 
-from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,dlc_date
+from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,dlc_date,cur_asset_id
 from ice_cube_data.properties import properties
 from ice_cube_data.systems import inventory_system
 
@@ -11,9 +12,53 @@ from ice_cube_data.utils.general_func import GetListIndex
 from ice_cube_data.utils.file_manage import getFiles
 from ice_cube_data.utils.selectors import isRigSelected
 
-def dlc_menu(self, context, layout, rig_baked, main_menu):
+
+
+
+
+
+
+def dlc_menu(self, context, layout, rig_baked, main_menu,icon):
     scene = context.scene
     obj = context.object
+    pcoll = icon["main"]
+    has_entries = False
+
+    #icons
+    mat_icons = {
+        "Amethyst" : pcoll["Amethyst"],
+        "Copper" : pcoll["Copper"],
+        "Diamond" : pcoll["Diamond"],
+        "Emerald" : pcoll["Emerald"],
+        "Gold" : pcoll["Gold"],
+        "Iron" : pcoll["Iron"],
+        "Lapis" : pcoll["Lapis"],
+        "Netherite" : pcoll["Netherite"],
+        "Quartz" : pcoll["Quartz"],
+        "Redstone" : pcoll["Redstone"],
+    }
+    trim_icons = {
+        "none" : pcoll["None"],
+        "Coast" : pcoll["Coast"],
+        "Dune" : pcoll["Dune"],
+        "Eye" : pcoll["Eye"],
+        "Host" : pcoll["Host"],
+        "Raiser" : pcoll["Raiser"],
+        "Rib" : pcoll["Rib"],
+        "Sentry" : pcoll["Sentry"],
+        "Shaper" : pcoll["Shaper"],
+        "Silence" : pcoll["Silence"],
+        "Snout" : pcoll["Snout"],
+        "Spire" : pcoll["Spire"],
+        "Tide" : pcoll["Tide"],
+        "Vex" : pcoll["Vex"],
+        "Ward" : pcoll["Ward"],
+        "Wayfinder" : pcoll["Wayfinder"],
+        "Wild" : pcoll["Wild"]
+    }
+
+    
+
     if main_menu is True:
 
         box = layout.box()
@@ -26,7 +71,7 @@ def dlc_menu(self, context, layout, rig_baked, main_menu):
         if obj.get("dlc_menu_switcher") is 0: #APPEND MENU
             b.prop(obj,"ipaneltab6",text="")
 
-            if obj.get("ipaneltab6") is 0:
+            if obj.get("ipaneltab6") is 0: #ASSETS
                 thumbnail = bpy.data.window_managers["WinMan"].inventory_preview
                 thumbnailnopng = thumbnail.split(".")[0]
                 cur_asset = context.scene.get("selected_inv_asset")
@@ -70,8 +115,26 @@ def dlc_menu(self, context, layout, rig_baked, main_menu):
                 if str(asset_infodata['asset_name']) == "MISSING FILE":
                     bpy.data.window_managers["WinMan"].inventory_preview = str(asset_json_pack_default+".png")
                 asset_json_asset_name = str(asset_infodata['asset_name'])
+                asset_json_asset_id = str(asset_infodata['asset_id'])
                 asset_json_asset_author = str(asset_infodata['author'])
                 asset_json_asset_version = str(asset_infodata['asset_version'])
+                asset_json_customizable = bool(asset_infodata['customizable'])
+                if asset_json_customizable:
+                    asset_json_armor_trims = bool(asset_infodata['asset_settings']['supports_armor_trims']) #Armor Trim Support
+
+                    try: #Checking For Entries
+                        if list(asset_infodata['asset_settings']['entries']):
+                            has_entries = True
+                            entry_data = list(asset_infodata['asset_settings']['entries'])
+                        else:
+                            has_entries = False
+                    except:
+                        pass
+                
+                
+                    
+
+                #Updating Customization Panel
 
                 b = box.row(align=True)
                 b.label(text= "Select an asset to append!", icon='BLENDER')
@@ -82,9 +145,27 @@ def dlc_menu(self, context, layout, rig_baked, main_menu):
                 b.operator("refresh.inv_list",text="",icon='FILE_REFRESH')
                 b = box.row(align=True)
                 b.operator("append.asset", text = "Append Selected")
+                if asset_json_customizable:
+                    b.operator("refresh.customizations", text="",icon ='BRUSH_DATA')
                 b = box.row(align=True)
                 b.operator("custom_presets.open", text = "DLC Folder")
                 b.operator("template1.download", text = "Asset Template")
+                
+                if asset_json_customizable and cur_asset_id[0] == asset_json_asset_id:
+                    if has_entries:
+                            b = box.row(align=True)
+                            b.prop(scene,"asset_entries",text="")
+                    if asset_json_armor_trims:
+                        b = box.row(align=True)
+                        cur_asset_pattern = obj.armor_trim_pattern
+
+
+                        b.prop(obj,"armor_trim_pattern",text="",icon_value=trim_icons[cur_asset_pattern].icon_id)
+                        if obj.get("armor_trim_pattern") != None and obj.get("armor_trim_pattern") != 0:
+                            cur_asset_material = obj.armor_trim_material
+                            
+
+                            b.prop(obj,"armor_trim_material",text="",icon_value=mat_icons[cur_asset_material].icon_id)
 
                 box = layout.box()
                 b = box.row(align=True)
@@ -112,7 +193,7 @@ def dlc_menu(self, context, layout, rig_baked, main_menu):
                 b = box.row(align=True)
                 b.label(text="Version: " + asset_json_asset_version)
 
-            if obj.get("ipaneltab6") is 1:
+            if obj.get("ipaneltab6") is 1: #PRESETS
                 thumbnail = bpy.data.window_managers["WinMan"].my_previews_presets
                 thumbnailnopng = thumbnail.split(".")[0]
                 cur_asset = context.scene.get("selected_rig_preset")

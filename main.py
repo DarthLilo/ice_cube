@@ -285,7 +285,7 @@ class IC_Panel(bpy.types.Panel):
         #tabs/Advanced
         if obj.get("ipaneltab1") == 3: #Advanced
             if obj.get("ipaneltab5") == 0: #DLC
-                dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, True)
+                dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, True, preview_collections)
             if obj.get("ipaneltab5") == 1: #Parenting
                 parenting.parenting_UI(self, context, layout, properties.global_rig_baked)
             if obj.get("ipaneltab5") == 2: #Downloads
@@ -344,7 +344,36 @@ def register():
     pcoll.load("Alex", os.path.join(my_icons_dir, "Alex.png"), 'IMAGE')
     pcoll.load("Steve", os.path.join(my_icons_dir, "Steve.png"), 'IMAGE')
     pcoll.load("Ice_Cube", os.path.join(my_icons_dir, "ice_cube.png"), 'IMAGE')
-    
+    #mat icons
+    pcoll.load("Amethyst", os.path.join(my_icons_dir,"amethyst_shard.png"), 'IMAGE')
+    pcoll.load("Copper", os.path.join(my_icons_dir,"copper_ingot.png"), 'IMAGE')
+    pcoll.load("Diamond", os.path.join(my_icons_dir,"diamond.png"), 'IMAGE')
+    pcoll.load("Emerald", os.path.join(my_icons_dir,"emerald.png"), 'IMAGE')
+    pcoll.load("Gold", os.path.join(my_icons_dir,"gold_ingot.png"), 'IMAGE')
+    pcoll.load("Iron", os.path.join(my_icons_dir,"iron_ingot.png"), 'IMAGE')
+    pcoll.load("Lapis", os.path.join(my_icons_dir,"lapis_lazuli.png"), 'IMAGE')
+    pcoll.load("Netherite", os.path.join(my_icons_dir,"netherite_ingot.png"), 'IMAGE')
+    pcoll.load("Quartz", os.path.join(my_icons_dir,"quartz.png"), 'IMAGE')
+    pcoll.load("Redstone", os.path.join(my_icons_dir,"redstone.png"), 'IMAGE')
+    #trim icons
+    pcoll.load("None", os.path.join(my_icons_dir,"Empty.png"), 'IMAGE')
+    pcoll.load("Coast", os.path.join(my_icons_dir,"Coast.png"), 'IMAGE')
+    pcoll.load("Dune", os.path.join(my_icons_dir,"Dune.png"), 'IMAGE')
+    pcoll.load("Eye", os.path.join(my_icons_dir,"Eye.png"), 'IMAGE')
+    pcoll.load("Host", os.path.join(my_icons_dir,"Host.png"), 'IMAGE')
+    pcoll.load("Raiser", os.path.join(my_icons_dir,"Raiser.png"), 'IMAGE')
+    pcoll.load("Rib", os.path.join(my_icons_dir,"Rib.png"), 'IMAGE')
+    pcoll.load("Sentry", os.path.join(my_icons_dir,"Sentry.png"), 'IMAGE')
+    pcoll.load("Shaper", os.path.join(my_icons_dir,"Shaper.png"), 'IMAGE')
+    pcoll.load("Silence", os.path.join(my_icons_dir,"Silence.png"), 'IMAGE')
+    pcoll.load("Snout", os.path.join(my_icons_dir,"Snout.png"), 'IMAGE')
+    pcoll.load("Spire", os.path.join(my_icons_dir,"Spire.png"), 'IMAGE')
+    pcoll.load("Tide", os.path.join(my_icons_dir,"Tide.png"), 'IMAGE')
+    pcoll.load("Vex", os.path.join(my_icons_dir,"Vex.png"), 'IMAGE')
+    pcoll.load("Ward", os.path.join(my_icons_dir,"Ward.png"), 'IMAGE')
+    pcoll.load("Wayfinder", os.path.join(my_icons_dir,"Wayfinder.png"), 'IMAGE')
+    pcoll.load("Wild", os.path.join(my_icons_dir,"Wild.png"), 'IMAGE')
+
     
     
     pcoll.my_previews_presets = ""

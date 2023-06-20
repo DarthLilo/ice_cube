@@ -496,6 +496,47 @@ bpy.types.Object.mouthtypes = EnumProperty(
              ]
 )
 
+bpy.types.Object.armor_trim_pattern = EnumProperty(
+        name = "Asset Entries",
+        default= 'none',
+        items = [
+            ('none', 'none','description none'),
+            ('Coast', 'Coast','Applies the Coast trim'),
+            ('Dune', 'Dune','Applies the Dune trim'),
+            ('Eye', 'Eye','Applies the Eye trim'),
+            ('Host', 'Host','Applies the Host trim'),
+            ('Raiser', 'Raiser','Applies the Raiser trim'),
+            ('Rib', 'Rib','Applies the Rib trim'),
+            ('Sentry', 'Sentry','Applies the Sentry trim'),
+            ('Shaper', 'Shaper','Applies the Shaper trim'),
+            ('Silence', 'Silence','Applies the Silence trim'),
+            ('Snout', 'Snout','Applies the Snout trim'),
+            ('Spire', 'Spire','Applies the Spire trim'),
+            ('Tide', 'Tide','Applies the Tide trim'),
+            ('Vex', 'Vex','Applies the Vex trim'),
+            ('Ward', 'Ward','Applies the Ward trim'),
+            ('Wayfinder', 'Wayfinder','Applies the Wayfinder trim'),
+            ('Wild', 'Wild','Applies the Wild trim')
+            ]
+        )
+
+bpy.types.Object.armor_trim_material = EnumProperty(
+        name = "Asset Entries",
+        default= 'Amethyst',
+        items = [
+            ('Amethyst', 'Amethyst','Sets the trim material to Amethyst'),
+            ('Copper', 'Copper','Sets the trim material to Copper'),
+            ('Diamond', 'Diamond','Sets the trim material to Diamond'),
+            ('Emerald', 'Emerald','Sets the trim material to Emerald'),
+            ('Gold', 'Gold','Sets the trim material to Gold'),
+            ('Iron', 'Iron','Sets the trim material to Iron'),
+            ('Lapis', 'Lapis','Sets the trim material to Lapis'),
+            ('Netherite', 'Netherite','Sets the trim material to Netherite'),
+            ('Quartz', 'Quartz','Sets the trim material to Quartz'),
+            ('Redstone', 'Redstone','Sets the trim material to Redstone')
+            ]
+        )
+
 #string properties
 bpy.types.Scene.minecraft_username = StringProperty(name="username", description="username slot", default="")
 
