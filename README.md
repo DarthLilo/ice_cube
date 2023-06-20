@@ -1,4 +1,4 @@
-# Ice Cube <br/> <br/> ![GitHub all releases](https://img.shields.io/github/downloads/DarthLilo/ice_cube/total?color=seagreen)
+# Ice Cube <br/> <br/> ![GitHub all releases](https://img.shields.io/github/downloads/DarthLilo/ice_cube/total?color=blue)
 
 Ice Cube is a Minecraft rig built in Blender 3.4 and designed for customizability. It offers a wide range of features and options to give the user as much creative freedom as they desire.
 
