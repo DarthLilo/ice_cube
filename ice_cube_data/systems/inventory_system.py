@@ -194,6 +194,7 @@ class append_asset(bpy.types.Operator):
         json_data = gettingCustomizationJson(context)
         rig = isRigSelected(context)
         extension = ""
+        customizable = bool(json_data['customizable'])
 
         try:
             if json_data['asset_settings']['entries']:
@@ -284,6 +285,8 @@ class append_asset(bpy.types.Operator):
             if json_data['customizable']:
                 if json_data['asset_settings']['supports_armor_trims']:
                     if rig.get("armor_trim_pattern") != None and rig.get("armor_trim_pattern") != 0:
+
+                        material_type = json_data['asset_settings']['materialType']
                         
                         cur_pattern = rig.armor_trim_pattern
                         pattern_mat = rig.armor_trim_material
@@ -291,6 +294,8 @@ class append_asset(bpy.types.Operator):
                         if default_collection == False:
                             if context.scene.asset_entries == rig.armor_trim_material:
                                 darker = "_darker"
+                        elif customizable == True and str(rig.armor_trim_material).lower() == str(material_type).lower():
+                            darker = "_darker"
     
                         if json_data['asset_settings']['leggings_half']:
                             extension = "_leggings"
@@ -299,7 +304,7 @@ class append_asset(bpy.types.Operator):
     
                         for mat in armor_trim_mats:
 
-                            if json_data['asset_settings']['materialType'] != "leather":
+                            if material_type != "leather":
                         
                                 armor_mat = bpy.data.materials[mat]
                                 node_tree = armor_mat.node_tree
@@ -350,7 +355,7 @@ class append_asset(bpy.types.Operator):
                                 node_tree.links.new(pattern.outputs[1], mix.inputs[0])
                                 node_tree.links.new(mix.outputs[2], bsdf.inputs[0])
 
-                            elif json_data['asset_settings']['materialType'] == "leather":
+                            elif material_type == "leather":
                                 armor_mat = bpy.data.materials[mat]
                                 node_tree = armor_mat.node_tree
                                 nodes = node_tree.nodes
