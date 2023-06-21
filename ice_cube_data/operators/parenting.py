@@ -772,17 +772,17 @@ def parent_body_func(self, context):
 
     
 
-        spot = modifier.driver_add("show_viewport")
-        driver = spot.driver
-        driver.type = 'SCRIPTED'
-        var = driver.variables.new()
-        var.type = 'SINGLE_PROP'
-        var.name = "var"
-        target = var.targets[0]
-        target.id_type = 'OBJECT'
-        target.id = rig
-        target.data_path = "[\"body_deforms\"]"
-        driver.expression = "var"
+        #spot = modifier.driver_add("show_viewport")
+        #driver = spot.driver
+        #driver.type = 'SCRIPTED'
+        #var = driver.variables.new()
+        #var.type = 'SINGLE_PROP'
+        #var.name = "var"
+        #target = var.targets[0]
+        #target.id_type = 'OBJECT'
+        #target.id = rig
+        #target.data_path = "[\"body_deforms\"]"
+        #driver.expression = "var"
 
         #Rounded Top
         modifier = body_parent.modifiers.new(name="Rounded Top Deform", type='LATTICE')

@@ -12,6 +12,7 @@ from ice_cube_data.utils.general_func import BlenderVersConvert, IC_FKIK_Switch
 from ice_cube_data.utils.file_manage import getFiles
 from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.web_tools import CustomLink
+from ice_cube_data.utils.selectors import isRigSelected
 from ice_cube_data.operators import web
 
 from . import os_management
@@ -711,6 +712,32 @@ class l_leg_fk_to_ik(bpy.types.Operator):
         IC_FKIK_Switch(context,"FK_TO_IK","LEG_L")
         return{'FINISHED'}
 
+class IC_DevMode_ResetRig(bpy.types.Operator):
+    """Designed to only be used by Lilo, COMPLETELY resets Ice Cube to default!"""
+    bl_idname = "reset_to_default.icecube"
+    bl_label = "Ice Cube Reset"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+
+        obj = context.object
+        rig = isRigSelected(context)
+
+        reset_all_settings_func(self,context) #Resets Settings
+        obj.ic_dlc_i.clear() #Resets DLC
+        print("Cleared Ghost DLC")
+
+        for bone in rig.pose.bones:
+            print(bone.location,bone.rotation_quaternion,bone.scale,bone.name)
+
+            bone.location = (0,0,0)
+            bone.rotation_quaternion = [1,0,0,0]
+            bone.scale = (1,1,1)
+        
+        print("Reset all bone transforms!")
+
+        return{'FINISHED'}
+
 #Backups Classes
 
 #Collection Classes
@@ -775,6 +802,8 @@ class IC_DLC_available_list_i(bpy.types.UIList):
             layout.alignment = 'CENTER'
             layout.label(text="", icon_value=icon)
 
+
+
 classes = [
     refresh_rigs_list,
     rig_baked_class,
@@ -816,6 +845,7 @@ classes = [
     l_leg_ik_to_fk,
     r_leg_fk_to_ik,
     l_leg_fk_to_ik,
+    IC_DevMode_ResetRig,
     IC_backups_list_i,
     IC_DLC_available_list_i,
     ICBackupsListClass,
