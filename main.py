@@ -285,7 +285,7 @@ class IC_Panel(bpy.types.Panel):
         #tabs/Advanced
         if obj.get("ipaneltab1") == 3: #Advanced
             if obj.get("ipaneltab5") == 0: #DLC
-                dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, True, preview_collections)
+                dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "IceCube", preview_collections)
             if obj.get("ipaneltab5") == 1: #Parenting
                 parenting.parenting_UI(self, context, layout, properties.global_rig_baked)
             if obj.get("ipaneltab5") == 2: #Downloads
@@ -312,14 +312,30 @@ class ToolsAppendMenu(bpy.types.Panel):
         obj = context.object
         row = layout.row()
 
-        dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, False,preview_collections)
+        dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "ToolMenuAppend",preview_collections)
+
+class ToolsGenerateMenu(bpy.types.Panel):
+    bl_label = "Generate Asset"
+    bl_idname = "ToolsGenerateIceCube"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'Tool'
+
+    def draw(self, context):
+        layout = self.layout
+        col = layout.column()
+        obj = context.object
+        row = layout.row()
+
+        dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "ToolMenuGenerate",preview_collections)
 
 
 
 #Register
 
 classes = [IC_Panel,
-           ToolsAppendMenu
+           ToolsAppendMenu,
+           ToolsGenerateMenu
            ]
 
 preview_collections = {}

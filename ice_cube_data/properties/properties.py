@@ -176,6 +176,17 @@ bpy.types.Object.eyetracker = BoolProperty(
 bpy.types.Object.teeth_follow = BoolProperty(
     name = "teeth_follow", description="Teeth will follow and rotate with the mouth control",default=True)
 
+bpy.types.Scene.asset_customizable = BoolProperty(
+    name = "asset_customizable", description="Determines whether the asset can be customized or not",default=False)
+
+bpy.types.Scene.supports_armor_trims = BoolProperty(
+    name = "supports_armor_trims", description="Determines whether the asset can use armor trims",default=False)
+
+bpy.types.Scene.leggings_half = BoolProperty(
+    name = "leggings_half", description="Decides whether the rig will use the main or legs armor texture",default=False)
+
+bpy.types.Scene.has_entries = BoolProperty(
+    name = "has_entries", description="Determines whether the asset has entries in it. (Will add each major collection as a valid entry)",default=False)
 
 #menu props
 ckbox = bpy.types.Object
@@ -435,6 +446,13 @@ bpy.types.Object.ipaneltab6 = EnumProperty(
              ('two', 'Presets', 'Preset appending menu')
              ])
 
+bpy.types.Scene.append_tab_global = EnumProperty(
+    name = "Append Type",
+    default = 'two',
+    items = [('one', 'Assets', 'Asset appending menu'),
+             ('two', 'Presets', 'Preset appending menu')
+             ])
+
 bpy.types.Object.ipaneltab7 = EnumProperty(
     name = "haha tab",
     default = 'one',
@@ -496,7 +514,7 @@ bpy.types.Object.mouthtypes = EnumProperty(
              ]
 )
 
-bpy.types.Object.armor_trim_pattern = EnumProperty(
+bpy.types.Scene.armor_trim_pattern = EnumProperty(
         name = "Asset Entries",
         default= 'none',
         items = [
@@ -520,7 +538,7 @@ bpy.types.Object.armor_trim_pattern = EnumProperty(
             ]
         )
 
-bpy.types.Object.armor_trim_material = EnumProperty(
+bpy.types.Scene.armor_trim_material = EnumProperty(
         name = "Asset Entries",
         default= 'Amethyst',
         items = [
@@ -592,6 +610,39 @@ bpy.types.Object.baked_version_filepath = StringProperty(
     description="Defines a filepath for the baked version",
     subtype='FILE_PATH',
     default="")
+
+
+bpy.types.Scene.target_thumbnail_generate = StringProperty(
+    name="target_thumbnail_generate",
+    description="Defines a png file to generate an asset pack from",
+    subtype='FILE_PATH',
+    default="")
+
+bpy.types.Scene.asset_pack_name = StringProperty(
+    name="asset_pack_name",
+    description="Defines a name to use when generating the asset pack",
+    default="Pack Name")
+
+bpy.types.Scene.entry_name_asset = StringProperty(
+    name="entry_name_asset",
+    description="Defines a name for the asset pack entry",
+    default="Entry Name")
+
+bpy.types.Scene.asset_author = StringProperty(
+    name="asset_author",
+    description="Defines a name for the author in settings.json",
+    default="Your Name")
+
+bpy.types.Scene.asset_version = StringProperty(
+    name="asset_version",
+    description="Defines a version number in settings.json",
+    default="1.0.0")
+
+bpy.types.Scene.materialType = StringProperty(
+    name="materialType",
+    description="Defines which material the asset is (Leave default unless you know what you're doing)",
+    default="default")
+
 
 classes = [
            ]

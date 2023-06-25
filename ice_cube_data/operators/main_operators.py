@@ -630,6 +630,142 @@ class generate_asset_pack(bpy.types.Operator):
 
         return{'FINISHED'}
 
+class generate_asset_pack_global(bpy.types.Operator):
+    """Generates an asset pack"""
+    bl_idname = "generate.asest_pack_global"
+    bl_label = "Generate Asset Pack"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self,context):
+        obj = context.object
+        scene = context.scene
+
+        pack_name = scene.asset_pack_name
+        entry_name = scene.entry_name_asset
+        asset_author = scene.asset_author
+        asset_version = scene.asset_version
+        customizable = scene.asset_customizable
+        if customizable:
+            has_entries = scene.has_entries
+            armor_trims = scene.supports_armor_trims
+            leggings_half = scene.leggings_half
+            material_type = scene.materialType
+        else:
+            armor_trims = False
+            leggings_half = False
+            material_type = 'default'
+        thumbnail_path = scene.target_thumbnail_generate
+
+        if bpy.data.is_saved is False:
+            CustomErrorBox("Please save first!","ERROR: File not saved!",'ERROR')
+            return {'CANCELLED'}
+
+            #CHECKING FOR VARS
+        if pack_name != "" and entry_name != "" and asset_author != "" and asset_version != "" and os.path.exists(thumbnail_path) is True:
+            #folder generation
+            inventory = f"{root_folder}/ice_cube_data/internal_files/user_packs/inventory"
+
+            asset_pack_path = f"{inventory}/{pack_name}"
+
+            list_of_dirs_to_gen = ["","assets","thumbnails",f"assets/{entry_name}"]
+
+            for folder in list_of_dirs_to_gen:
+                if os.path.exists(f"{asset_pack_path}/{folder}") is False:
+                    os.mkdir(f"{asset_pack_path}/{folder}")
+
+            #settings json generation
+            settings_json_data = {
+                "pack_name": pack_name,
+                "author": asset_author,
+                "version": asset_version,
+            	"default": entry_name
+            }
+
+            #info json generation
+            if customizable:
+                if has_entries:
+                    valid_collections = []
+                    for collection in bpy.data.collections:
+                        valid_collections.append(collection.name)
+
+                    for collection in bpy.data.collections:
+                        for child in collection.children_recursive:
+                            try:
+                                valid_collections.remove(child.name)
+                            except:
+                                pass
+                    
+
+                    info_json_data = {
+                        "asset_name": entry_name,
+                        "asset_id": entry_name,
+                        "author": asset_author,
+                        "asset_version": asset_version,
+                        "customizable": customizable,
+                        "asset_settings": {
+                            "entries" : valid_collections,
+                            "supports_armor_trims" : armor_trims,
+                            "leggings_half" : leggings_half,
+                            "materialType" : material_type
+                        }
+                    }
+                else:
+                    info_json_data = {
+                        "asset_name": entry_name,
+                        "asset_id": entry_name,
+                        "author": asset_author,
+                        "asset_version": asset_version,
+                        "customizable": customizable,
+                        "asset_settings": {
+                            "supports_armor_trims" : armor_trims,
+                            "leggings_half" : leggings_half,
+                            "materialType" : material_type
+                        }
+                    }
+            else:
+                info_json_data = {
+                    "asset_name": entry_name,
+                    "asset_id": entry_name,
+                    "author": asset_author,
+                    "asset_version": asset_version,
+                    "customizable": customizable
+                }
+
+            converted_settings_json = json.dumps(settings_json_data,indent=4)
+            with open(f"{asset_pack_path}/settings.json", "w") as json_file:
+                json_file.write(converted_settings_json)
+
+            converted_info_json = json.dumps(info_json_data,indent=4)
+            with open(f"{asset_pack_path}/assets/{entry_name}/info.json", "w") as json_file:
+                json_file.write(converted_info_json)
+
+
+            #saving a copy of the file
+            if bpy.data.is_saved is True and pack_name != "" and entry_name != "":
+                filepath = f"{inventory}/{pack_name}/assets/{entry_name}/{entry_name}.blend"
+                bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
+
+            #thumbnail management
+            if thumbnail_path != "" and str(thumbnail_path).__contains__(".png"): #Copy Thumbnail
+                shutil.copyfile(thumbnail_path,f"{inventory}/{pack_name}/thumbnails/{entry_name}.png")
+
+        elif pack_name == "":
+            CustomErrorBox("Please enter a name for the pack!",'Invalid Name','ERROR')
+            return{'FINISHED'}
+        elif entry_name == "":
+            CustomErrorBox("Please enter an asset name!","Invalid Name",'ERROR')
+            return{'FINISHED'}
+        elif asset_author == "":
+            CustomErrorBox("Please enter an author!","Invalid Author",'ERROR')
+            return{'FINISHED'}
+        elif asset_version == "":
+            CustomErrorBox("Please enter a valid version!","Invalid Version",'ERROR')
+            return{'FINISHED'}
+        elif os.path.exists(thumbnail_path) is False:
+            CustomErrorBox("Please select a valid thumbnail!")
+            return{'FINISHED'}
+
+        return{'FINISHED'}
 
 class r_arm_ik_to_fk(bpy.types.Operator):
     """TESTING"""
@@ -837,6 +973,7 @@ classes = [
     update_backups_list,
     reset_all_settings,
     generate_asset_pack,
+    generate_asset_pack_global,
     r_arm_ik_to_fk,
     l_arm_ik_to_fk,
     r_arm_fk_to_ik,

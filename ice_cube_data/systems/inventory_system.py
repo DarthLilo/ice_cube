@@ -171,8 +171,8 @@ class refresh_customizations(bpy.types.Operator):
 
         try:
             context.scene.asset_entries = asset_entries_names[0]
-            context.object.armor_trim_material = 'Amethyst'
-            context.object.armor_trim_pattern = 'none'
+            context.scene.armor_trim_material = 'Amethyst'
+            context.scene.armor_trim_pattern = 'none'
         except:
             pass
 
@@ -205,13 +205,13 @@ class append_asset(bpy.types.Operator):
             pass
 
         if cur_asset_id[0] != json_data['asset_id']:
-            obj.armor_trim_material = 'Amethyst'
-            obj.armor_trim_pattern = 'none'
-            bpy.types.Scene.asset_entries = EnumProperty(
-            name = "Asset Entries",
-            items = [('Default', 'Default Entry','Default Entry')]
-            )
-            scene.asset_entries = 'Default'
+            scene.armor_trim_material = 'Amethyst'
+            scene.armor_trim_pattern = 'none'
+            #bpy.types.Scene.asset_entries = EnumProperty(
+            #name = "Asset Entries",
+            #items = [('Default', 'Default Entry','Default Entry')]
+            #)
+            #scene.asset_entries = 'Default'
             print("CHANGED")
 
         
@@ -284,17 +284,17 @@ class append_asset(bpy.types.Operator):
         try:
             if json_data['customizable']:
                 if json_data['asset_settings']['supports_armor_trims']:
-                    if rig.get("armor_trim_pattern") != None and rig.get("armor_trim_pattern") != 0:
+                    if scene.get("armor_trim_pattern") != None and scene.get("armor_trim_pattern") != 0:
 
                         material_type = json_data['asset_settings']['materialType']
                         
-                        cur_pattern = rig.armor_trim_pattern
-                        pattern_mat = rig.armor_trim_material
+                        cur_pattern = scene.armor_trim_pattern
+                        pattern_mat = scene.armor_trim_material
     
                         if default_collection == False:
-                            if context.scene.asset_entries == rig.armor_trim_material:
+                            if context.scene.asset_entries == scene.armor_trim_material:
                                 darker = "_darker"
-                        elif customizable == True and str(rig.armor_trim_material).lower() == str(material_type).lower():
+                        elif customizable == True and str(scene.armor_trim_material).lower() == str(material_type).lower():
                             darker = "_darker"
     
                         if json_data['asset_settings']['leggings_half']:
