@@ -7,7 +7,7 @@ import datetime
 bl_info ={
     "name": "Ice Cube",
     "author": "DarthLilo",
-    "version": (1, 4, 9),
+    "version": (1, 5, 1),
     "blender": (3, 4, 0),
     "location": "View3D > Tool",
     "description": "The official python panel for Ice Cube!",
