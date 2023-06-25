@@ -300,7 +300,7 @@ def menu_function_thing(self, context):
     layout.operator("append.defaultrig", icon_value = my_icon.icon_id)
 
 class ToolsAppendMenu(bpy.types.Panel):
-    bl_label = "Append Preset"
+    bl_label = "Append Asset/Preset"
     bl_idname = "ToolsAppendIceCube"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
