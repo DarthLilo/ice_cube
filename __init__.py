@@ -15,6 +15,8 @@ bl_info ={
     "category": "Lilo's Rigs",
 }
 
+#test update
+
 
 #File Variables
 root_folder = os.path.dirname(os.path.abspath(__file__))
