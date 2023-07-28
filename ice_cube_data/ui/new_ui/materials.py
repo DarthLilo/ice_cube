@@ -37,13 +37,20 @@ def material_skin_ui(self, context, layout, scale):
     material_list = {}
     rig = isRigSelected(context)
     mat_hold = mat_holder_func(rig)
-    materials = mat_hold.data.materials
-    for mat in materials:
-        try:
-            if mat["ice_cube_material"]:
-                material_list[mat["ice_cube_material"]] = mat
-        except KeyError:
-            pass
+    try:
+        materials = mat_hold.data.materials
+        for mat in materials:
+            try:
+                if mat["ice_cube_material"]:
+                    material_list[mat["ice_cube_material"]] = mat
+            except KeyError:
+                pass
+    except:
+        materials = "OUTDATED"
+        box = layout.box()
+        box.label(text= "OUTDATED RIG, SKIN TAB DISABLED", icon= 'ERROR')
+        return{'FINISHED'}
+    
 
 
     box = layout.box()
@@ -106,13 +113,19 @@ def material_eyes_ui(self,context,layout,face,scale):
     material_list = {}
     rig = isRigSelected(context)
     mat_hold = mat_holder_func(rig)
-    materials = mat_hold.data.materials
-    for mat in materials:
-        try:
-            if mat["ice_cube_material"]:
-                material_list[mat["ice_cube_material"]] = mat
-        except KeyError:
-            pass
+    try:
+        materials = mat_hold.data.materials
+        for mat in materials:
+            try:
+                if mat["ice_cube_material"]:
+                    material_list[mat["ice_cube_material"]] = mat
+            except KeyError:
+                pass
+    except:
+        materials = "OUTDATED"
+        box = layout.box()
+        box.label(text= "OUTDATED RIG, EYE TAB DISABLED", icon= 'ERROR')
+        return{'FINISHED'}
 
     
     box = layout.box()
@@ -238,18 +251,23 @@ def material_eyes_ui(self,context,layout,face,scale):
 
 def material_misc_ui(self,context,layout,face,scale):
     obj = context.object
-    box = layout.box()
 
     material_list = {}
     rig = isRigSelected(context)
     mat_hold = mat_holder_func(rig)
-    materials = mat_hold.data.materials
-    for mat in materials:
-        try:
-            if mat["ice_cube_material"]:
-                material_list[mat["ice_cube_material"]] = mat
-        except KeyError:
-            pass
+    try:
+        materials = mat_hold.data.materials
+        for mat in materials:
+            try:
+                if mat["ice_cube_material"]:
+                    material_list[mat["ice_cube_material"]] = mat
+            except KeyError:
+                pass
+    except:
+        materials = "OUTDATED"
+        box = layout.box()
+        box.label(text= "OUTDATED RIG, MISC TAB DISABLED", icon= 'ERROR')
+        return{'FINISHED'}
 
     
     box.label(text= "Misc Materials", icon= 'MATERIAL')

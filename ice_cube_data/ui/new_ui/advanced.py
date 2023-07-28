@@ -678,6 +678,9 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
 def advanced_parenting_ui(self, context, layout,scale):
     obj = context.object
     box = layout.box()
+    if obj.upgraded_ui:
+        box.label(text= "OUTDATED RIG", icon= 'ERROR')
+        return{'FINISHED'}
     box.label(text= "Parenting", icon= 'FILE_PARENT')
     b = box.row(align=True)
     b.scale_y=scale
@@ -798,22 +801,25 @@ def advanced_system_ui(self, context, layout, obj,scale):
     
     b = box.row(align=True)
     b.scale_y=scale
-    baking_box = b.box()
-    baking_bad = baking_box.row(align=True)
-    baking_bad.label(text="Baking Manager",icon='FILE_ARCHIVE')
-    if button_toggle(obj,baking_bad,"baking_data_manager"):
+    if obj.upgraded_ui:
+        b.label(text="OUTDATED RIG, BAKING DISABLED",icon='ERROR')
+    else:
+        baking_box = b.box()
         baking_bad = baking_box.row(align=True)
-        baking_bad.prop(obj,"bake_eye_textures",text="Bake Eye Textures?")
-        baking_bad.prop(obj,"bake_all_unused_features",text="Bake Unused Features?")
-        baking_bad = baking_box.row(align=True)
-        disable_row = baking_bad
-        if not obj.bake_eye_textures:
-            disable_row.enabled = False
-        disable_row.prop(obj,"split_eye_bakes",text="Split Eye Bakes?")
-        disable_row.prop(obj,"eye_bake_resolution",text="Texture Resolution")
-        baking_bad = baking_box.row(align=True)
-        baking_bad.operator("ice_cube.bake_rig",text="Bake Rig",icon='FILE_TICK')
-        baking_bad.prop(obj,"confirm_rig_bake",text="",icon='ERROR')
+        baking_bad.label(text="Baking Manager",icon='FILE_ARCHIVE')
+        if button_toggle(obj,baking_bad,"baking_data_manager"):
+            baking_bad = baking_box.row(align=True)
+            baking_bad.prop(obj,"bake_eye_textures",text="Bake Eye Textures?")
+            baking_bad.prop(obj,"bake_all_unused_features",text="Bake Unused Features?")
+            baking_bad = baking_box.row(align=True)
+            disable_row = baking_bad
+            if not obj.bake_eye_textures:
+                disable_row.enabled = False
+            disable_row.prop(obj,"split_eye_bakes",text="Split Eye Bakes?")
+            disable_row.prop(obj,"eye_bake_resolution",text="Texture Resolution")
+            baking_bad = baking_box.row(align=True)
+            baking_bad.operator("ice_cube.bake_rig",text="Bake Rig",icon='FILE_TICK')
+            baking_bad.prop(obj,"confirm_rig_bake",text="",icon='ERROR')
 
             
 
