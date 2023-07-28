@@ -470,6 +470,86 @@ def reset_all_settings_func(self, context):
 
     return{'FINISHED'}
 
+def reset_all_ui_func(self,context):
+    obj = context.object
+
+    prop_data = {
+    "name": "default",
+    "prop_data": {
+        "ipaneltab1": "one",
+        "ipaneltab2": "one",
+        "ipaneltab3": "one",
+        "ipaneltab4": "one",
+        "ipaneltab5": "one",
+        "ipaneltab6": "one",
+        "ipaneltab7": "one",
+        "dlc_menu_switcher": "one",
+        "advanced_menu_switcher": "dlc",
+        "main_panel_switcher": "style",
+        "material_menu_switcher": "skin",
+        "style_menu_switcher": "rig",
+        "bone_set_face": False,
+        "bone_set_arm": False,
+        "bone_set_leg": False,
+        "bone_set_tweak": False,
+        "bone_set_misc": False,
+        "gen_set_main": True,
+        "gen_set_arm": True,
+        "gen_set_leg": True,
+        "gen_set_snap": True,
+        "mesh_set_taper": False,
+        "mesh_set_face": False,
+        "mat_set_iris": True,
+        "mat_set_pupil": False,
+        "mat_set_sparkle": False,
+        "mouthtypes": "one",
+        "setting_data_manager": False,
+        "icecube_menu_version": "new",
+        "upgraded_ui": True,
+        "gradient_color_eye": 'color',
+        "face_style_settings": True,
+        "teeth_settings": False,
+        "bevel_settings": False,
+        "jaw_settings": False,
+        "depth_settings": False,
+        "mesh_set_bulge": False,
+        "mesh_set_squish": False,
+        "mesh_set_deform": False,
+        "workflow_settings": False,
+        "ik_settings": False,
+        "influence_settings": False,
+        "bonelayer_settings": False,
+        "texture_settings": False,
+        "sss_settings": False,
+        "mat_set_sparkle": False,
+        "advanced_button_settings": False,
+        "advanced_guide": False,
+        "update_manager": False,
+        "setting_data_manager": False,
+        "backup_data_manager": False
+    }
+}
+
+
+
+    for prop in prop_data['prop_data']:
+        try:
+            print(f"{prop} == {prop_data['prop_data'][prop]}")
+            exec(f"obj.{prop} = {prop_data['prop_data'][prop]}")
+        except NameError:
+            exec(f"obj.{prop} = \"{prop_data['prop_data'][prop]}\"")
+        except:
+            print(f"POO WORMS WITH {prop}")
+        try:
+            setattr(obj, prop, prop_data[prop])
+        except:
+            pass
+    CustomErrorBox(f"Successfully reset UI data!","Imported Settings",'INFO')
+        
+
+    return{'FINISHED'}
+
+
 def generate_settings_json():
 
     settings_json_path = f"{root_folder}\\ice_cube_data\\settings.json"

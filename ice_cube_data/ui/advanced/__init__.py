@@ -1,16 +1,16 @@
 import importlib
 
-from . import dlc_ui
-from . import downloads
-from . import parenting
-from . import adv_misc
+from . import old_dlc_ui
+from . import old_downloads
+from . import old_parenting
+from . import old_adv_misc
 
 
 files_list = (
-    dlc_ui,
-    downloads,
-    parenting,
-    adv_misc
+    old_dlc_ui,
+    old_downloads,
+    old_parenting,
+    old_adv_misc
 )
 
 #Reload

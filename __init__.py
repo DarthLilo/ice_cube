@@ -2,20 +2,19 @@ import importlib
 import sys
 import os
 import datetime
+import bpy
 
 
 bl_info ={
     "name": "Ice Cube",
     "author": "DarthLilo",
-    "version": (1, 5, 1),
+    "version": (1, 5, 2),
     "blender": (3, 4, 0),
     "location": "View3D > Tool",
     "description": "The official python panel for Ice Cube!",
     "tracker_url": "https://discord.gg/3G44QQM",
     "category": "Lilo's Rigs",
 }
-
-#test update
 
 
 #File Variables
@@ -67,6 +66,26 @@ from . import main
 from . import ice_cube_data
 from ice_cube_data.operators.os_management import generate_settings_json
 
+
+class iceCubeAddonPreferneces(bpy.types.AddonPreferences):
+    bl_idname = __name__
+
+    easter_eggs: bpy.props.BoolProperty(
+        name="easter_eggs",
+        default=False
+    )
+
+    automatically_check_for_updates: bpy.props.BoolProperty(
+        name="auto_updates",
+        default=True
+    )
+
+    def draw(self,context):
+        layout = self.layout
+        row = layout.row()
+        row.prop(self,'automatically_check_for_updates',text='Automatically Check For Updates',icon='URL')
+        row.prop(self,'easter_eggs',text='',icon='BONE_DATA',expand=True)
+
 #Launch Code
 
 ## Generating the settings.json file if it isn't there
@@ -78,11 +97,21 @@ if not os.path.exists(settings_file):
 importlib.reload(main)
 importlib.reload(ice_cube_data)
 
+classes = [
+    iceCubeAddonPreferneces
+           ]
 
 def register():
     main.register()
     ice_cube_data.register()
+    for cls in classes:
+        bpy.utils.register_class(cls)
 
 def unregister():
     main.unregister()
     ice_cube_data.unregister()
+    for cls in classes:
+        bpy.utils.unregister_class(cls)
+
+if __name__=="__main__":
+    register()

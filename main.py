@@ -13,7 +13,7 @@ from ice_cube import root_folder, dlc_id,dlc_type,dlc_author, settings_file, cur
 from ice_cube_data.properties import properties
 from ice_cube_data.operators import main_operators, os_management
 from ice_cube_data.operators.web import check_for_updates_func, check_for_updates_auto
-from ice_cube_data.systems import inventory_system, skin_downloader
+from ice_cube_data.systems import inventory_system, skin_downloader,search_system
 
 
 #Custom Functions
@@ -22,11 +22,12 @@ from ice_cube_data.utils.file_manage import getFiles, open_json
 from ice_cube_data.utils.general_func import GetListIndex
 
 #UI Panels
-from ice_cube_data.ui import credits_info
-from ice_cube_data.ui.main import bone_layers, general_settings
-from ice_cube_data.ui.customization import custom_general, mesh, misc
-from ice_cube_data.ui.materials import skin_material, eye_material, misc_material
-from ice_cube_data.ui.advanced import dlc_ui, parenting, downloads, adv_misc
+from ice_cube_data.ui import old_credits_info, credits_info
+from ice_cube_data.ui.main import old_bone_layers, old_general_settings
+from ice_cube_data.ui.customization import old_custom_general, old_mesh, old_misc
+from ice_cube_data.ui.materials import old_eye_material, old_misc_material, old_skin_material
+from ice_cube_data.ui.advanced import old_adv_misc, old_dlc_ui, old_downloads, old_parenting
+from ice_cube_data.ui.new_ui import style, controls, materials, advanced
 
 import ice_cube
 
@@ -235,63 +236,136 @@ class IC_Panel(bpy.types.Panel):
         obj = context.object
         row = layout.row()
 
-        if ice_cube.has_checked_for_updates == False:
-            check_for_updates_auto()
+        if bpy.context.preferences.addons["ice_cube"].preferences.automatically_check_for_updates:
+            if ice_cube.has_checked_for_updates == False:
+                check_for_updates_auto()
         
         
 
         #custom variables
         rig = isRigSelected(context)
         face = main_face(rig)
-        skin_nodes = face.material_slots[0].material.node_tree
-        skin_mat = skin_nodes.nodes['Skin Tex']
+        try:
+            skin_nodes = face.material_slots[0].material.node_tree
+            skin_mat = skin_nodes.nodes['Skin Tex']
+        except:
+            skin_mat = False
 
-        #Draw the panel
-        credits_info.credits_ui_panel(self,context,preview_collections)
-
-        #tab switcher
-        box = layout.box() #UNCOMMENTING WILL DRAW BOX
-        b = box.row(align=True)
-        b.label(text= "Settings Tab", icon= 'EVENT_TAB')
-        b = box.row(align=True)
-        b.prop(obj, "ipaneltab1", text = "the funny", expand=True)
-        b = box.row(align=True)
-        for i in range(0,4):
-            if obj.get("ipaneltab1") == i:
-                b.prop(obj, f"ipaneltab{str(i + 2)}", text = "the funny", expand=True)
         
-        #tabs/Main
-        if obj.get("ipaneltab1") == 0: #Main
-            if obj.get("ipaneltab2") == 0: #Bone Layers
-                bone_layers.bone_layers_UI(self, context, layout, obj)
-            if obj.get("ipaneltab2") == 1: #General Settings
-                general_settings.general_settings_main_UI(self, context, layout, obj, preview_collections)
-        #tabs/Customization
-        if obj.get("ipaneltab1") == 1: #Customization
-            if obj.get("ipaneltab3") == 0: #General
-                custom_general.customization_general_UI(self, context, layout, obj)
-            if obj.get("ipaneltab3") == 1: #Mesh
-                mesh.custom_mesh_UI(self, context, layout, obj)
-            if obj.get("ipaneltab3") == 2: #Misc
-                misc.custom_misc_UI(self, context, layout, obj)
-        #tabs/Materials
-        if obj.get("ipaneltab1") == 2: #Materials
-            if obj.get("ipaneltab4") == 0: #Skin
-                skin_material.skin_material_UI(self, context, layout, skin_mat, face)
-            if obj.get("ipaneltab4") == 1: #Eyes
-                eye_material.eye_mat_UI(self, context, face)
-            if obj.get("ipaneltab4") == 2: #Misc
-                misc_material.misc_material_UI(self, context, layout, face)
-        #tabs/Advanced
-        if obj.get("ipaneltab1") == 3: #Advanced
-            if obj.get("ipaneltab5") == 0: #DLC
-                dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "IceCube", preview_collections)
-            if obj.get("ipaneltab5") == 1: #Parenting
-                parenting.parenting_UI(self, context, layout, properties.global_rig_baked)
-            if obj.get("ipaneltab5") == 2: #Downloads
-                downloads.downloads_UI(self, context, layout, obj)
-            if obj.get("ipaneltab5") == 3: #Misc
-                adv_misc.advanced_misc_UI(self, context, layout, obj)
+
+        if obj.get("icecube_menu_version") == 0: #New UI
+            credits_info.credits_info_panel(self,context,preview_collections)
+
+            box = layout.box()
+            box.prop(obj,"ice_cube_search_filter",text="",icon='VIEWZOOM')
+
+            if obj.get("ice_cube_search_filter"):
+                try:
+                    scale = obj.get("UI_Scale")
+                except TypeError:
+                    scale = 1.0
+                
+                search_system.ic_search_ui(self,context,scale)
+            else:
+
+                box = layout.box() #tab selection box
+                try:
+                    scale = obj.get("UI_Scale")
+                    box.scale_y=scale
+                except TypeError:
+                    scale = 1.0
+                    box.scale_y=scale
+
+                b = box.row(align=True)
+                b.label(text="Settings Tab",icon='TOOL_SETTINGS')
+                b= box.row(align=True)
+                b.prop(obj,"main_panel_switcher",text="Main Panel Switcher",expand=True)
+
+
+
+                cur_panel = obj.get("main_panel_switcher")
+
+                if cur_panel == 0: #Style
+                    b= box.row(align=True)
+                    b.prop(obj,"style_menu_switcher",text="Style Menu Switcher",expand=True)
+                    if obj.get("style_menu_switcher") == 0:
+                        style.rig_style_ui(self,context,layout,obj,preview_collections,scale)
+                    elif obj.get("style_menu_switcher") == 1:
+                        style.mesh_style_ui(self,context,layout,obj,preview_collections,scale)
+                elif cur_panel == 1: #Controls
+                    controls.controls_ui(self,context,layout,obj,scale)
+                elif cur_panel == 2: #Materials
+                    b= box.row(align=True)
+                    b.prop(obj,"material_menu_switcher",expand=True)
+                    if obj.get("material_menu_switcher") == 0:
+                        materials.material_skin_ui(self,context,layout,scale)
+                    elif obj.get("material_menu_switcher") == 1:
+                        materials.material_eyes_ui(self,context,layout,face,scale)
+                    elif obj.get("material_menu_switcher") == 2:
+                        materials.material_misc_ui(self,context,layout,face,scale)
+                elif cur_panel == 3: #Advanced
+                    b = box.row(align=True)
+                    b.prop(obj,"advanced_menu_switcher",expand=True)
+                    if obj.get("advanced_menu_switcher") == 0:
+                        advanced.advanced_dlc_ui(self,context,layout, properties.global_rig_baked, "IceCube", preview_collections,scale)
+                    elif obj.get("advanced_menu_switcher") == 1:
+                        advanced.advanced_parenting_ui(self,context,layout,scale)
+                    elif obj.get("advanced_menu_switcher") == 2:
+                        advanced.advanced_system_ui(self,context,layout,obj,scale)
+        elif obj.get("icecube_menu_version") == 1: # Classic UI
+            
+            #Draw the panel
+            old_credits_info.credits_ui_panel(self,context,preview_collections)
+
+            #tab switcher
+            box = layout.box() #UNCOMMENTING WILL DRAW BOX
+            b = box.row(align=True)
+            b.label(text= "Settings Tab", icon= 'EVENT_TAB')
+            b = box.row(align=True)
+            b.prop(obj, "ipaneltab1", text = "the funny", expand=True)
+            b = box.row(align=True)
+            for i in range(0,4):
+                if obj.get("ipaneltab1") == i:
+                    b.prop(obj, f"ipaneltab{str(i + 2)}", text = "the funny", expand=True)
+
+            #tabs/Main
+            if obj.get("ipaneltab1") == 0: #Main
+                if obj.get("ipaneltab2") == 0: #Bone Layers
+                    old_bone_layers.bone_layers_UI(self, context, layout, obj)
+                if obj.get("ipaneltab2") == 1: #General Settings
+                    old_general_settings.general_settings_main_UI(self, context, layout, obj, preview_collections)
+            #tabs/Customization
+            if obj.get("ipaneltab1") == 1: #Customization
+                if obj.get("ipaneltab3") == 0: #General
+                    old_custom_general.customization_general_UI(self, context, layout, obj)
+                if obj.get("ipaneltab3") == 1: #Mesh
+                    old_mesh.custom_mesh_UI(self, context, layout, obj)
+                if obj.get("ipaneltab3") == 2: #Misc
+                    old_misc.custom_misc_UI(self, context, layout, obj)
+            #tabs/Materials
+            if obj.get("ipaneltab1") == 2: #Materials
+                if obj.get("ipaneltab4") == 0: #Skin
+                    old_skin_material.skin_material_UI(self, context, layout, skin_mat, face)
+                if obj.get("ipaneltab4") == 1: #Eyes
+                    old_eye_material.eye_mat_UI(self, context, face)
+                if obj.get("ipaneltab4") == 2: #Misc
+                    old_misc_material.misc_material_UI(self, context, layout, face)
+            #tabs/Advanced
+            if obj.get("ipaneltab1") == 3: #Advanced
+                if obj.get("ipaneltab5") == 0: #DLC
+                    old_dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "IceCube", preview_collections)
+                if obj.get("ipaneltab5") == 1: #Parenting
+                    old_parenting.parenting_UI(self, context, layout, properties.global_rig_baked)
+                if obj.get("ipaneltab5") == 2: #Downloads
+                    old_downloads.downloads_UI(self, context, layout, obj)
+                if obj.get("ipaneltab5") == 3: #Misc
+                    old_adv_misc.advanced_misc_UI(self, context, layout, obj)
+        else:
+            box = layout.box() #UNCOMMENTING WILL DRAW BOX
+            b = box.row(align=True)
+            b.label(text= "OUTDATED UI, FIX UI WITH BUTTON BELOW", icon= 'ERROR')
+            b = box.row(align=True)
+            b.operator("reset_ui.icecube",text="Upgrade UI")
 
 def menu_function_thing(self, context):
     layout = self.layout
@@ -312,7 +386,7 @@ class ToolsAppendMenu(bpy.types.Panel):
         obj = context.object
         row = layout.row()
 
-        dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "ToolMenuAppend",preview_collections)
+        old_dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "ToolMenuAppend",preview_collections)
 
 class ToolsGenerateMenu(bpy.types.Panel):
     bl_label = "Generate Asset"
@@ -327,9 +401,7 @@ class ToolsGenerateMenu(bpy.types.Panel):
         obj = context.object
         row = layout.row()
 
-        dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "ToolMenuGenerate",preview_collections)
-
-
+        old_dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "ToolMenuGenerate",preview_collections)
 
 #Register
 

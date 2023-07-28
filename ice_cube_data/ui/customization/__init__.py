@@ -1,14 +1,14 @@
 import importlib
 
-from . import custom_general
-from . import mesh
-from . import misc
+from . import old_custom_general
+from . import old_mesh
+from . import old_misc
 
 
 files_list = (
-    custom_general,
-    mesh,
-    misc,
+    old_custom_general,
+    old_mesh,
+    old_misc,
 )
 
 #Reload

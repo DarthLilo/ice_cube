@@ -18,6 +18,28 @@ def main_face(rig): #locates the ice cube mesh
     except (AttributeError, KeyError, TypeError):
         return False
 
+def mat_holder_func(rig): #locates the ice cube mesh
+    try:
+        for obj in rig.children:
+            try:
+                if obj.data['material_holder'] == 1:
+                    return obj
+            except:
+                pass
+    except (AttributeError, KeyError, TypeError):
+        return False
+    
+def eye_mesh(rig): #locates the ice cube mesh
+    try:
+        for obj in rig.children:
+            try:
+                if obj.data['ice_cube_eye_mesh'] == 1:
+                    return obj
+            except:
+                pass
+    except (AttributeError, KeyError, TypeError):
+        return False
+
 classes = [
            ]
 

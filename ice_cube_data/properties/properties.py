@@ -7,84 +7,123 @@ from bpy.props import (StringProperty,
                         EnumProperty,
                         )
 
+from ice_cube_data.utils.selectors import isRigSelected
+
 
 # classes
 
+def r_fingers_update(self, context):
+    if self.enable_control_linking:
+        bpy.data.armatures[self.name].layers[5] = self.fingers_r
 
+def l_fingers_update(self, context):
+    if self.enable_control_linking:
+        bpy.data.armatures[self.name].layers[21] = self.fingers_l
+
+def r_arm_ik_update(self, context):
+    if self.enable_control_linking:
+        bpy.data.armatures[self.name].layers[1] = self.r_arm_ik
+
+def l_arm_ik_update(self, context):
+    if self.enable_control_linking:
+        bpy.data.armatures[self.name].layers[2] = self.l_arm_ik
+
+def r_leg_ik_update(self, context):
+    if self.enable_control_linking:
+        bpy.data.armatures[self.name].layers[3] = self.r_leg_ik
+        bpy.data.armatures[self.name].layers[19] = not self.r_leg_ik
+
+def l_leg_ik_update(self, context):
+    if self.enable_control_linking:
+        bpy.data.armatures[self.name].layers[4] = self.l_leg_ik
+        bpy.data.armatures[self.name].layers[20] = not self.l_leg_ik
+
+def dynamic_hair_update(self, context):
+    if self.enable_control_linking:
+        bpy.data.armatures[self.name].layers[6] = self.dynamichair
+
+def face_rig_update(self, context):
+    if self.enable_control_linking:
+        bpy.data.armatures[self.name].layers[23] = self.facerig
+        if bpy.data.armatures[self.name].layers[16]:
+            bpy.data.armatures[self.name].layers[16] = self.facerig
+
+def armtype_update(self,context):
+    print(f"armtype_enum updated to {self.armtype_enum}")
 
 #Bool Prop
 
 bpy.types.Object.r_arm_ik = BoolProperty(
-name="r_arm_ik", description="Enables IK for the right arm", default=False)
+name="r_arm_ik", description="Enables IK for the right arm", default=False,update=r_arm_ik_update)
     
 bpy.types.Object.l_arm_ik = BoolProperty(
-name="l_arm_ik", description="Enables IK for the left arm", default=False)
+name="l_arm_ik", description="Enables IK for the left arm", default=False,update=l_arm_ik_update)
     
 bpy.types.Object.r_leg_ik = BoolProperty(
-name="r_leg_ik", description="Enables IK for the right leg", default=True)
+name="r_leg_ik", description="Enables IK for the right leg", default=True,update=r_leg_ik_update)
     
 bpy.types.Object.l_leg_ik = BoolProperty(
-name="l_leg_ik", description="Enables IK for the left leg", default=True)
+name="l_leg_ik", description="Enables IK for the left leg", default=True,update=l_leg_ik_update)
     
 bpy.types.Object.ankle_r = BoolProperty(
-name="ankle_r", description="Ankle Right", default=True)
+name="ankle_r", description="Toggles the ankle for the right leg, requires IK to be enabled", default=True)
     
 bpy.types.Object.ankle_l = BoolProperty(
-name="ankle_l", description="Ankle Left", default=True)
+name="ankle_l", description="Toggles the ankle for the left leg, requires IK to be enabled", default=True)
     
 bpy.types.Object.stretch_leg_r = BoolProperty(
-name="stretch_leg_r", description="Leg Stretch Right", default=True)
+name="stretch_leg_r", description="Allows the leg to stretch further than normal, requires IK to be enabled", default=True)
     
 bpy.types.Object.stretch_leg_l = BoolProperty(
-name="stretch_leg_l", description="Leg Stretch Left", default=True)
+name="stretch_leg_l", description="Allows the leg to stretch further than normal, requires IK to be enabled", default=True)
     
 bpy.types.Object.stretch_arm_r = BoolProperty(
-name="stretch_arm_r", description="Arm Stretch Right", default=False)
+name="stretch_arm_r", description="Allows the arm to stretch further than normal, requires IK to be enabled", default=False)
     
 bpy.types.Object.stretch_arm_l = BoolProperty(
-name="stretch_arm_l", description="Arm Stretch Left", default=False)
+name="stretch_arm_l", description="Allows the arm to stretch further than normal, requires IK to be enabled", default=False)
     
 bpy.types.Object.fingers_r = BoolProperty(
-name="fingers_r", description="Fingers Right", default=False)
+name="fingers_r", description="Enables fingers on the rig, if the bones don't appear check the bone layer section",default=False,update=r_fingers_update)
     
 bpy.types.Object.fingers_l = BoolProperty(
-name="fingers_l", description="Fingers Left", default=False)
+name="fingers_l", description="Enables fingers on the rig, if the bones don't appear check the bone layer section", default=False,update=l_fingers_update)
 
 bpy.types.Object.wrist_lock_r = BoolProperty(
-name="wrist_lock_r", description="Locks the right wrist", default=False)
+name="wrist_lock_r", description="Locks the right wrist to world space, requires IK", default=False)
 
 bpy.types.Object.wrist_lock_l = BoolProperty(
-name="wrist_lock_l", description="Locks the left wrist", default=False)
+name="wrist_lock_l", description="Locks the left wrist to world space, requires IK", default=False)
 
 bpy.types.Object.eyelashes = BoolProperty(
-name="eyelashes", description="Enables Eyelashes", default=False)
+name="eyelashes", description="Enables eyelashes on the character", default=False)
 
 bpy.types.Object.wireframe = BoolProperty(
-name="wireframe", description="Enables wireframe view", default=False)
+name="wireframe", description="Enables a wireframe view", default=False)
 
 bpy.types.Object.jaw = BoolProperty(
 name="jaw", description="Enables the jaw", default=False)
 
 bpy.types.Object.round_jaw = BoolProperty(
-name="round_jaw", description="Rounds the jaw", default=False)
+name="round_jaw", description="Decides whether to use a square or rounded jaw", default=False)
 
 bpy.types.Object.bevelmouth = BoolProperty(
-name="bevelmouth", description="Enables Bevel Mouth", default=False)
+name="bevelmouth", description="Bevels the mouth inwards to create the appearance of lips", default=False)
 
 bpy.types.Object.teeth_cartoon = BoolProperty(
-name="teeth_cartoon", description="Makes the teeth have bevel", default=False)
+name="teeth_cartoon", description="Creates a cartoon like look with the teeth", default=False)
 
 bpy.types.Object.antilag = BoolProperty(
-name="antilag", description="Makes the rig run better", default=False)
+name="antilag", description="Disables certain features to allow the rig to run better", default=False)
 
 bpy.types.Object.teeth_bool = BoolProperty(
-name="teeth_bool", description="Booleans out the teeth past the head mesh", default=False)
+name="teeth_bool", description="Fixes the teeth sticking outside of the head, disabled by default for performance reasons", default=False)
 
 bpy.types.Object.tongue = BoolProperty(
-name="tongue", description="Enables the tongue", default=False)
+name="tongue", description="Enables a tongue inside of the rig", default=False)
 
 bpy.types.Object.facerig = BoolProperty(
-name="facerig", description="Enables the face rig", default=True)
+name="facerig", description="Toggles the entire face rig and its controls", default=True,update=face_rig_update)
 
 bpy.types.Object.leg_deform = BoolProperty(
 name="leg_deform", description="Enables leg deforms", default=False)
@@ -93,25 +132,25 @@ bpy.types.Object.body_deforms = BoolProperty(
 name="body_deforms", description="Enables body deforms", default=False)
 
 bpy.types.Object.dynamichair = BoolProperty(
-name="dynamichair", description="Enables Dynamic Hair", default=False)
+name="dynamichair", description="Enables dynamic hair, extra faces will appear along the body that can be used to cut out hair", default=False,update=dynamic_hair_update)
 
 bpy.types.Object.eyebrowdeform = BoolProperty(
 name="eyebrowdeform", description="Enables the eyebrow deforms", default=False)
 
 bpy.types.Object.togglepupil = BoolProperty(
-name="togglepupil", description="Toggle Pupil", default=True)
+name="togglepupil", description="Toggles the pupil on the eye", default=True)
 
 bpy.types.Object.togglegradient = BoolProperty(
 name="togglegradient", description="Toggle Gradient", default=False)
 
 bpy.types.Object.togglesparkle1 = BoolProperty(
-name="togglesparkle1", description="Toggle Sparkle 1", default=True)
+name="togglesparkle1", description="Toggles the first eye sparkle", default=True)
 
 bpy.types.Object.togglesparkle2 = BoolProperty(
-name="togglesparkle2", description="Toggle Sparkle 2", default=True)
+name="togglesparkle2", description="Toggles the second eye sparkle", default=True)
 
 bpy.types.Object.toggleemission = BoolProperty(
-name="toggleemission", description="Toggle Emission", default=True)
+name="toggleemission", description="Toggles eye emission", default=True)
 
 bpy.types.Object.toggle_1 = BoolProperty(
 name="Toggle 1", description="Toggle one, on by default.", default=True)
@@ -129,7 +168,7 @@ bpy.types.Object.toggle_4 = BoolProperty(
 name="Toggle 4", description="Toggle four, off by default.", default=False)
 
 bpy.types.Object.breastswitch = BoolProperty(
-name="breastswitch", description="Enables bones for controlling chest sizes", default=False)
+name="breastswitch", description="Toggles a bone for controlling the position of the breasts", default=False)
 
 bpy.types.Object.line_mouth = BoolProperty(
 name="line_mouth", description="Show/Hides the cartoon line mouth", default=False)
@@ -143,23 +182,11 @@ name="global_head_rotation", description="Enables/Disables global head rotation"
 bpy.types.Object.prop_clipboard = BoolProperty(
 name="prop_clipboard", description="Determines if the settings will be exported to the clipboard or a file", default=False)
 
-bpy.types.Object.R_A_Half = BoolProperty(
-    name = "R_A_Half", description="Determines which half of the Right Arm the mesh should be parented to",default=False)
-
-bpy.types.Object.L_A_Half = BoolProperty(
-    name = "L_A_Half", description="Determines which half of the Left Arm the mesh should be parented to",default=False)
-
-bpy.types.Object.R_L_Half = BoolProperty(
-    name = "R_L_Half", description="Determines which half of the Right Leg the mesh should be parented to",default=False)
-
-bpy.types.Object.L_L_Half = BoolProperty(
-    name = "L_L_Half", description="Determines which half of the Left Leg the mesh should be parented to",default=False)
-
-bpy.types.Object.Body_Bend_Half = BoolProperty(
-    name = "Body_Bend_Half", description="Determines which half of the Body the mesh should be parented to",default=False)
-
 bpy.types.Object.generate_thumbnail = BoolProperty(
     name = "generate_thumbnail", description="Decides whether to generate a thumbnail in the current scene",default=False)
+
+bpy.types.Object.generate_baked = BoolProperty(
+    name = "generate_baked", description="Decides whether to generate a baked version of the rig",default=False)
 
 bpy.types.Object.has_baked_version = BoolProperty(
     name = "has_baked_version", description="Decides whether to put True or False in the baked part of info.json",default=False)
@@ -176,6 +203,18 @@ bpy.types.Object.eyetracker = BoolProperty(
 bpy.types.Object.teeth_follow = BoolProperty(
     name = "teeth_follow", description="Teeth will follow and rotate with the mouth control",default=True)
 
+bpy.types.Object.teeth_settings = BoolProperty(
+    name = "teeth_settings", description="Shows/Hides teeth settings in the panel",default=True)
+
+bpy.types.Object.bevel_settings = BoolProperty(
+    name = "bevel_settings", description="Shows/Hides bevel settings in the panel",default=False)
+
+bpy.types.Object.jaw_settings = BoolProperty(
+    name = "jaw_settings", description="Shows/Hides jaw settings in the panel",default=False)
+
+bpy.types.Object.depth_settings = BoolProperty(
+    name = "depth_settings", description="Shows/Hides depth settings in the panel",default=False)
+
 bpy.types.Scene.asset_customizable = BoolProperty(
     name = "asset_customizable", description="Determines whether the asset can be customized or not",default=False)
 
@@ -188,8 +227,28 @@ bpy.types.Scene.leggings_half = BoolProperty(
 bpy.types.Scene.has_entries = BoolProperty(
     name = "has_entries", description="Determines whether the asset has entries in it. (Will add each major collection as a valid entry)",default=False)
 
+bpy.types.Object.upgraded_ui = BoolProperty(
+    name = "upgraded_ui", description="internal property to decide whether to disable/enable broken features",default=False)
+
+bpy.types.Object.baked_rig = BoolProperty(
+    name = "baked_rig", description="internal property that indicates the rig has been baked",default=False)
+
+bpy.types.Object.baked_rig_unused_features = BoolProperty(
+    name = "baked_rig_unused_features", description="internal property that indicates the rig has been baked removing unused features",default=False)
+
+bpy.types.Object.baked_rig_eyes = BoolProperty(
+    name = "baked_rig_eyes", description="internal property that indicates the rig has been baked removing the eyenode",default=False)
+
+bpy.types.Object.baked_rig_squish = BoolProperty(
+    name = "baked_rig_squish", description="internal property that indicates the rig has been baked removing the squish deforms",default=False)
+
 #menu props
 ckbox = bpy.types.Object
+
+ckbox.bonelayer_settings = BoolProperty(
+    name = "bonelayer_settings",
+    default=True
+)
 
 ckbox.bone_set_face = BoolProperty(
     name = "bone_set_face",
@@ -256,6 +315,11 @@ ckbox.mesh_set_face = BoolProperty(
     default=True
 )
 
+ckbox.mesh_set_deform = BoolProperty(
+    name = "mesh_set_deform",
+    default=True
+)
+
 ckbox.mat_set_iris = BoolProperty(
     name = "mat_set_iris",
     default=True
@@ -271,6 +335,113 @@ ckbox.mat_set_sparkle = BoolProperty(
     default=True
 )
 
+ckbox.face_style_settings = BoolProperty(
+    name="face_style_settings",
+    default=True
+)
+
+ckbox.workflow_settings = BoolProperty(
+    name="workflow_settings",
+    default=True
+)
+
+ckbox.ik_settings = BoolProperty(
+    name="ik_settings",
+    default=True
+)
+
+ckbox.influence_settings = BoolProperty(
+    name="influence_settings",
+    default=True
+)
+
+ckbox.texture_settings = BoolProperty(
+    name="texture_settings",
+    default=True
+)
+
+ckbox.sss_settings = BoolProperty(
+    name="sss_settings",
+    default=True
+)
+
+ckbox.pupil_bright = BoolProperty(
+    name="pupil_bright",
+    description="Adds a brigher section to the pupil",
+    default=True
+)
+
+ckbox.flip_pupil_bright = BoolProperty(
+    name="flip_pupil_bright",
+    description="Flips the brighter section added to the pupil",
+    default=False
+)
+
+ckbox.advanced_button_settings = BoolProperty(
+    name="advanced_button_settings",
+    default=False
+)
+
+ckbox.advanced_guide = BoolProperty(
+    name="advanced_guide",
+    default=False
+)
+
+ckbox.update_manager = BoolProperty(
+    name="update_manager",
+    default=False
+)
+
+ckbox.setting_data_manager = BoolProperty(
+    name="setting_data_manager",
+    default=False
+)
+
+ckbox.backup_data_manager = BoolProperty(
+    name="backup_data_manager",
+    default=False
+)
+
+ckbox.confirm_ice_cube_reset = BoolProperty(
+    name="confirm_ice_cube_reset",
+    description="Enables the ability to completely reset Ice Cube to default",
+    default=False
+)
+
+ckbox.enable_control_linking = BoolProperty(
+    name="enable_control_linking",
+    description="Links certain bone layers and their respective controls such as fingers, enabled by default",
+    default=True
+)
+
+ckbox.baking_data_manager = BoolProperty(
+    name="baking_data_manager",
+    default=False
+)
+
+ckbox.confirm_rig_bake = BoolProperty(
+    name="confirm_rig_bake",
+    description="Enables the ability to bake the rig, EXTREMELY DESTRUCTIVE",
+    default=False
+)
+
+ckbox.bake_all_unused_features = BoolProperty(
+    name="bake_all_unused_features",
+    description="Bakes all unused features on the rig, recommended for performance BUT locks you out of customizing the rig more in the future",
+    default=False
+)
+
+ckbox.bake_eye_textures = BoolProperty(
+    name="bake_eye_textures",
+    description="Bakes the eye textures removing the eye node and converting it into an image file, requires a save location",
+    default=False
+)
+
+ckbox.split_eye_bakes = BoolProperty(
+    name="split_eye_bakes",
+    description="Used if you have multi colored eyes, will use two images for baking instead of just one",
+    default=False
+)
 
 global_rig_baked = False
 global_parent_half = False
@@ -287,6 +458,9 @@ update_available = False
 bpy.types.Object.breastshape = IntProperty(
 name="breast_shape", description="Extends the chest down one pixel", default=0, min=0, max=1)
 
+bpy.types.Object.eye_bake_resolution = IntProperty(
+name="eye_bake_resolution", description="Final resolution for the baked eye texture", default=512, min=256, max=1024)
+
 #Float Prop
 
 bpy.types.Object.jaw_strength = FloatProperty(
@@ -299,7 +473,7 @@ bpy.types.Object.leg_taper_strength = FloatProperty(
 name="leg_taper_strength", description="Changes the strength of leg taper", default=0, min=-1, max=1)
 
 bpy.types.Object.hip = FloatProperty(
-name="hip", description="Changes hip strength", default=0, min=0 ,max=1.5)
+name="hip", description="Changes the hip size", default=0, min=0 ,max=1.5)
 
 bpy.types.Object.upperbodywidth = FloatProperty(
 name="upperbodywidth", description="Enables body deforms", default=0, min=0 ,max=1)
@@ -308,16 +482,16 @@ bpy.types.Object.lowerbodywidth = FloatProperty(
 name="lowerbodywidth", description="Enables body deforms", default=0, min=-1 ,max=1)
 
 bpy.types.Object.bulge_arm_r = FloatProperty(
-name="bulge_arm_r", description="Right Arm Bulge", default=0, min=0, max=1)
+name="bulge_arm_r", description="Rounds out the limb to give a smoother look", default=0, min=0, max=1)
 
 bpy.types.Object.bulge_arm_l = FloatProperty(
-name="bulge_arm_l", description="Left Arm Bulge", default=0, min=0, max=1)
+name="bulge_arm_l", description="Rounds out the limb to give a smoother look", default=0, min=0, max=1)
 
 bpy.types.Object.bulge_leg_r = FloatProperty(
-name="bulge_leg_r", description="Right Leg Bulge", default=0, min=0, max=1)
+name="bulge_leg_r", description="Rounds out the limb to give a smoother look", default=0, min=0, max=1)
 
 bpy.types.Object.bulge_leg_l = FloatProperty(
-name="bulge_leg_l", description="Left Leg Bulge", default=0, min=0, max=1)
+name="bulge_leg_l", description="Rounds out the limb to give a smoother look", default=0, min=0, max=1)
 
 bpy.types.Object.eyebrowheight = FloatProperty(
 name="eyebrowheight", description="Changes the height of the eyebrows", default=0, min=-.5 ,max=1)
@@ -337,26 +511,29 @@ name="leg_taper_strength2", description="Changes the strength of leg taper upper
 bpy.types.Object.armtaper = FloatProperty(
 name="armtaper", description="Changes the strength of arm upper", default=0, min=-1, max=1)
 
+bpy.types.Object.armtaperlower = FloatProperty(
+name="armtaperlower", description="Changes the strength of arm lower", default=0, min=-1, max=1)
+
 bpy.types.Object.bodybulge = FloatProperty(
-    name="bodybulge", description="Body Bulge", default=0, min=0, max=1)
+    name="bodybulge", description="Rounds out the body to give a smoother look", default=0, min=0, max=1)
 
 bpy.types.Object.eyedepth = FloatProperty(
-    name="eyedepth", description="Eye Depth", default=0, min=-1, max=1)
+    name="eyedepth", description="Controls how much of a 2D/3D effect the eyes have", default=0, min=-1, max=1)
 
 bpy.types.Object.mouthdepth = FloatProperty(
-    name="mouthdepth", description="Mouth Depth", default=0, min=-1, max=1)
+    name="mouthdepth", description="Controls how much of a 2D/3D effect the mouth has", default=0, min=-1, max=1)
 
 bpy.types.Object.innermouthdepth = FloatProperty(
-    name="innermouthdepth", description="Inner Mouth Depth", default=0, min=0, max=1)
+    name="innermouthdepth", description="Used to fix clipping with the inner mouth and the body", default=0, min=0, max=1)
 
 bpy.types.Object.breastsize = FloatProperty(
-    name="breastsize", description="Chest Size", default=0, min=0, max=2)
+    name="breastsize", description="Controls the chest size", default=0, min=0, max=2)
     
 bpy.types.Object.breastweight = FloatProperty(
-    name="breastweight", description="Chest Weight", default=0, min=0, max=1)
+    name="breastweight", description="Moves the point of the chest downwards to look more natural", default=0, min=0, max=1)
 
 bpy.types.Object.bodytopround = FloatProperty(
-    name="bodytopround", description="Rounded Body Top", default=0, min=0, max=2)
+    name="bodytopround", description="Rounds the top of the body", default=0, min=0, max=2)
 
 bpy.types.Object.eye_influence = FloatProperty(
     name="eye_influence", description="Controls how much the eyes should be influenced by the eye controls", default=0, min=0, max=1)
@@ -368,25 +545,28 @@ bpy.types.Object.mouth_influence = FloatProperty(
     name="mouth_influence", description="Controls how much the eyes should be influenced by the mouth controls", default=0, min=0, max=1)
 
 bpy.types.Object.squish_arm_r = FloatProperty(
-name="squish_arm_r", description="Right Arm Squish", default=0, min=0, max=1)
+name="squish_arm_r", description="Allows the limb to sqaush and stretch in a cartoony way", default=0, min=0, max=1)
 
 bpy.types.Object.squish_arm_l = FloatProperty(
-name="squish_arm_l", description="Left Arm Squish", default=0, min=0, max=1)
+name="squish_arm_l", description="Allows the limb to sqaush and stretch in a cartoony way", default=0, min=0, max=1)
 
 bpy.types.Object.squish_leg_r = FloatProperty(
-name="squish_leg_r", description="Right Leg Squish", default=0, min=0, max=1)
+name="squish_leg_r", description="Allows the limb to sqaush and stretch in a cartoony way", default=0, min=0, max=1)
 
 bpy.types.Object.squish_leg_l = FloatProperty(
-name="squish_leg_l", description="Left Leg Squish", default=0, min=0, max=1)
+name="squish_leg_l", description="Allows the limb to sqaush and stretch in a cartoony way", default=0, min=0, max=1)
 
 bpy.types.Object.squish_body = FloatProperty(
-name="squish_body", description="Body Squish", default=0, min=0, max=1)
+name="squish_body", description="Allows the body to sqaush and stretch in a cartoony way", default=0, min=0, max=1)
 
 bpy.types.Object.squish_head = FloatProperty(
-name="squish_head", description="Head Squish", default=0, min=0, max=1)
+name="squish_head", description="Allows the head to sqaush and stretch in a cartoony way", default=0, min=0, max=1)
 
 bpy.types.Object.teeth_curve = FloatProperty(
-name="teeth_curve", description="Teeth Curve", default=0, min=0, max=1)
+name="teeth_curve", description="Curves the teeth inwards to create a nicer shade", default=0, min=0, max=1)
+
+bpy.types.Object.UI_Scale = FloatProperty(
+name="UI_Scale", description="Scales the main UI", default=1, min=0.8, max=3)
 
 #Enum Prop 
 
@@ -396,6 +576,47 @@ bpy.types.Object.armtype_enum = EnumProperty(
     items = [('one', 'Steve', '4x4'),
              ('two', 'Alex', '4x3'),
              ('three', 'Thin', '3x3')
+             ],
+    update=armtype_update)
+
+bpy.types.Object.main_panel_switcher = EnumProperty(
+    name = "main_panel_switcher",
+    default = 'style',
+    items = [('style', 'Style', 'Main Style Settings'),
+             ('controls', 'Controls', 'Control Settings'),
+             ('materials', 'Materials', 'Material Settings'),
+             ('advanced','Advanced','Advanced Settings')
+             ])
+
+bpy.types.Object.style_menu_switcher = EnumProperty(
+    name = "style_menu_switcher",
+    default = 'rig',
+    items = [('rig', 'Rig Style', 'Rig Style Settings'),
+             ('mesh', 'Mesh Style', 'Mesh Style Settings')
+             ])
+
+bpy.types.Object.material_menu_switcher = EnumProperty(
+    name = "material_menu_switcher",
+    default = 'skin',
+    items = [('skin', 'Skin', 'Skin Material Settings'),
+             ('eyes', 'Eyes', 'Eye Material Settings'),
+             ('misc', 'Misc', 'Misc Material Settings')
+             ])
+
+bpy.types.Object.advanced_menu_switcher = EnumProperty(
+    name = "advanced_menu_switcher",
+    default = 'dlc',
+    items = [('dlc', 'DLC', 'DLC Settings'),
+             ('parenting', 'Parenting', 'Parenting Settings'),
+             ('system', 'System', 'System Settings')
+             ])
+
+bpy.types.Object.gradient_color_eye = EnumProperty(
+    name = "gradient_color_eye",
+    default = 'color',
+    items = [('color', 'Colors', 'Uses the default 4 color options for eyes'),
+             ('gradient', 'Gradient', 'Uses a gradient for the eyes'),
+             ('texture', 'Texture', 'Uses a texture for the eyes')
              ])
              
 bpy.types.Object.ipaneltab1 = EnumProperty(
@@ -440,7 +661,7 @@ bpy.types.Object.ipaneltab5 = EnumProperty(
              ])
 
 bpy.types.Object.ipaneltab6 = EnumProperty(
-    name = "haha tab",
+    name = "Asset/Preset Switcher",
     default = 'one',
     items = [('one', 'Assets', 'Asset appending menu'),
              ('two', 'Presets', 'Preset appending menu')
@@ -463,8 +684,8 @@ bpy.types.Object.ipaneltab7 = EnumProperty(
 bpy.types.Object.bendstyle = EnumProperty(
     name = "haha tab",
     default = 'one',
-    items = [('one', 'Sharp', 'Sharp bends on arms and legs'),
-             ('two', 'Smooth', 'Smooth bends on arms and legs')
+    items = [('one', 'Sharp Bends', 'Sharp bends on arms and legs'),
+             ('two', 'Smooth Bends', 'Smooth bends on arms and legs')
              ])
              
 bpy.types.Object.arm_ik_parent_r = EnumProperty(
@@ -498,9 +719,9 @@ bpy.types.Object.emissioneye = EnumProperty(
     name = "emissioneye",
     default= 'one',
     items = [
-             ('one', 'Both', 'Both'),
-             ('two', 'Right', 'Right Eye'),
-             ('three', 'Left', 'Left Eye')
+             ('one', 'Both Eyes', 'Gives both eyes emission'),
+             ('two', 'Right Eye Only', 'Only the right eye glows'),
+             ('three', 'Left Eye Only', 'Only the left eye glows')
              ]
 )
 
@@ -508,9 +729,18 @@ bpy.types.Object.mouthtypes = EnumProperty(
     name = "mouthtypes",
     default= 'one',
     items = [
-             ('one', 'Ice Cube', 'Ice Cube'),
-             ('two', 'Mine-Imator', 'Mine-Imator'),
-             ('three', 'Square', 'Square')
+             ('one', 'Ice Cube', 'Uses the default Ice Cube mouth shape'),
+             ('two', 'Mine-Imator', 'Uses a \'Skibbz\' like mouth shape from Mine-Imator'),
+             ('three', 'Square', 'Uses a classical Zamination styled square mouth')
+             ]
+)
+
+bpy.types.Object.icecube_menu_version = EnumProperty(
+    name = "icecube_menu_version",
+    default= 'new',
+    items = [
+             ('new', 'New UI', '1.5.2+'),
+             ('classic', 'Classic UI', '-1.5.1')
              ]
 )
 
@@ -610,7 +840,6 @@ bpy.types.Object.baked_version_filepath = StringProperty(
     description="Defines a filepath for the baked version",
     subtype='FILE_PATH',
     default="")
-
 
 bpy.types.Scene.target_thumbnail_generate = StringProperty(
     name="target_thumbnail_generate",

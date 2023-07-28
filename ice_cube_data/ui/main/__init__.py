@@ -1,12 +1,12 @@
 import importlib
 
-from . import bone_layers
-from . import general_settings
+from . import old_bone_layers
+from . import old_general_settings
 
 
 files_list = (
-    bone_layers,
-    general_settings,
+    old_bone_layers,
+    old_general_settings,
 )
 
 #Reload

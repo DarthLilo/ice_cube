@@ -12,6 +12,7 @@ importlib.reload(general_func)
 importlib.reload(selectors)
 importlib.reload(ui_tools)
 importlib.reload(web_tools)
+importlib.reload(importlib)
 
 
 def register():

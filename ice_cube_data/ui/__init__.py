@@ -4,6 +4,7 @@ from . import advanced
 from . import customization
 from . import main
 from . import materials
+from . import new_ui
 
 
 files_list = (
@@ -11,6 +12,7 @@ files_list = (
     customization,
     main,
     materials,
+    new_ui,
 )
 
 #Reload

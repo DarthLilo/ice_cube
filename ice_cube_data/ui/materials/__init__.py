@@ -1,13 +1,13 @@
 import importlib
 
-from . import eye_material
-from . import misc_material
-from . import skin_material
+from . import old_eye_material
+from . import old_misc_material
+from . import old_skin_material
 
 files_list = (
-    eye_material,
-    misc_material,
-    skin_material,
+    old_eye_material,
+    old_misc_material,
+    old_skin_material,
 )
 
 #Reload

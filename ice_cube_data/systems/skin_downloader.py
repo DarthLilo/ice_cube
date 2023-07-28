@@ -12,6 +12,18 @@ from ice_cube_data.utils.selectors import isRigSelected, main_face
 from ice_cube_data.utils.file_manage import unpack_img
 from ice_cube_data.utils.general_func import isOldSkin
 
+def getSkinNode():
+    material_list = {}
+    materials = bpy.data.materials
+    for mat in materials:
+        try:
+            if mat["ice_cube_material"]:
+                material_list[mat["ice_cube_material"]] = mat
+        except KeyError:
+            pass
+    
+    return material_list['skin']
+
 #Downloads a skin based on a username
 class skin_downloader(bpy.types.Operator):
     bl_idname = "skin.download"
@@ -20,13 +32,12 @@ class skin_downloader(bpy.types.Operator):
 
 
     def execute(self, context):
+
+        
         
         #variable setup
         username = context.scene.minecraft_username
-        rig2 = isRigSelected(context)
-        face = main_face(rig2)
-        skin_nodes = face.material_slots[0].material.node_tree
-        current_skin = skin_nodes.nodes['Skin Tex'].image
+        current_skin = getSkinNode().node_tree.nodes['Skin Tex'].image
         
         #Checks if there is no username, if so, display an error, if not, try to download it.
         if not username:
@@ -94,9 +105,7 @@ class apply_skin(bpy.types.Operator):
         try:
             #sets up variables
             thumbnail = bpy.data.window_managers["WinMan"].skins_folder
-            rig2 = isRigSelected(context)
-            face = main_face(rig2)
-            skin_nodes = face.material_slots[0].material.node_tree
+            skin_nodes = getSkinNode().node_tree
             current_skin = skin_nodes.nodes['Skin Tex'].image
             skin_path = root_folder+"/ice_cube_data/internal_files/skins/"
             skin_path = skin_path+thumbnail
@@ -131,9 +140,7 @@ class reset_skin(bpy.types.Operator):
         
         try:
             #Sets up variables
-            rig2 = isRigSelected(context)
-            face = main_face(rig2)
-            skin_nodes = face.material_slots[0].material.node_tree
+            skin_nodes = getSkinNode().node_tree
             current_skin = skin_nodes.nodes['Skin Tex'].image
             skin_path = root_folder+"/ice_cube_data/internal_files/rigs/textures/skin.png"
             #unpacks the skin
@@ -160,9 +167,7 @@ class delete_skin(bpy.types.Operator):
         try:
             #sets up variables
             thumbnail = bpy.data.window_managers["WinMan"].skins_folder
-            rig2 = isRigSelected(context)
-            face = main_face(rig2)
-            skin_nodes = face.material_slots[0].material.node_tree
+            skin_nodes = getSkinNode().node_tree
             current_skin = skin_nodes.nodes['Skin Tex'].image
             skin_path = root_folder+"/ice_cube_data/internal_files/skins/"
             default_skin = root_folder+"/ice_cube_data/internal_files/rigs/textures/skin.png"
