@@ -13,7 +13,7 @@ from ice_cube_data.utils.ui_tools import CustomErrorBox
 
 def badToTheBone():
     try:
-        bad_to_the_bone = f"{root_folder}/bad_to_the_bone.mp3"
+        bad_to_the_bone = f"{root_folder}/ice_cube_data/internal_files/bad_to_the_bone.mp3"
         sound = aud.Sound(bad_to_the_bone)
         device = aud.Device()
         handle = device.play(sound)

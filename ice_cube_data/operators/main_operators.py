@@ -1115,13 +1115,7 @@ class IC_DevMode_TestOperator(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        easter_eggs = bpy.context.preferences.addons["ice_cube"].preferences.easter_eggs
-
-        if easter_eggs:
-            ran = random.randint(1,50)
-            print(ran)
-            if ran == 1:
-                badToTheBone()
+        badToTheBone()
 
         return{'FINISHED'}
 
