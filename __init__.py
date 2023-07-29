@@ -74,6 +74,7 @@ class iceCubeAddonPreferneces(bpy.types.AddonPreferences):
 
     debug_logging: bpy.props.BoolProperty(
         name="debug_logging",
+        description='CURRENTLY DOES NOTHING',
         default=False
     )
 
