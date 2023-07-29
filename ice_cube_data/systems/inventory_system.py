@@ -156,7 +156,6 @@ class refresh_customizations(bpy.types.Operator):
 
                     count += 1
             except:
-                print("No Entries Found, Ignoring")
                 cur_asset_id.append(asset_id)
             
             bpy.types.Scene.asset_entries = EnumProperty(
@@ -212,7 +211,6 @@ class append_asset(bpy.types.Operator):
             #items = [('Default', 'Default Entry','Default Entry')]
             #)
             #scene.asset_entries = 'Default'
-            print("CHANGED")
 
         
         

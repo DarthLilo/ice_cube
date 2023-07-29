@@ -268,6 +268,7 @@ def material_misc_ui(self,context,layout,face,scale):
         box = layout.box()
         box.label(text= "OUTDATED RIG, MISC TAB DISABLED", icon= 'ERROR')
         return{'FINISHED'}
+    box = layout.box()
 
     
     box.label(text= "Misc Materials", icon= 'MATERIAL')

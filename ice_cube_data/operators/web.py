@@ -64,9 +64,6 @@ def check_for_updates_auto():
 
     if cur_date != last_check_date:
         check_for_updates_func()
-        print("Checked For Updates!")
-    else:
-        print("Waiting 24HR")
         
     
 
@@ -101,7 +98,6 @@ def IC_refresh_dlc(self, context):
 
     for dlc in github_repo:
         dlc_number = getIndexCustom(str(dlc), github_repo)
-        print(dlc_number)
         github_dlc_id = github_repo[dlc_number]['dlc_id']
         github_dlc_label = github_repo[dlc_number]['dlc_name']
         dlc_info_type = github_repo[dlc_number]['dlc_type']

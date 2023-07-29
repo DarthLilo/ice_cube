@@ -118,7 +118,6 @@ class append_preset(bpy.types.Operator):
 
         if easter_eggs:
             ran = random.randint(1,50)
-            print(ran)
             if ran == 1:
                 badToTheBone()
         return{'FINISHED'}
@@ -135,7 +134,6 @@ class append_defaultrig(bpy.types.Operator): #Appends the default version of the
 
         if easter_eggs:
             ran = random.randint(1,50)
-            print(ran)
             if ran == 1:
                 badToTheBone()
         return{'FINISHED'}
@@ -361,8 +359,6 @@ class refresh_dlc(bpy.types.Operator):
 
     def execute(self, context):
         refresh_dlc_func(self, context)
-
-        print(f"DLC IDs : {dlc_id}\nDLC TYPE : {dlc_type}\nDLC AUTHOR : {dlc_author}")
         downloads_path = f"{root_folder}/ice_cube_data/ui/advanced/downloads.py"
         exec(open(downloads_path).read())
         
@@ -439,7 +435,7 @@ class generate_asset_pack(bpy.types.Operator):
     def execute(self,context):
         obj = context.object
         scene = context.scene
-        if obj.get("ipaneltab6") is 0: #ASSETS
+        if obj.get("ipaneltab6") == 0: #ASSETS
             CustomErrorBox("Generation for assets from the Ice Cube UI has been disabled, please use the new Scene UI found in the toolbar under \'Tool\'")
             ##CHECKING FOR VARS
             #if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "" and os.path.exists(obj.target_thumbnail_generate) is True:
@@ -503,7 +499,7 @@ class generate_asset_pack(bpy.types.Operator):
             #    CustomErrorBox("Please select a valid thumbnail!")
             #    return{'FINISHED'}
 
-        if obj.get("ipaneltab6") is 1:
+        if obj.get("ipaneltab6") == 1:
             #CHECKING FOR VARS
 
             if not bpy.data.is_saved:
@@ -898,17 +894,12 @@ class IC_DevMode_ResetRig(bpy.types.Operator):
 
             reset_all_settings_func(self,context) #Resets Settings
             obj.ic_dlc_i.clear() #Resets DLC
-            print("Cleared Ghost DLC")
             obj.confirm_ice_cube_reset = False
 
             for bone in rig.pose.bones:
-                print(bone.location,bone.rotation_quaternion,bone.scale,bone.name)
-
                 bone.location = (0,0,0)
                 bone.rotation_quaternion = [1,0,0,0]
                 bone.scale = (1,1,1)
-
-            print("Reset all bone transforms!")
         else:
             CustomErrorBox("Please confirm the reset with the button to the side!",'UNCONFIRMED RESET','ERROR')
 
@@ -1145,7 +1136,8 @@ class ICDLC_ListClass(bpy.types.PropertyGroup):
 
 
 
-class IC_backups_list_i(bpy.types.UIList):
+class IC_BACKUP_UL_list_i(bpy.types.UIList):
+
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
         
         if self.layout_type in {'DEFAULT', 'COMPACT'}:
@@ -1164,7 +1156,7 @@ class IC_backups_list_i(bpy.types.UIList):
             layout.label(text="", icon_value=icon)
 
 
-class IC_DLC_available_list_i(bpy.types.UIList):
+class IC_DLC_UL_available_list_i(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
         
         if self.layout_type in {'DEFAULT', 'COMPACT'}:
@@ -1229,8 +1221,8 @@ classes = [
     l_leg_fk_to_ik,
     IC_DevMode_ResetRig,
     IC_DevMode_ResetUI,
-    IC_backups_list_i,
-    IC_DLC_available_list_i,
+    IC_BACKUP_UL_list_i,
+    IC_DLC_UL_available_list_i,
     ICBackupsListClass,
     ICDLC_ListClass,
     IC_Jump_To_Panel_RigStyle,

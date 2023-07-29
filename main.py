@@ -215,9 +215,9 @@ def dlc_img_cache(self, context):
     pcoll.dlc_img_cache_folder_dir = directory
     return pcoll.dlc_img_cache_folder
 
-class IC_Panel(bpy.types.Panel):
+class UIPANEL_PT_IceCube(bpy.types.Panel):
     bl_label = "Ice Cube"
-    bl_idname = "ice_cube_panel"
+    bl_idname = "UIPANEL_PT_IceCube"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'Ice Cube'
@@ -373,9 +373,9 @@ def menu_function_thing(self, context):
     my_icon = pcoll["Ice_Cube"]
     layout.operator("append.defaultrig", icon_value = my_icon.icon_id)
 
-class ToolsAppendMenu(bpy.types.Panel):
+class TOOLSAPPEND_PT_IceCube(bpy.types.Panel):
     bl_label = "Append Asset/Preset"
-    bl_idname = "ToolsAppendIceCube"
+    bl_idname = "TOOLSAPPEND_PT_IceCube"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'Tool'
@@ -388,9 +388,9 @@ class ToolsAppendMenu(bpy.types.Panel):
 
         old_dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "ToolMenuAppend",preview_collections)
 
-class ToolsGenerateMenu(bpy.types.Panel):
+class TOOLSGENERATE_PT_IceCube(bpy.types.Panel):
     bl_label = "Generate Asset"
-    bl_idname = "ToolsGenerateIceCube"
+    bl_idname = "TOOLSGENERATE_PT_IceCube"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'Tool'
@@ -405,9 +405,9 @@ class ToolsGenerateMenu(bpy.types.Panel):
 
 #Register
 
-classes = [IC_Panel,
-           ToolsAppendMenu,
-           ToolsGenerateMenu
+classes = [UIPANEL_PT_IceCube,
+           TOOLSAPPEND_PT_IceCube,
+           TOOLSGENERATE_PT_IceCube
            ]
 
 preview_collections = {}

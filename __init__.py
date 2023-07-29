@@ -8,7 +8,7 @@ import bpy
 bl_info ={
     "name": "Ice Cube",
     "author": "DarthLilo",
-    "version": (1, 5, 2),
+    "version": (1, 5, 3),
     "blender": (3, 4, 0),
     "location": "View3D > Tool",
     "description": "The official python panel for Ice Cube!",
@@ -33,27 +33,24 @@ get_time = datetime.datetime.now()
 cur_date = f"{get_time.year}-{get_time.month}-{get_time.day}"
 has_checked_for_updates = False
 cur_asset_id = ["ice_cube"]
-
 #Folder Creation
 required_dirsmain = ["backups","downloads","cache"]
 
 for dir in required_dirsmain:
     dir_path = os.path.normpath(f"{root_folder}/{dir}")
     if os.path.exists(dir_path):
-        print(f"Found path {dir_path}")
+        pass
     else:
         os.mkdir(dir_path)
-        print(f"Made directory {dir_path}")
 
 
 required_dirs = ["skins","user_packs", "user_packs/rigs", "user_packs/inventory"]
 for dir in required_dirs:
     dir_path = os.path.normpath(f"{root_folder}/ice_cube_data/internal_files/{dir}")
     if os.path.exists(dir_path):
-        print(f"Found path {dir_path}")
+        pass
     else:
         os.mkdir(dir_path)
-        print(f"Made directory {dir_path}")
 
 
 #Path Appending
@@ -75,6 +72,11 @@ class iceCubeAddonPreferneces(bpy.types.AddonPreferences):
         default=False
     )
 
+    debug_logging: bpy.props.BoolProperty(
+        name="debug_logging",
+        default=False
+    )
+
     automatically_check_for_updates: bpy.props.BoolProperty(
         name="auto_updates",
         default=True
@@ -84,7 +86,9 @@ class iceCubeAddonPreferneces(bpy.types.AddonPreferences):
         layout = self.layout
         row = layout.row()
         row.prop(self,'automatically_check_for_updates',text='Automatically Check For Updates',icon='URL')
+        row.prop(self,'debug_logging',text='Debug Logging',icon='INFO')
         row.prop(self,'easter_eggs',text='',icon='BONE_DATA',expand=True)
+        
 
 #Launch Code
 

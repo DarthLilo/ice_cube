@@ -75,8 +75,6 @@ def append_preset_func(self, context, rig_baked):
         section = "Collection"
         obj = thumbnailnopng
 
-        print(blendfile)
-
 
         #Attemps to append it based on the previously established variables, if not, draw a custom error box
         try:

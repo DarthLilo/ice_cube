@@ -69,7 +69,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
 
     
 
-    if menu_type is "IceCube":
+    if menu_type == "IceCube":
 
         box = layout.box()
         b = box.row(align=True)
@@ -79,7 +79,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
 
     
 
-        if obj.get("dlc_menu_switcher") is 0: #APPEND MENU
+        if obj.get("dlc_menu_switcher") == 0: #APPEND MENU
             b = box.row(align=True)
             b.scale_y=scale
             b.prop(obj,"ipaneltab6",text="DLC Type")
@@ -88,7 +88,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
             dlc_sub_box = b.box()
             dlc_sub_row = dlc_sub_box.row(align=True)
 
-            if obj.get("ipaneltab6") is 0: #ASSETS
+            if obj.get("ipaneltab6") == 0: #ASSETS
                 thumbnail = bpy.data.window_managers["WinMan"].inventory_preview
                 thumbnailnopng = thumbnail.split(".")[0]
                 cur_asset = context.scene.get("selected_inv_asset")
@@ -208,7 +208,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
                 b = box.row(align=True)
                 b.label(text="Version: " + asset_json_asset_version)
 
-            if obj.get("ipaneltab6") is 1: #PRESETS
+            if obj.get("ipaneltab6") == 1: #PRESETS
                 thumbnail = bpy.data.window_managers["WinMan"].my_previews_presets
                 thumbnailnopng = thumbnail.split(".")[0]
                 cur_asset = context.scene.get("selected_rig_preset")
@@ -313,7 +313,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
                 b = box.row(align=True)
                 b.label(text="Has \"BAKED\" version?: " + json_rig_baked)
 
-        if obj.get("dlc_menu_switcher") is 1: #DOWNLOAD MENU
+        if obj.get("dlc_menu_switcher") == 1: #DOWNLOAD MENU
             box = layout.box()
             b = box.row(align=True)
             b.scale_y=scale
@@ -329,12 +329,12 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
             colb.operator("refresh_grab.dlc", text="", icon='FILE_REFRESH')
             colb.operator("download_selected.dlc", text="", icon='IMPORT')
 
-        if obj.get("dlc_menu_switcher") is 2: #GENERATE MENU
+        if obj.get("dlc_menu_switcher") == 2: #GENERATE MENU
             b.prop(obj,"ipaneltab6",text="")
             b = box.row(align=True)
             b.scale_y=scale
 
-            if obj.get("ipaneltab6") is 0: #ASSETS
+            if obj.get("ipaneltab6") == 0: #ASSETS
                 b.label(text="Disabled, please use the in the main toolbar under \'Tool\'")
                 b = box.row(align=True)
                 b.enabled = False
@@ -360,7 +360,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
                 b.scale_y=scale
                 b.operator("generate.asest_pack",text="Generate Pack")
 
-            if obj.get("ipaneltab6") is 1: #PRESETS
+            if obj.get("ipaneltab6") == 1: #PRESETS
                 b.prop(obj, "generate_baked", text="Generate Baked?")
                 b.prop(obj,"generate_thumbnail",text="Generate Thumbnail?")
                 b1 = box.row(align=True)
@@ -395,7 +395,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
                 b.scale_y=scale
                 b.operator("generate.asest_pack",text="Generate Pack")
 
-    elif menu_type is "ToolMenuAppend":
+    elif menu_type == "ToolMenuAppend":
         box = layout.box()
         b = box.row(align=True)
         b.scale_y=scale
@@ -641,7 +641,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
             b.label(text="Author: " + asset_json_asset_author)
             b = box.row(align=True)
             b.label(text="Version: " + asset_json_asset_version)
-    elif menu_type is "ToolMenuGenerate":
+    elif menu_type == "ToolMenuGenerate":
         box = layout.box()
         b = box.row(align=True)
         b.scale_y=scale
@@ -783,7 +783,6 @@ def advanced_system_ui(self, context, layout, obj,scale):
                 pass
             else:
                 os.mkdir(backups_folder)
-                print("Created Backups Folder")
 
             backup_row_box = backup_row.box()
             backup_row_box_row = backup_row_box.row(align=True)

@@ -15,8 +15,6 @@ from ice_cube_data.utils.selectors import isRigSelected
 
 import ice_cube
 
-print(ice_cube.dlc_enum_data)
-
 
 #creating backups list
 backup_items = []
@@ -52,7 +50,6 @@ def downloads_UI(self, context, layout, obj):
             pass
         else:
             os.mkdir(backups_folder)
-            print("Created Backups Folder")
 
         b = box.row(align=True)
         b.label(text= "Update Manager", icon='FILE_REFRESH')
