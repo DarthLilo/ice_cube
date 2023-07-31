@@ -16,7 +16,7 @@
             "dlc_date" : "2022-7-22",
             "author" : "IC Beta Testers",
             "dlc_enum_data" : ["beta_tester_dlc","Beta DLC","A preset pack containing some members of the beta testing team"],
-            "download_link" : "https://www.dropbox.com/scl/fi/9u9ufdro1avh97mgm8yrt/3D_Armor.zip?rlkey=44fzbdy8ud30qyas8yslksyk6&dl=1",
+            "download_link" : "https://www.dropbox.com/s/1m152n5bt48uo6f/beta_tester_dlc.zip?dl=1",
             "thumbnail" : "https://cdn.discordapp.com/attachments/1096005360797634620/1096006492244680704/beta_team.png"
         },
         {
@@ -26,7 +26,7 @@
             "dlc_date" : "2023-7-31",
             "author" : "DarthLilo",
             "dlc_enum_data" : ["3D_Armor","3D Armor","An asset pack containing 3D Armor meshes"],
-            "download_link" : "https://www.dropbox.com/s/9myucf4b3x7hxg3/3D_Armor.zip?dl=1",
+            "download_link" : "https://www.dropbox.com/scl/fi/9u9ufdro1avh97mgm8yrt/3D_Armor.zip?rlkey=44fzbdy8ud30qyas8yslksyk6&dl=1",
             "thumbnail" : "https://cdn.discordapp.com/attachments/1096005360797634620/1096006581679816704/generic_2_chestplate.png"
         }
     ]
