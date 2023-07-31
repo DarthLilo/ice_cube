@@ -8,7 +8,7 @@ import bpy
 bl_info ={
     "name": "Ice Cube",
     "author": "DarthLilo",
-    "version": (1, 5, 3),
+    "version": (1, 5, 4),
     "blender": (3, 4, 0),
     "location": "View3D > Tool",
     "description": "The official python panel for Ice Cube!",
@@ -59,8 +59,21 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
 #Import Files
-from . import main
-from . import ice_cube_data
+
+
+
+if "ice_cube_data" in locals():
+    importlib.reload(ice_cube_data)
+else:
+    from . import ice_cube_data
+
+if "main" in locals():
+    importlib.reload(main)
+else:
+    from . import main
+
+
+
 from ice_cube_data.operators.os_management import generate_settings_json
 
 
@@ -97,10 +110,6 @@ class iceCubeAddonPreferneces(bpy.types.AddonPreferences):
 if not os.path.exists(settings_file):
     generate_settings_json()
 
-
-#Reload
-importlib.reload(main)
-importlib.reload(ice_cube_data)
 
 classes = [
     iceCubeAddonPreferneces

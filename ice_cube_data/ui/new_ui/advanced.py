@@ -324,7 +324,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
             b.template_icon_view(wm, "dlc_img_cache_folder")
             b = box.row(align=True)
             b.scale_y=scale
-            b.template_list("IC_DLC_available_list_i", "", rig, "ic_dlc_i", rig, "ic_dlc_active_index")
+            b.template_list("IC_DLC_UL_available_list_i", "", rig, "ic_dlc_i", rig, "ic_dlc_active_index")
             colb = b.column()
             colb.operator("refresh_grab.dlc", text="", icon='FILE_REFRESH')
             colb.operator("download_selected.dlc", text="", icon='IMPORT')
@@ -791,7 +791,7 @@ def advanced_system_ui(self, context, layout, obj,scale):
             backup_row_box_row = backup_row_box.row(align=True)
             backup_row_box_row.prop(obj, "backup_name", text="Name", icon='FILE_BACKUP')
             backup_row_box_row = backup_row_box.row(align=True)
-            backup_row_box_row.template_list("IC_backups_list_i", "", rig, "ic_backups_i", rig, "ic_backups_active_index")
+            backup_row_box_row.template_list("IC_BACKUP_UL_list_i", "", rig, "ic_backups_i", rig, "ic_backups_active_index")
             colb = backup_row_box_row.column(align=True)
             colb.operator("create.backup", text="", icon='ADD')
             colb.operator("delete.backup", text="", icon='REMOVE')
