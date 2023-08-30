@@ -1,11 +1,11 @@
 [
         {
-            "dlc_id" : "lilo_preset",
+            "dlc_id" : "Lilo Preset 2",
             "dlc_name" : "Lilo Preset",
             "dlc_type" : "rigs",
             "dlc_date" : "2023-8-30",
             "author" : "DarthLilo",
-            "dlc_enum_data" : ["lilo_preset","Lilo Preset","A preset of DarthLilo"],
+            "dlc_enum_data" : ["Lilo Preset 2","Lilo Preset","A preset of DarthLilo"],
             "download_link" : "https://www.dropbox.com/scl/fi/xocvyb9e1mreuq5oye467/Lilo-Preset-2.zip?rlkey=88vrkyzdsms7875mjagois4kh&dl=1",
             "thumbnail" : "https://cdn.discordapp.com/attachments/1096005360797634620/1146527402781069362/Lilo.png"
         },
