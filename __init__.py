@@ -8,7 +8,7 @@ import bpy
 bl_info ={
     "name": "Ice Cube",
     "author": "DarthLilo",
-    "version": (1, 5, 4),
+    "version": (1, 5, 5),
     "blender": (3, 4, 0),
     "location": "View3D > Tool",
     "description": "The official python panel for Ice Cube!",

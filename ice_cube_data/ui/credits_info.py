@@ -5,7 +5,7 @@ from ice_cube import bl_info
 from ice_cube_data.utils.general_func import BlenderVersConvert
 from ice_cube_data.utils.selectors import isRigSelected
 
-def credits_info_panel(self, context, icon):
+def credits_info_panel(self, context, icon, cur_blender_version):
     obj = context.object
     script_vers = BlenderVersConvert(bl_info['version'], has_v=False)
     rig = isRigSelected(context)
@@ -42,3 +42,8 @@ def credits_info_panel(self, context, icon):
     b = box.row(align=True)
     b.label(text="UI Scale")
     b.prop(obj,"UI_Scale",text="",slider=True)
+    if cur_blender_version >= 400:
+        collections = rig.data.collections
+        if "Layer 2" in collections:
+            b = box.row(align=True)
+            b.operator("updateic.bonelayer",text="Update to 4.0!")

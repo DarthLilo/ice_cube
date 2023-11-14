@@ -6,6 +6,9 @@ from ice_cube import root_folder
 from ice_cube_data.utils.file_manage import getFiles
 from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.selectors import isRigSelected
+from ice_cube_data.utils.general_func import convertStringNumbers,selectBoneCollection
+
+cur_blender_version = convertStringNumbers(list(bpy.app.version))
 
 def append_preset_func(self, context, rig_baked):
         files_list = []
@@ -91,12 +94,18 @@ def append_preset_func(self, context, rig_baked):
         return{'FINISHED'}
 
 def append_default_rig(self, context):
-    #sets up variables
+
     
+
+    #sets up variables
     script_directory = root_folder
     script_directory = os.path.join(script_directory, "ice_cube_data/internal_files/rigs")
     script_directory = os.path.normpath(script_directory)
-    blendfile = os.path.join(script_directory, "Ice Cube.blend")
+
+    if cur_blender_version >= 400:
+        blendfile = os.path.join(script_directory, "Ice Cube 4.0+.blend")
+    else:
+        blendfile = os.path.join(script_directory, "Ice Cube.blend")
     section = "Collection"
     obj = "Ice Cube"
     filepath = os.path.join(blendfile,section,obj)
@@ -110,7 +119,11 @@ def append_emotion_line_func(self, context):
         emotion_line_dir = root_folder+"/ice_cube_data/internal_files/rigs"
         emotion_line_dir = os.path.normpath(emotion_line_dir)
 
-        blendfile = os.path.join(emotion_line_dir, "emotion_line.blend")
+        if cur_blender_version >= 400:
+            blendfile = os.path.join(emotion_line_dir, "emotion_line 4.0+.blend")
+        else:
+            blendfile = os.path.join(emotion_line_dir, "emotion_line.blend")
+        
         section = "Collection"
         obj = "emotion_line"
         filepath = os.path.join(blendfile,section,obj)
@@ -134,7 +147,26 @@ def append_emotion_line_func(self, context):
         c["active_object"] = bpy.data.objects[str(rig.name)]
         c["selected_objects"] = obs
         c["selected_editable_objects"] = obs
-        bpy.ops.object.join(c)
+        if cur_blender_version >= 400:
+            with context.temp_override(**c):
+                bpy.ops.object.join()
+        else:
+            bpy.ops.object.join(c)
+        
+        if cur_blender_version >= 400:
+            collections = rig.data.collections
+            hide_layer = selectBoneCollection(collections,"hide_layer")
+            merge_layer = selectBoneCollection(collections,"merge_layer")
+            main_internal = selectBoneCollection(collections,"Main Internal")
+            emotion_bones = selectBoneCollection(collections,"Emotion Bones")
+            for bone in hide_layer.bones:
+                hide_layer.unassign(bone)
+                main_internal.assign(bone)
+            for bone in merge_layer.bones:
+                merge_layer.unassign(bone)
+                emotion_bones.assign(bone)
+            collections.remove(hide_layer)
+            collections.remove(merge_layer)
 
         root_bones_list = []
         mesh_line_list = []

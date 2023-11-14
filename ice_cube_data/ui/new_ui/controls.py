@@ -2,17 +2,29 @@
 import bpy
 
 from ice_cube_data.utils.ui_tools import button_toggle
+from ice_cube_data.utils.general_func import selectBoneCollection
 
 def newEnum(layout,display,source,prop,expand):
     if display != "":
         layout.label(text=display)
     layout.prop(data=source,property=prop,expand=expand)
 
-def newBoneLayer(context,layout,index,text):
-    layers = context.active_object.data
-    layout.prop(layers, 'layers', index=index, toggle=True, text=text)
 
-def controls_ui(self,context,layout,obj,scale):
+
+
+
+
+def newBoneLayer(context,layout,index,text,prop_tag,cur_blender_version):
+    if cur_blender_version >= 400:
+        collections = context.active_object.data.collections
+        target_collection = selectBoneCollection(collections,prop_tag)
+        if target_collection != None:
+            layout.prop(target_collection,'is_visible',toggle=True,text=text)
+    else:
+        layers = context.active_object.data
+        layout.prop(layers, 'layers', index=index, toggle=True, text=text)
+
+def controls_ui(self,context,layout,obj,scale,cur_blender_version):
     box = layout.box()
     box.label(text= "Control/Workflow Settings", icon= 'NETWORK_DRIVE')
     b = box.row(align=True)
@@ -139,8 +151,8 @@ def controls_ui(self,context,layout,obj,scale):
         face_row.label(text="Face",icon='GROUP_BONE')
         if button_toggle(obj,face_row,"bone_set_face"):
             face_row = face_box.row(align=True)
-            newBoneLayer(context,face_row,0,'Main Rig')
-            newBoneLayer(context,face_row,23,'Face Panel')
+            newBoneLayer(context,face_row,0,'Main Rig','Main Bones',cur_blender_version)
+            newBoneLayer(context,face_row,23,'Face Panel','Face Panel Bones',cur_blender_version)
         
         bonelayer_row = bonelayer_box.row(align=True)
         arm_box = bonelayer_row.box()
@@ -150,14 +162,14 @@ def controls_ui(self,context,layout,obj,scale):
             arm_row = arm_box.row(align=True)
             #right
             arm_col = arm_row.column(align=True)
-            newBoneLayer(context,arm_col,1,'Right Arm IK')
-            newBoneLayer(context,arm_col,17,'Right Arm FK')
-            newBoneLayer(context,arm_col,5,'Right Fingers')
+            newBoneLayer(context,arm_col,1,'Right Arm IK','Right Arm IK',cur_blender_version)
+            newBoneLayer(context,arm_col,17,'Right Arm FK','Right Arm FK',cur_blender_version)
+            newBoneLayer(context,arm_col,5,'Right Fingers','Right Fingers',cur_blender_version)
             #left
             arm_col = arm_row.column(align=True)
-            newBoneLayer(context,arm_col,2,'Left Arm IK')
-            newBoneLayer(context,arm_col,18,'Left Arm FK')
-            newBoneLayer(context,arm_col,21,'Left Fingers')
+            newBoneLayer(context,arm_col,2,'Left Arm IK','Left Arm IK',cur_blender_version)
+            newBoneLayer(context,arm_col,18,'Left Arm FK','Left Arm FK',cur_blender_version)
+            newBoneLayer(context,arm_col,21,'Left Fingers','Left Fingers',cur_blender_version)
         
         bonelayer_row = bonelayer_box.row(align=True)
         leg_box = bonelayer_row.box()
@@ -167,12 +179,12 @@ def controls_ui(self,context,layout,obj,scale):
             leg_row = leg_box.row(align=True)
             #right
             leg_col = leg_row.column(align=True)
-            newBoneLayer(context,leg_col,3,'Right Leg IK')
-            newBoneLayer(context,leg_col,19,'Right Leg FK')
+            newBoneLayer(context,leg_col,3,'Right Leg IK','Right Leg IK',cur_blender_version)
+            newBoneLayer(context,leg_col,19,'Right Leg FK','Right Leg FK',cur_blender_version)
             #left
             leg_col = leg_row.column(align=True)
-            newBoneLayer(context,leg_col,4,'Left Leg IK')
-            newBoneLayer(context,leg_col,20,'Left Leg FK')
+            newBoneLayer(context,leg_col,4,'Left Leg IK','Left Leg IK',cur_blender_version)
+            newBoneLayer(context,leg_col,20,'Left Leg FK','Left Leg FK',cur_blender_version)
         
         bonelayer_row = bonelayer_box.row(align=True)
         tweak_box = bonelayer_row.box()
@@ -181,13 +193,13 @@ def controls_ui(self,context,layout,obj,scale):
         if button_toggle(obj,tweak_row,"bone_set_tweak"):
             tweak_row = tweak_box.row(align=True)
             tweak_col = tweak_row.column(align=True)
-            newBoneLayer(context,tweak_col,7,'Body Tweak')
-            newBoneLayer(context,tweak_col,8,'Right Arm Tweak')
-            newBoneLayer(context,tweak_col,24,'Right Leg Tweak')
+            newBoneLayer(context,tweak_col,7,'Body Tweak','Body Tweak',cur_blender_version)
+            newBoneLayer(context,tweak_col,8,'Right Arm Tweak','Right Arm Tweak',cur_blender_version)
+            newBoneLayer(context,tweak_col,24,'Right Leg Tweak','Right Leg Tweak',cur_blender_version)
             tweak_col = tweak_row.column(align=True)
-            newBoneLayer(context,tweak_col,16,'Face Tweak')
-            newBoneLayer(context,tweak_col,9,'Left Arm Tweak')
-            newBoneLayer(context,tweak_col,25,'Left Leg Tweak')
+            newBoneLayer(context,tweak_col,16,'Face Tweak','Face Tweak',cur_blender_version)
+            newBoneLayer(context,tweak_col,9,'Left Arm Tweak','Left Arm Tweak',cur_blender_version)
+            newBoneLayer(context,tweak_col,25,'Left Leg Tweak','Left Leg Tweak',cur_blender_version)
         
         bonelayer_row = bonelayer_box.row(align=True)
         misc_box = bonelayer_row.box()
@@ -197,14 +209,14 @@ def controls_ui(self,context,layout,obj,scale):
             misc_row = misc_box.row(align=True)
             misc_col = misc_row.column(align=True)
 
-            newBoneLayer(context,misc_col,10,'Limb Twist')
-            newBoneLayer(context,misc_col,6,'Dynamic Hair')
+            newBoneLayer(context,misc_col,10,'Limb Twist','Twist',cur_blender_version)
+            newBoneLayer(context,misc_col,6,'Dynamic Hair','Dynamic Hair',cur_blender_version)
             misc_col = misc_row.column(align=True)
-            newBoneLayer(context,misc_col,22,'Extras')
-            newBoneLayer(context,misc_col,26,'Footroll')
+            newBoneLayer(context,misc_col,22,'Extras','Extra',cur_blender_version)
+            newBoneLayer(context,misc_col,26,'Footroll','Footroll',cur_blender_version)
             misc_col = misc_row.column(align=True)
-            newBoneLayer(context,misc_col,15,'Emotion Bones')
-            newBoneLayer(context,misc_col,27,'Cartoon Mouth')
+            newBoneLayer(context,misc_col,15,'Emotion Bones','Emotion Bones',cur_blender_version)
+            newBoneLayer(context,misc_col,27,'Cartoon Mouth','Cartoon Mouth',cur_blender_version)
 
 
 

@@ -11,7 +11,7 @@ import random
 #Custom Functions
 from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info,valid_dlcs
 
-from ice_cube_data.utils.general_func import BlenderVersConvert, IC_FKIK_Switch, bakeIceCube, badToTheBone
+from ice_cube_data.utils.general_func import BlenderVersConvert, IC_FKIK_Switch, bakeIceCube, badToTheBone, convertStringNumbers
 from ice_cube_data.utils.file_manage import getFiles
 from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.web_tools import CustomLink
@@ -38,7 +38,7 @@ import ice_cube
 rig_pack_list = []
 rig_pack_names = []
 rig_id = "ice_cube"
-
+cur_blender_version = convertStringNumbers(list(bpy.app.version))
 
 internalfiles = os.path.join(root_folder, "ice_cube_data/internal_files/user_packs/rigs")
 user_packs = os.path.normpath(internalfiles)
@@ -89,7 +89,6 @@ class refresh_rigs_list(bpy.types.Operator):
             pass
 
         return{'FINISHED'}
-
 
 class rig_baked_class(bpy.types.Operator): #A boolean that controls whether to use _NORMAL or _BAKED
     """Changes whether the imported rig is baked or not"""
@@ -1082,6 +1081,68 @@ class ic_bake_rig(bpy.types.Operator):
 
         return{'FINISHED'}
 
+class ic_update_bonelayer(bpy.types.Operator):
+    """Updates the bonelayer system to 4.0+"""
+    bl_idname = "updateic.bonelayer"
+    bl_label = "Update Ice Cube Bonelayers"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        
+        if cur_blender_version >= 400:
+            rig = isRigSelected(context)
+            collections = rig.data.collections
+    
+            layer_update_dict = {
+            "Layer 1" : "Main Bones",
+            "Layer 2" : "Right Arm IK",
+            "Layer 3" : "Left Arm IK",
+            "Layer 4" : "Right Leg IK",
+            "Layer 5" : "Left Leg IK",
+            "Layer 6" : "Right Fingers",
+            "Layer 7" : "Dynamic Hair",
+            "Layer 8" : "Body Tweak",
+            "Layer 9" : "Right Arm Tweak",
+            "Layer 10" : "Left Arm Tweak",
+            "Layer 11" : "Twist",
+            "Layer 16" : "Emotion Bones",
+            "Layer 17" : "Face Tweak",
+            "Layer 18" : "Right Arm FK",
+            "Layer 19" : "Left Arm FK",
+            "Layer 20" : "Right Leg FK",
+            "Layer 21" : "Left Leg FK",
+            "Layer 22" : "Left Fingers",
+            "Layer 23" : "Extra",
+            "Layer 24" : "Face Panel Bones",
+            "Layer 25" : "Right Leg Tweak",
+            "Layer 26" : "Left Leg Tweak",
+            "Layer 27" : "Footroll",
+            "Layer 28" : "Cartoon Mouth",
+            "Layer 31" : "Body Internal",
+            "Layer 32" : "Main Internal",
+            "Main" : "DELETE",
+            "Right" : "DELETE",
+            "Left" : "DELETE",
+            "Accessory" : "DELETE",
+            "Misc" : "DELETE",
+            "Face Panel" : "DELETE",
+        }
+    
+            if "Layer 16" not in collections:
+                collections.new("Layer 16")
+    
+            for collection in collections:
+                try:
+                    collection["layer"]
+                except:
+                    if collection.name in layer_update_dict:
+                        if layer_update_dict[collection.name] == "DELETE":
+                            collections.remove(collection)
+                        else:
+                            collection["layer"] = layer_update_dict[collection.name]
+                            collection.name = layer_update_dict[collection.name]
+        return{'FINISHED'}
+
 class IC_DEVONLY_UpdateInternalRig(bpy.types.Operator):
     """DO NOT RUN UNLESS YOU KNOW WHAT YOU'RE DOING"""
     bl_idname = "ice_cube_dev.updateinternalrig"
@@ -1109,6 +1170,8 @@ class IC_DevMode_TestOperator(bpy.types.Operator):
         badToTheBone()
 
         return{'FINISHED'}
+
+
 
 #Backups Classes
 
@@ -1237,7 +1300,8 @@ classes = [
     IC_DevMode_TestOperator,
     ic_parent_all,
     ic_bake_rig,
-    IC_DEVONLY_UpdateInternalRig,
+    ic_update_bonelayer,
+    IC_DEVONLY_UpdateInternalRig
 ]
 
 def register():

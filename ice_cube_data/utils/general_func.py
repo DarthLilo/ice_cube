@@ -541,6 +541,20 @@ def bakeIceCube(self,context,override):
 
     setattr(rig, 'baked_rig', True)
 
+def convertStringNumbers(list):
+    s = [str(i) for i in list]
+    res = int("".join(s))
+    return(res)
+
+def selectBoneCollection(collections,target):
+    for collection in collections:
+        try:
+            layer_data = collection["layer"]
+            if layer_data == target:
+                return collection
+        except:
+            pass
+
 classes = [
            ]
 

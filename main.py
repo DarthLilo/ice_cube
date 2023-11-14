@@ -19,7 +19,7 @@ from ice_cube_data.systems import inventory_system, skin_downloader,search_syste
 #Custom Functions
 from ice_cube_data.utils.selectors import isRigSelected, main_face
 from ice_cube_data.utils.file_manage import getFiles, open_json
-from ice_cube_data.utils.general_func import GetListIndex
+from ice_cube_data.utils.general_func import GetListIndex,convertStringNumbers
 
 #UI Panels
 from ice_cube_data.ui import old_credits_info, credits_info
@@ -34,7 +34,14 @@ import ice_cube
 #File Variables
 rig_id = "ice_cube"
 
+
+
+
+
 #InFileDefs
+
+cur_blender_version = convertStringNumbers(list(bpy.app.version))
+
 def presets_menu(self, context):
     """presets menu thing"""
     enum_items = []
@@ -254,7 +261,7 @@ class UIPANEL_PT_IceCube(bpy.types.Panel):
         
 
         if obj.get("icecube_menu_version") == 0: #New UI
-            credits_info.credits_info_panel(self,context,preview_collections)
+            credits_info.credits_info_panel(self,context,preview_collections,cur_blender_version)
 
             box = layout.box()
             box.prop(obj,"ice_cube_search_filter",text="",icon='VIEWZOOM')
@@ -293,7 +300,7 @@ class UIPANEL_PT_IceCube(bpy.types.Panel):
                     elif obj.get("style_menu_switcher") == 1:
                         style.mesh_style_ui(self,context,layout,obj,preview_collections,scale)
                 elif cur_panel == 1: #Controls
-                    controls.controls_ui(self,context,layout,obj,scale)
+                        controls.controls_ui(self,context,layout,obj,scale,cur_blender_version)
                 elif cur_panel == 2: #Materials
                     b= box.row(align=True)
                     b.prop(obj,"material_menu_switcher",expand=True)
