@@ -225,10 +225,32 @@ def IC_FKIK_Switch(context, type, limb):
             Leg_FK_L_upper.rotation_quaternion = [1,0,0,0]
             Leg_FK_L_lower.rotation_quaternion = [1,0,0,0]
 
+def convertStringNumbers(list):
+    s = [str(i) for i in list]
+    res = int("".join(s))
+    return(res)
+
+def selectBoneCollection(collections,target):
+    for collection in collections:
+        try:
+            layer_data = collection["layer"]
+            if layer_data == target:
+                return collection
+        except:
+            pass
+
+cur_blender_version = convertStringNumbers(list(bpy.app.version))
 
 def applyMod(mesh,modifier):
+
+    c = {'object': mesh}
+
     try:
-        bpy.ops.object.modifier_apply({'object': mesh}, modifier=modifier)
+        if cur_blender_version >= 400:
+            with bpy.context.temp_override(**c):
+                bpy.ops.object.modifier_apply(modifier=modifier)
+        else:
+            bpy.ops.object.modifier_apply(c, modifier=modifier)
     except RuntimeError:
         print(f"Could not bake {mesh.name} due to it having shape keys")
 
@@ -336,7 +358,7 @@ def bakeEyes(mesh,node_tree,mode,rig,res):
     bpy.context.view_layer.objects.active = rig
     rig.select_set(state=True)
 
-def bakeIceCube(self,context,override):
+def bakeIceCube(self,context,override=False):
     rig = isRigSelected(context)
     ice_cube_col = rig.users_collection
     col_children = ice_cube_col[0].children
@@ -413,10 +435,18 @@ def bakeIceCube(self,context,override):
         modifier_to_apply = ["Arm Deform","Arm Bulge"]
         for mod in modifier_to_apply:
             applyMod(mesh,mod)
-
+    
+        if cur_blender_version >= 400:
+            collections = rig.data.collections
+            twist_collection = selectBoneCollection(collections,"Twist")
+            twist_active = twist_collection.is_visible
+            print(twist_active)
+        else:
+            twist_active = isRigSelected(context).data.layers[10]
+        
 
         if obj.bake_all_unused_features:
-            if isRigSelected(context).data.layers[10] == False:
+            if twist_active == False:
                 removeMod(mesh,"Arm Twist")
             if not obj.squish_arm_r or not obj.squish_arm_l:
                 removeMod(mesh,"Arm Squish")
@@ -541,19 +571,9 @@ def bakeIceCube(self,context,override):
 
     setattr(rig, 'baked_rig', True)
 
-def convertStringNumbers(list):
-    s = [str(i) for i in list]
-    res = int("".join(s))
-    return(res)
 
-def selectBoneCollection(collections,target):
-    for collection in collections:
-        try:
-            layer_data = collection["layer"]
-            if layer_data == target:
-                return collection
-        except:
-            pass
+
+
 
 classes = [
            ]
