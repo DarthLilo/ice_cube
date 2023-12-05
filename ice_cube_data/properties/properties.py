@@ -8,45 +8,90 @@ from bpy.props import (StringProperty,
                         )
 
 from ice_cube_data.utils.selectors import isRigSelected
+from ice_cube_data.utils.general_func import convertStringNumbers, selectBoneCollection
+
+cur_blender_version = convertStringNumbers(list(bpy.app.version))
 
 
 # classes
 
 def r_fingers_update(self, context):
     if self.enable_control_linking:
-        bpy.data.armatures[self.name].layers[5] = self.fingers_r
+        if cur_blender_version >= 400:
+            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Right Fingers")
+            target_collection.is_visible = self.fingers_r
+        else:
+            bpy.data.armatures[self.name].layers[5] = self.fingers_r
 
 def l_fingers_update(self, context):
     if self.enable_control_linking:
-        bpy.data.armatures[self.name].layers[21] = self.fingers_l
+        if cur_blender_version >= 400:
+            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Left Fingers")
+            target_collection.is_visible = self.fingers_l
+        else:
+            bpy.data.armatures[self.name].layers[21] = self.fingers_l
 
 def r_arm_ik_update(self, context):
     if self.enable_control_linking:
-        bpy.data.armatures[self.name].layers[1] = self.r_arm_ik
+        if cur_blender_version >= 400:
+            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Right Arm IK")
+            target_collection.is_visible = self.r_arm_ik
+        else:
+            bpy.data.armatures[self.name].layers[1] = self.r_arm_ik
 
 def l_arm_ik_update(self, context):
     if self.enable_control_linking:
-        bpy.data.armatures[self.name].layers[2] = self.l_arm_ik
+        if cur_blender_version >= 400:
+            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Left Arm IK")
+            target_collection.is_visible = self.l_arm_ik
+        else:
+            bpy.data.armatures[self.name].layers[2] = self.l_arm_ik
 
 def r_leg_ik_update(self, context):
     if self.enable_control_linking:
-        bpy.data.armatures[self.name].layers[3] = self.r_leg_ik
-        bpy.data.armatures[self.name].layers[19] = not self.r_leg_ik
+        if cur_blender_version >= 400:
+            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Right Leg IK")
+            target_collection.is_visible = self.r_leg_ik
+
+            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Right Leg FK")
+            target_collection.is_visible = not self.r_leg_ik
+        else:
+            bpy.data.armatures[self.name].layers[3] = self.r_leg_ik
+            bpy.data.armatures[self.name].layers[19] = not self.r_leg_ik
 
 def l_leg_ik_update(self, context):
     if self.enable_control_linking:
-        bpy.data.armatures[self.name].layers[4] = self.l_leg_ik
-        bpy.data.armatures[self.name].layers[20] = not self.l_leg_ik
+        if cur_blender_version >= 400:
+            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Left Leg IK")
+            target_collection.is_visible = self.l_leg_ik
+
+            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Left Leg FK")
+            target_collection.is_visible = not self.l_leg_ik
+        else:
+            bpy.data.armatures[self.name].layers[4] = self.l_leg_ik
+            bpy.data.armatures[self.name].layers[20] = not self.l_leg_ik
 
 def dynamic_hair_update(self, context):
     if self.enable_control_linking:
-        bpy.data.armatures[self.name].layers[6] = self.dynamichair
+        if cur_blender_version >= 400:
+            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Dynamic Hair")
+            target_collection.is_visible = self.dynamichair
+        else:
+            bpy.data.armatures[self.name].layers[6] = self.dynamichair
 
 def face_rig_update(self, context):
     if self.enable_control_linking:
-        bpy.data.armatures[self.name].layers[23] = self.facerig
-        if bpy.data.armatures[self.name].layers[16]:
-            bpy.data.armatures[self.name].layers[16] = self.facerig
+        if cur_blender_version >= 400:
+            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Face Panel Bones")
+            target_collection.is_visible = self.facerig
+            
+            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Face Tweak")
+            if target_collection.is_visible:
+                target_collection.is_visible = self.facerig
+        else:
+            bpy.data.armatures[self.name].layers[23] = self.facerig
+            if bpy.data.armatures[self.name].layers[16]:
+                bpy.data.armatures[self.name].layers[16] = self.facerig
 
 def armtype_update(self,context):
     print(f"armtype_enum updated to {self.armtype_enum}")

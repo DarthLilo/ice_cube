@@ -323,7 +323,7 @@ class create_backup(bpy.types.Operator):
 class load_backup(bpy.types.Operator):
     """Loads the selected backup from your backups folder"""
     bl_idname = "load.backup"
-    bl_label = "Append Emotion Line"
+    bl_label = "Load Selected Backup"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -569,7 +569,13 @@ class generate_asset_pack(bpy.types.Operator):
                 #thumbnail management
                 if obj.target_thumbnail_generate != "" and str(obj.target_thumbnail_generate).__contains__(".png"): #Copy Thumbnail
                     shutil.copyfile(obj.target_thumbnail_generate,f"{rigs}/{obj.asset_pack_name}/thumbnails/{obj.entry_name_asset}.png")
-
+                
+                if obj.generate_baked == True:
+                    bakeIceCube(self,context,True)
+                    if bpy.data.is_saved is True:
+                        filepath = f"{rigs}/{obj.asset_pack_name}/rigs/{obj.entry_name_asset}/{obj.entry_name_asset}_BAKED.blend"
+                        bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
+                
                 #generating thumbnail
                 if obj.generate_thumbnail is True:
                 
@@ -610,7 +616,15 @@ class generate_asset_pack(bpy.types.Operator):
                     
                     #setting solid mode
                     old_shading = bpy.context.space_data.shading.type
+                    old_render_type = bpy.context.space_data.shading.color_type
+                    old_lighting_type = bpy.context.space_data.shading.light
                     bpy.context.space_data.shading.type = 'SOLID'
+
+                    #setting solid mode render to textured
+                    bpy.context.space_data.shading.color_type = 'TEXTURE'
+
+                    #setting solid mode to flat
+                    bpy.context.space_data.shading.light = 'FLAT'
 
 
 
@@ -635,12 +649,8 @@ class generate_asset_pack(bpy.types.Operator):
                         scene_thing.render.resolution_y = org_res_y
                     
                     bpy.context.space_data.shading.type = old_shading
-                
-                if obj.generate_baked == True:
-                    bakeIceCube(self,context,True)
-                    if bpy.data.is_saved is True:
-                        filepath = f"{rigs}/{obj.asset_pack_name}/rigs/{obj.entry_name_asset}/{obj.entry_name_asset}_BAKED.blend"
-                        bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
+                    bpy.context.space_data.shading.color_type = old_render_type
+                    bpy.context.space_data.shading.light = old_lighting_type
 
             elif obj.asset_pack_name == "":
                 CustomErrorBox("Please enter a name for the pack!",'Invalid Name','ERROR')
@@ -655,7 +665,7 @@ class generate_asset_pack(bpy.types.Operator):
                 CustomErrorBox("Please enter a valid version!","Invalid Version",'ERROR')
                 return{'FINISHED'}
             elif os.path.exists(obj.target_thumbnail_generate) is False and obj.generate_thumbnail is False:
-                CustomErrorBox("Please select a valid thumbnail!")
+                CustomErrorBox("Please select a valid thumbnail!","Invalid Path",'ERROR')
                 return{'FINISHED'}
 
         return{'FINISHED'}
@@ -792,7 +802,7 @@ class generate_asset_pack_global(bpy.types.Operator):
             CustomErrorBox("Please enter a valid version!","Invalid Version",'ERROR')
             return{'FINISHED'}
         elif os.path.exists(thumbnail_path) is False:
-            CustomErrorBox("Please select a valid thumbnail!")
+            CustomErrorBox("Please select a valid thumbnail!","Invalid Path",'ERROR')
             return{'FINISHED'}
 
         return{'FINISHED'}

@@ -364,6 +364,12 @@ def bakeIceCube(self,context,override=False):
     col_children = ice_cube_col[0].children
     obj = context.object
     final_res = obj.eye_bake_resolution
+    render_engine = context.scene.render.engine
+
+    bpy.data.scenes["Scene"].render.engine
+
+    if render_engine != 'CYCLES':
+        context.scene.render.engine = 'CYCLES'
 
     if not override:
         if obj.confirm_rig_bake:
@@ -568,6 +574,8 @@ def bakeIceCube(self,context,override=False):
         except:
             CustomErrorBox("An Unknown Error Has Occurred",'Bake Error','ERROR')
             return {'CANCELLED'}
+        
+    context.scene.render.engine = render_engine
 
     setattr(rig, 'baked_rig', True)
 

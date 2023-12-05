@@ -757,7 +757,7 @@ def advanced_system_ui(self, context, layout, obj,scale):
                 settings_row = settings_box.row(align=True)
                 settings_row.prop(obj,"import_settings_filepath",text="Import File",icon='IMPORT')
                 settings_row = settings_box.row(align=True)
-                settings_row.operator("import.settings", text="Import from File" if obj.get("prop_clipboard") else "Import from Clipboard")
+                settings_row.operator("import.settings", text="Import from Clipboard" if obj.get("prop_clipboard") else "Import from File")
                 settings_row = settings_box.row(align=True)
         settings_row.operator("reset.settings",text="Reset to Default")
         settings_row = settings_box.row(align=True)
