@@ -178,6 +178,50 @@ class refresh_customizations(bpy.types.Operator):
 
         return{'FINISHED'}
 
+
+def getTaggedOBJs(tag):
+    tagged_objs = []
+    target_key_term = [tag]
+    #key_term_to_string = ("".join(target_key_term))
+
+    for obj in bpy.data.objects:
+        if any(x in obj.name for x in target_key_term):
+            tagged_objs.append(obj)
+    
+    return tagged_objs
+
+def moveObjectCollection(obj,collection):
+    old_collections = [c for c in obj.users_collection]
+    collection.objects.link(obj)
+    for c in old_collections:
+        c.objects.unlink(obj)
+
+def getCollectionParent(target):
+    parent_collection = dict()
+    for c in bpy.data.collections:
+        parent_collection[c] = None
+    for c in bpy.data.collections:
+        for children in c.children:
+            parent_collection[children] = c
+    target_parent = parent_collection[target]
+    return target_parent
+
+def targetingCollection(target,ic_col):
+    for collection in bpy.data.collections:
+        if str(collection.name).__contains__(target) and getCollectionParent(collection) in list(ic_col.children):
+            return collection
+
+def updateParentingCollections(tag,target_collection,ic_collection):
+    head_targets = getTaggedOBJs(tag)
+    head_collection = targetingCollection(target_collection,ic_collection)
+
+    for obj in head_targets:
+        moveObjectCollection(obj,head_collection)
+    
+    for obj in head_targets:
+        clean_obj_name = (obj.name.split("".join([tag]))[0])
+        obj.name = clean_obj_name
+
 #Append Asset Class
 class append_asset(bpy.types.Operator):
     bl_idname = "append.asset"
@@ -392,8 +436,6 @@ class append_asset(bpy.types.Operator):
                                 node_tree.links.new(pallete.outputs[0], leathermat.inputs[0])
 
 
-
-
                         
         except KeyError:
             pass
@@ -404,13 +446,31 @@ class append_asset(bpy.types.Operator):
             clean_armor_name = (new_armor.name.split(key_term_to_string)[0])
             new_armor.name = clean_armor_name
 
+        #getting ice cube collection
+        ic_collections = rig.users_collection
+        for collection in ic_collections:
+            ice_cube_collection = collection
+        
+        
+        target_tags = {
+            "_HeadChild" : "Head",
+            "_BodyChild" : "Body",
+            "_RightArmChild" : "Right Arm",
+            "_LeftArmChild" : "Left Arm",
+            "_RightLegChild" : "Right Leg",
+            "_LeftLegChild" : "Left Leg"
+        }
+        for tag in target_tags:
+            updateParentingCollections(tag,target_tags[tag],ice_cube_collection)
+
+        
+
+
+
         return{'FINISHED'}
 
 
 #Attempts to create the enumerator property, if it fails it goes to a backup version.
-
-
-
 
 classes = [
     refresh_inventory_list,

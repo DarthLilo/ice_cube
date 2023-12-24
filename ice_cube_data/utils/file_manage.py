@@ -14,6 +14,9 @@ def getFiles(path): #returns a list of files in a specified dir
 
         return dirs;
 
+def getDirs(path):
+    return [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
+
 def unpack_img(img): #unpacks a specified image
     if img.packed_files:
         if bpy.data.is_saved:

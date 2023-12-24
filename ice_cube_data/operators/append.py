@@ -1,9 +1,9 @@
 import bpy
 import os
 
-from ice_cube import root_folder
+from ice_cube import root_folder, settings_file
 
-from ice_cube_data.utils.file_manage import getFiles
+from ice_cube_data.utils.file_manage import getFiles,open_json
 from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.selectors import isRigSelected
 from ice_cube_data.utils.general_func import convertStringNumbers,selectBoneCollection
@@ -95,19 +95,27 @@ def append_preset_func(self, context, rig_baked):
 
 def append_default_rig(self, context):
 
-    
-
     #sets up variables
     script_directory = root_folder
     script_directory = os.path.join(script_directory, "ice_cube_data/internal_files/rigs")
     script_directory = os.path.normpath(script_directory)
+    settings_data = open_json(settings_file)
+
+
+    target_name = settings_data["default_import_file"]
 
     if cur_blender_version >= 400:
-        blendfile = os.path.join(script_directory, "Ice Cube 4.0+.blend")
+        blendfile = os.path.join(script_directory, f"{target_name} 4.0+.blend")
+        if not os.path.exists(blendfile):
+            blendfile = os.path.join(script_directory, f"{target_name}.blend")
     else:
-        blendfile = os.path.join(script_directory, "Ice Cube.blend")
+        blendfile = os.path.join(script_directory, f"{target_name}.blend")
+    
+    if not os.path.exists(blendfile):
+        blendfile = os.path.join(script_directory, f"Ice Cube.blend")
+
     section = "Collection"
-    obj = "Ice Cube"
+    obj = target_name
     filepath = os.path.join(blendfile,section,obj)
     directory = os.path.join(blendfile,section)
     filename = obj

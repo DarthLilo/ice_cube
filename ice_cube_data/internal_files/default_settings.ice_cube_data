@@ -6,8 +6,9 @@
         "ipaneltab3": "one",
         "ipaneltab4": "one",
         "ipaneltab5": "one",
-        "ipaneltab6": "one",
+        "ipaneltab6": "two",
         "ipaneltab7": "one",
+        "append_tab_global": "one",
         "dlc_menu_switcher": "one",
         "advanced_menu_switcher": "dlc",
         "main_panel_switcher": "style",
@@ -129,6 +130,9 @@
         "baking_data_manager": false,
         "bevel_settings": false,
         "jaw_settings": false,
-        "depth_settings": false
+        "depth_settings": false,
+        "export_to_icpreset": false,
+        "import_icpreset_file": false,
+        "export_icpreset_file": false
     }
 }

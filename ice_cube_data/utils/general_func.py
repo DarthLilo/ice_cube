@@ -3,13 +3,14 @@ import struct
 import json
 from urllib import request
 import bpy
-from mathutils import Matrix
+from mathutils import Matrix, Vector, Quaternion
 import aud
 
-from ice_cube import github_url, root_folder
+from ice_cube import github_url, root_folder, settings_file
 
 from ice_cube_data.utils.selectors import isRigSelected, mat_holder_func, eye_mesh
 from ice_cube_data.utils.ui_tools import CustomErrorBox
+from ice_cube_data.utils.file_manage import open_json
 
 def badToTheBone():
     try:
@@ -579,11 +580,257 @@ def bakeIceCube(self,context,override=False):
 
     setattr(rig, 'baked_rig', True)
 
+def duplicateBone(rig,edit_bone,bone):
+    new_bone = rig.data.edit_bones.new(f"{bone.name}_OverrideBone")
+    new_bone.head = edit_bone.head
+    new_bone.tail = edit_bone.tail
+    new_bone.roll = edit_bone.roll
+    return new_bone.name
+
+def newCopyRotation(source,target,subtarget,name):
+    copy_rotation = source.constraints.new('COPY_ROTATION')
+    copy_rotation.name = name
+    copy_rotation.target = target
+    copy_rotation.subtarget = subtarget.name
+    copy_rotation.mix_mode = 'BEFORE'
+    copy_rotation.target_space = 'LOCAL'
+    copy_rotation.owner_space = 'LOCAL'
+    context_override = {'active_pose_bone' : source}
+    if cur_blender_version >= 400:
+        with bpy.context.temp_override(**context_override):
+            bpy.ops.constraint.move_to_index(constraint=copy_rotation.name,owner='BONE',index=0)
+    else:
+        bpy.ops.constraint.move_to_index(context_override,constraint=copy_rotation.name,owner='BONE',index=0)
+
+def newCopyLocation(source,target,subtarget,name):
+    copy_location = source.constraints.new('COPY_LOCATION')
+    copy_location.name = name
+    copy_location.target = target
+    copy_location.subtarget = subtarget.name
+    copy_location.target_space = 'LOCAL'
+    copy_location.owner_space = 'LOCAL'
+    copy_location.use_offset = True
+    context_override = {'active_pose_bone' : source}
+    if cur_blender_version >= 400:
+        with bpy.context.temp_override(**context_override):
+            bpy.ops.constraint.move_to_index(constraint=copy_location.name,owner='BONE',index=0)
+    else:
+        bpy.ops.constraint.move_to_index(context_override,constraint=copy_location.name,owner='BONE',index=0)
+
+def newCopyScale(source,target,subtarget,name):
+    copy_scale = source.constraints.new('COPY_SCALE')
+    copy_scale.name = name
+    copy_scale.target = target
+    copy_scale.subtarget = subtarget.name
+    copy_scale.target_space = 'LOCAL'
+    copy_scale.owner_space = 'LOCAL'
+    copy_scale.use_offset = True
+    context_override = {'active_pose_bone' : source}
+    if cur_blender_version >= 400:
+        with bpy.context.temp_override(**context_override):
+            bpy.ops.constraint.move_to_index(constraint=copy_scale.name,owner='BONE',index=0)
+    else:
+        bpy.ops.constraint.move_to_index(context_override,constraint=copy_scale.name,owner='BONE',index=0)
+
+def setRestPose(context):
+    rig = isRigSelected(context)
+    original_mode = bpy.context.mode
+
+    ignore_bones_list = ["Shoulder LeftPOS","Shoulder LeftPOS.001","Shoulder RightPOS","Shoulder RightPOS.001"] #ONLY HERE FOR COMPATABILITY WITH OLDER ICE CUBE VERSIONS
+    
+
+    for bone in rig.pose.bones:
+        loc = bone.location
+        rot = bone.rotation_quaternion
+        scale = bone.scale
+
+        reset_loc = False
+        reset_rot = False
+        reset_scale = False
+
+        if loc != Vector((0,0,0)):
+            reset_loc = True
+        if rot != Quaternion((1,0,0,0)):
+            reset_rot = True
+        if scale != Vector((1,1,1)):
+            reset_scale = True
+
+        if reset_loc or reset_rot or reset_scale:
+            try:
+                override_pose_bone = bone["OverridePoseBone"]
+                continue
+            except:
+                pass
+
+            try:
+                ignore_pose_bone = bone["IgnoreOverrideCheck"]
+                continue
+            except:
+                pass
+            
+            if bone.name in ignore_bones_list:
+                continue
+
+            if not bpy.context.mode == "EDIT_ARMATURE":
+                bpy.ops.object.mode_set(mode='EDIT')
+            
+            #try:
+            edit_bone = rig.data.edit_bones.get(bone.name)
+
+            new_bone_name = duplicateBone(rig,edit_bone,bone)
+
+            bpy.ops.object.mode_set(mode='POSE')
+
+            new_bone = rig.pose.bones[new_bone_name]
+            new_bone.matrix_basis = bone.matrix_basis.copy()
+            #new_bone.matrix = bone.matrix
+            
+            bone.location = (0,0,0)
+            bone.rotation_quaternion = Quaternion((1,0,0,0))
+            bone.scale = (1,1,1)
+            bone["OverridePoseBone"] = new_bone.name
+            new_bone["OverridePoseBone"] = "OverrideBone"
+
+            if reset_scale:
+                newCopyScale(bone,rig,new_bone,f"{bone.name}_{new_bone.name}_SCALE")
+
+            if reset_rot:
+                newCopyRotation(bone,rig,new_bone,f"{bone.name}_{new_bone.name}_ROTATION")
+            
+            if reset_loc:
+                newCopyLocation(bone,rig,new_bone,f"{bone.name}_{new_bone.name}_LOCATION")
+            
+            if cur_blender_version >= 400:
+                collections = rig.data.collections
+                custom_default = selectBoneCollection(collections,"Custom Default")
+                custom_default.assign(new_bone)
+            else:
+                for i in range(32):
+                    new_bone.bone.layers[11] = True
+                    new_bone.bone.layers[i] = False
+                
+            
+            
+
+            print(f"Created override pose for {bone.name}")
+            #except:
+            #    pass
+
+            
+
+                
+    
+    if original_mode == "POSE":
+        bpy.ops.object.mode_set(mode='POSE')
+    else:
+        bpy.ops.object.mode_set(mode='OBJECT')
+
+def resetRestPose(context):
+    rig = isRigSelected(context)
+    original_mode = bpy.context.mode
+
+    reset_data = {}
+
+    for bone in rig.pose.bones:
+        try:
+            boneOverrideData = bone["OverridePoseBone"]
+            if boneOverrideData != "OverrideBone":
+                reset_data[bone.name] = boneOverrideData
+                override_bone = rig.pose.bones[boneOverrideData]
+
+                location_constraint = bone.constraints.get(f"{bone.name}_{boneOverrideData}_LOCATION")
+                rotation_constraint = bone.constraints.get(f"{bone.name}_{boneOverrideData}_ROTATION")
+                scale_constraint = bone.constraints.get(f"{bone.name}_{boneOverrideData}_SCALE")
+
+                if cur_blender_version >= 400:
+                    if location_constraint:
+                        context_override = {'active_pose_bone' : bone}
+                        with context.temp_override(**context_override):
+                            bpy.ops.constraint.apply(constraint=location_constraint.name,owner='BONE')
+                
+                    if rotation_constraint:
+                        context_override = {'active_pose_bone' : bone}
+                        with context.temp_override(**context_override):
+                            bpy.ops.constraint.apply(constraint=rotation_constraint.name,owner='BONE')
+
+                    if scale_constraint:
+                        context_override = {'active_pose_bone' : bone}
+                        with context.temp_override(**context_override):
+                            bpy.ops.constraint.apply(constraint=scale_constraint.name,owner='BONE')
+                else:
+
+                    if location_constraint:
+                        context_override = {'active_pose_bone' : bone}
+                        bpy.ops.constraint.apply(context_override,constraint=location_constraint.name,owner='BONE')
+
+                    if rotation_constraint:
+                        context_override = {'active_pose_bone' : bone}
+                        bpy.ops.constraint.apply(context_override,constraint=rotation_constraint.name,owner='BONE')
+
+                    if scale_constraint:
+                        context_override = {'active_pose_bone' : bone}
+                        bpy.ops.constraint.apply(context_override,constraint=scale_constraint.name,owner='BONE')
+                
+
+                #bone.matrix_basis = bone.matrix_basis @ override_bone.matrix_basis
+                del bone["OverridePoseBone"]
 
 
+        except KeyError:
+            pass
+    for bone in rig.pose.bones: #DELETING BONES
+        try:
+            boneOverrideData = bone["OverridePoseBone"]
+            if not bpy.context.mode == 'EDIT_ARMATURE':
+                bpy.ops.object.mode_set(mode='EDIT')
+            if boneOverrideData == "OverrideBone":
+                target_bone = rig.data.edit_bones.get(bone.name)
+                if target_bone:
+                    rig.data.edit_bones.remove(target_bone)   
+        except KeyError:
+            pass
+    
+    if original_mode == "POSE":
+        bpy.ops.object.mode_set(mode='POSE')
+    else:
+        bpy.ops.object.mode_set(mode='OBJECT')
 
+settings_data = open_json(settings_file)
+current_language_file = open_json(f"{root_folder}/lang/{settings_data['current_language_file']}")
+
+class IC_DevMode_SortLanguage(bpy.types.Operator):
+    """DO NOT RUN UNLESS YOU KNOW WHAT YOU'RE DOING"""
+    bl_idname = "ice_cube_dev.sort_language"
+    bl_label = "Ice Cube Sort Language File"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+
+        sorted_language_file = dict(sorted(current_language_file['translations'].items()))
+        current_language_file['translations'] = sorted_language_file
+        sorted_language_data = json.dumps(current_language_file, indent=4)
+        with open(f"{root_folder}/lang/{settings_data['current_language_file']}", "w") as json_file:
+            json_file.write(sorted_language_data)
+
+        return{'FINISHED'}
+
+def getLanguageTranslation(translation):
+    lang_translations = current_language_file['translations']
+    if translation in lang_translations:
+        return lang_translations[translation]
+    else:
+        
+        #LANGUAGE WRITING CODE, DO ***NOT*** ENABLE UNLESS YOU KNOW WHAT YOU ARE DOING
+
+        #current_language_file['translations'][translation] = translation
+        #converted_settings_data = json.dumps(current_language_file, indent=4)
+        #with open(f"{root_folder}/lang/{settings_data['current_language_file']}", "w") as json_file:
+        #    json_file.write(converted_settings_data)
+
+        return translation
 
 classes = [
+    IC_DevMode_SortLanguage
            ]
 
 def register():

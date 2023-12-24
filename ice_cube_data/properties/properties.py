@@ -8,7 +8,7 @@ from bpy.props import (StringProperty,
                         )
 
 from ice_cube_data.utils.selectors import isRigSelected
-from ice_cube_data.utils.general_func import convertStringNumbers, selectBoneCollection
+from ice_cube_data.utils.general_func import convertStringNumbers, selectBoneCollection, getLanguageTranslation
 
 cur_blender_version = convertStringNumbers(list(bpy.app.version))
 
@@ -18,80 +18,80 @@ cur_blender_version = convertStringNumbers(list(bpy.app.version))
 def r_fingers_update(self, context):
     if self.enable_control_linking:
         if cur_blender_version >= 400:
-            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Right Fingers")
+            target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Right Fingers")
             target_collection.is_visible = self.fingers_r
         else:
-            bpy.data.armatures[self.name].layers[5] = self.fingers_r
+            bpy.data.objects[self.name].data.layers[5] = self.fingers_r
 
 def l_fingers_update(self, context):
     if self.enable_control_linking:
         if cur_blender_version >= 400:
-            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Left Fingers")
+            target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Left Fingers")
             target_collection.is_visible = self.fingers_l
         else:
-            bpy.data.armatures[self.name].layers[21] = self.fingers_l
+            bpy.data.objects[self.name].data.layers[21] = self.fingers_l
 
 def r_arm_ik_update(self, context):
     if self.enable_control_linking:
         if cur_blender_version >= 400:
-            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Right Arm IK")
+            target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Right Arm IK")
             target_collection.is_visible = self.r_arm_ik
         else:
-            bpy.data.armatures[self.name].layers[1] = self.r_arm_ik
+            bpy.data.objects[self.name].data.layers[1] = self.r_arm_ik
 
 def l_arm_ik_update(self, context):
     if self.enable_control_linking:
         if cur_blender_version >= 400:
-            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Left Arm IK")
+            target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Left Arm IK")
             target_collection.is_visible = self.l_arm_ik
         else:
-            bpy.data.armatures[self.name].layers[2] = self.l_arm_ik
+            bpy.data.objects[self.name].data.layers[2] = self.l_arm_ik
 
 def r_leg_ik_update(self, context):
     if self.enable_control_linking:
         if cur_blender_version >= 400:
-            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Right Leg IK")
+            target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Right Leg IK")
             target_collection.is_visible = self.r_leg_ik
 
-            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Right Leg FK")
+            target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Right Leg FK")
             target_collection.is_visible = not self.r_leg_ik
         else:
-            bpy.data.armatures[self.name].layers[3] = self.r_leg_ik
-            bpy.data.armatures[self.name].layers[19] = not self.r_leg_ik
+            bpy.data.objects[self.name].data.layers[3] = self.r_leg_ik
+            bpy.data.objects[self.name].data.layers[19] = not self.r_leg_ik
 
 def l_leg_ik_update(self, context):
     if self.enable_control_linking:
         if cur_blender_version >= 400:
-            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Left Leg IK")
+            target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Left Leg IK")
             target_collection.is_visible = self.l_leg_ik
 
-            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Left Leg FK")
+            target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Left Leg FK")
             target_collection.is_visible = not self.l_leg_ik
         else:
-            bpy.data.armatures[self.name].layers[4] = self.l_leg_ik
-            bpy.data.armatures[self.name].layers[20] = not self.l_leg_ik
+            bpy.data.objects[self.name].data.layers[4] = self.l_leg_ik
+            bpy.data.objects[self.name].data.layers[20] = not self.l_leg_ik
 
 def dynamic_hair_update(self, context):
     if self.enable_control_linking:
         if cur_blender_version >= 400:
-            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Dynamic Hair")
+            target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Dynamic Hair")
             target_collection.is_visible = self.dynamichair
         else:
-            bpy.data.armatures[self.name].layers[6] = self.dynamichair
+            bpy.data.objects[self.name].data.layers[6] = self.dynamichair
 
 def face_rig_update(self, context):
     if self.enable_control_linking:
         if cur_blender_version >= 400:
-            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Face Panel Bones")
+            target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Face Panel Bones")
             target_collection.is_visible = self.facerig
             
-            target_collection = selectBoneCollection(bpy.data.armatures[self.name].collections,"Face Tweak")
+            target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Face Tweak")
             if target_collection.is_visible:
                 target_collection.is_visible = self.facerig
         else:
-            bpy.data.armatures[self.name].layers[23] = self.facerig
-            if bpy.data.armatures[self.name].layers[16]:
-                bpy.data.armatures[self.name].layers[16] = self.facerig
+            bpy.data.objects[self.name].data.layers[23] = self.facerig
+            if bpy.data.objects[self.name].data.layers[16]:
+                bpy.data.objects[self.name].data.layers[16] = self.facerig
 
 def armtype_update(self,context):
     print(f"armtype_enum updated to {self.armtype_enum}")
@@ -226,6 +226,9 @@ name="global_head_rotation", description="Enables/Disables global head rotation"
 
 bpy.types.Object.prop_clipboard = BoolProperty(
 name="prop_clipboard", description="Determines if the settings will be exported to the clipboard or a file", default=False)
+
+bpy.types.Object.export_to_icpreset = BoolProperty(
+    name = "export_to_icpreset", description="Decides whether to export the finished product to an icpreset file or an asset pack",default=False)
 
 bpy.types.Object.generate_thumbnail = BoolProperty(
     name = "generate_thumbnail", description="Decides whether to generate a thumbnail in the current scene",default=False)
@@ -618,50 +621,50 @@ name="UI_Scale", description="Scales the main UI", default=1, min=0.8, max=3)
 bpy.types.Object.armtype_enum = EnumProperty(
     name = "Changes the arm width",
     default = 'one',
-    items = [('one', 'Steve', '4x4'),
-             ('two', 'Alex', '4x3'),
-             ('three', 'Thin', '3x3')
+    items = [('one', getLanguageTranslation("ice_cube.ui.props.enum.steve"), '4x4'),
+             ('two', getLanguageTranslation("ice_cube.ui.props.enum.alex"), '4x3'),
+             ('three', getLanguageTranslation("ice_cube.ui.props.enum.thin"), '3x3')
              ],
     update=armtype_update)
 
 bpy.types.Object.main_panel_switcher = EnumProperty(
     name = "main_panel_switcher",
     default = 'style',
-    items = [('style', 'Style', 'Main Style Settings'),
-             ('controls', 'Controls', 'Control Settings'),
-             ('materials', 'Materials', 'Material Settings'),
-             ('advanced','Advanced','Advanced Settings')
+    items = [('style', getLanguageTranslation("ice_cube.ui.props.enum.style"), 'Main Style Settings'),
+             ('controls', getLanguageTranslation("ice_cube.ui.props.enum.controls"), 'Control Settings'),
+             ('materials', getLanguageTranslation("ice_cube.ui.props.enum.materials"), 'Material Settings'),
+             ('advanced',getLanguageTranslation("ice_cube.ui.props.enum.advanced"),'Advanced Settings')
              ])
 
 bpy.types.Object.style_menu_switcher = EnumProperty(
     name = "style_menu_switcher",
     default = 'rig',
-    items = [('rig', 'Rig Style', 'Rig Style Settings'),
-             ('mesh', 'Mesh Style', 'Mesh Style Settings')
+    items = [('rig', getLanguageTranslation("ice_cube.ui.props.enum.rig_style"), 'Rig Style Settings'),
+             ('mesh', getLanguageTranslation("ice_cube.ui.props.enum.mesh_style"), 'Mesh Style Settings')
              ])
 
 bpy.types.Object.material_menu_switcher = EnumProperty(
     name = "material_menu_switcher",
     default = 'skin',
-    items = [('skin', 'Skin', 'Skin Material Settings'),
-             ('eyes', 'Eyes', 'Eye Material Settings'),
-             ('misc', 'Misc', 'Misc Material Settings')
+    items = [('skin', getLanguageTranslation("ice_cube.ui.props.enum.skin"), 'Skin Material Settings'),
+             ('eyes', getLanguageTranslation("ice_cube.ui.props.enum.eyes"), 'Eye Material Settings'),
+             ('misc', getLanguageTranslation("ice_cube.ui.props.enum.misc"), 'Misc Material Settings')
              ])
 
 bpy.types.Object.advanced_menu_switcher = EnumProperty(
     name = "advanced_menu_switcher",
     default = 'dlc',
-    items = [('dlc', 'DLC', 'DLC Settings'),
-             ('parenting', 'Parenting', 'Parenting Settings'),
-             ('system', 'System', 'System Settings')
+    items = [('dlc', getLanguageTranslation("ice_cube.ui.props.enum.dlc"), 'DLC Settings'),
+             ('parenting', getLanguageTranslation("ice_cube.ui.props.enum.parenting"), 'Parenting Settings'),
+             ('system', getLanguageTranslation("ice_cube.ui.props.enum.system"), 'System Settings')
              ])
 
 bpy.types.Object.gradient_color_eye = EnumProperty(
     name = "gradient_color_eye",
     default = 'color',
-    items = [('color', 'Colors', 'Uses the default 4 color options for eyes'),
-             ('gradient', 'Gradient', 'Uses a gradient for the eyes'),
-             ('texture', 'Texture', 'Uses a texture for the eyes')
+    items = [('color', getLanguageTranslation("ice_cube.ui.props.enum.colors"), 'Uses the default 4 color options for eyes'),
+             ('gradient', getLanguageTranslation("ice_cube.ui.props.enum.gradient"), 'Uses a gradient for the eyes'),
+             ('texture', getLanguageTranslation("ice_cube.ui.props.enum.texture"), 'Uses a texture for the eyes')
              ])
              
 bpy.types.Object.ipaneltab1 = EnumProperty(
@@ -707,66 +710,66 @@ bpy.types.Object.ipaneltab5 = EnumProperty(
 
 bpy.types.Object.ipaneltab6 = EnumProperty(
     name = "Asset/Preset Switcher",
-    default = 'one',
-    items = [('one', 'Assets', 'Asset appending menu'),
-             ('two', 'Presets', 'Preset appending menu')
+    default = 'two',
+    items = [('one', getLanguageTranslation("ice_cube.ui.props.enum.assets"), 'Asset appending menu'),
+             ('two', getLanguageTranslation("ice_cube.ui.props.enum.presets"), 'Preset appending menu')
              ])
 
 bpy.types.Scene.append_tab_global = EnumProperty(
     name = "Append Type",
     default = 'two',
-    items = [('one', 'Assets', 'Asset appending menu'),
-             ('two', 'Presets', 'Preset appending menu')
+    items = [('one', getLanguageTranslation("ice_cube.ui.props.enum.assets"), 'Asset appending menu'),
+             ('two', getLanguageTranslation("ice_cube.ui.props.enum.presets"), 'Preset appending menu')
              ])
 
 bpy.types.Object.ipaneltab7 = EnumProperty(
     name = "haha tab",
     default = 'one',
-    items = [('one', 'Exporting', 'Export Settings'),
-             ('two', 'Importing', 'Import Settings')
+    items = [('one', getLanguageTranslation("ice_cube.ui.props.enum.exporting"), 'Export Settings'),
+             ('two', getLanguageTranslation("ice_cube.ui.props.enum.importing"), 'Import Settings')
              ])
 
 bpy.types.Object.bendstyle = EnumProperty(
     name = "haha tab",
     default = 'one',
-    items = [('one', 'Sharp Bends', 'Sharp bends on arms and legs'),
-             ('two', 'Smooth Bends', 'Smooth bends on arms and legs')
+    items = [('one', getLanguageTranslation("ice_cube.ui.props.enum.sharp_bends"), 'Sharp bends on arms and legs'),
+             ('two', getLanguageTranslation("ice_cube.ui.props.enum.smooth_bends"), 'Smooth bends on arms and legs')
              ])
              
 bpy.types.Object.arm_ik_parent_r = EnumProperty(
     name = "haha tab",
     default = 'one',
-    items = [('zero', 'NONE', 'IK PARENT'),
-             ('one', 'Root', 'IK PARENT'),
-             ('two', 'Waist', 'IK PARENT'),
-             ('three', 'Torso', 'IK PARENT')
+    items = [('zero', getLanguageTranslation("ice_cube.ui.props.enum.none"), 'IK PARENT'),
+             ('one', getLanguageTranslation("ice_cube.ui.props.enum.root"), 'IK PARENT'),
+             ('two', getLanguageTranslation("ice_cube.ui.props.enum.waist"), 'IK PARENT'),
+             ('three', getLanguageTranslation("ice_cube.ui.props.enum.torso"), 'IK PARENT')
              ])
 
 bpy.types.Object.arm_ik_parent_l = EnumProperty(
     name = "haha tab",
     default = 'one',
-    items = [('zero', 'NONE', 'IK PARENT'),
-             ('one', 'Root', 'IK PARENT'),
-             ('two', 'Waist', 'IK PARENT'),
-             ('three', 'Torso', 'IK PARENT')
+    items = [('zero', getLanguageTranslation("ice_cube.ui.props.enum.none"), 'IK PARENT'),
+             ('one', getLanguageTranslation("ice_cube.ui.props.enum.root"), 'IK PARENT'),
+             ('two', getLanguageTranslation("ice_cube.ui.props.enum.waist"), 'IK PARENT'),
+             ('three', getLanguageTranslation("ice_cube.ui.props.enum.torso"), 'IK PARENT')
              ])
 
 bpy.types.Object.dlc_menu_switcher = EnumProperty(
     name = "DLC Menu Switcher",
     default = 'one',
     items = [
-             ('one', 'Append', 'Append Downloaded Asset'),
-             ('two', 'Download', 'Download New Asset'),
-             ('three', 'Generate', 'Generate Asset Pack')
+             ('one', getLanguageTranslation("ice_cube.ui.props.enum.append"), 'Append Downloaded Asset'),
+             ('two', getLanguageTranslation("ice_cube.ui.props.enum.download"), 'Download New Asset'),
+             ('three', getLanguageTranslation("ice_cube.ui.props.enum.generate"), 'Generate Asset Pack')
              ])
 
 bpy.types.Object.emissioneye = EnumProperty(
     name = "emissioneye",
     default= 'one',
     items = [
-             ('one', 'Both Eyes', 'Gives both eyes emission'),
-             ('two', 'Right Eye Only', 'Only the right eye glows'),
-             ('three', 'Left Eye Only', 'Only the left eye glows')
+             ('one', getLanguageTranslation("ice_cube.ui.props.enum.both_eyes"), 'Gives both eyes emission'),
+             ('two', getLanguageTranslation("ice_cube.ui.props.enum.right_eye"), 'Only the right eye glows'),
+             ('three', getLanguageTranslation("ice_cube.ui.props.enum.left_eye"), 'Only the left eye glows')
              ]
 )
 
@@ -774,9 +777,9 @@ bpy.types.Object.mouthtypes = EnumProperty(
     name = "mouthtypes",
     default= 'one',
     items = [
-             ('one', 'Ice Cube', 'Uses the default Ice Cube mouth shape'),
-             ('two', 'Mine-Imator', 'Uses a \'Skibbz\' like mouth shape from Mine-Imator'),
-             ('three', 'Square', 'Uses a classical Zamination styled square mouth')
+             ('one', getLanguageTranslation("ice_cube.ui.props.enum.ice_cube"), 'Uses the default Ice Cube mouth shape'),
+             ('two', getLanguageTranslation("ice_cube.ui.props.enum.mineimator"), 'Uses a \'Skibbz\' like mouth shape from Mine-Imator'),
+             ('three', getLanguageTranslation("ice_cube.ui.props.enum.square"), 'Uses a classical Zamination styled square mouth')
              ]
 )
 
@@ -784,8 +787,8 @@ bpy.types.Object.icecube_menu_version = EnumProperty(
     name = "icecube_menu_version",
     default= 'new',
     items = [
-             ('new', 'New UI', '1.5.2+'),
-             ('classic', 'Classic UI', '-1.5.1')
+             ('new', getLanguageTranslation("ice_cube.ui.props.enum.new_ui"), '1.5.2+'),
+             ('classic', getLanguageTranslation("ice_cube.ui.props.enum.classic_ui"), '-1.5.1')
              ]
 )
 
@@ -793,23 +796,23 @@ bpy.types.Scene.armor_trim_pattern = EnumProperty(
         name = "Asset Entries",
         default= 'none',
         items = [
-            ('none', 'none','description none'),
-            ('Coast', 'Coast','Applies the Coast trim'),
-            ('Dune', 'Dune','Applies the Dune trim'),
-            ('Eye', 'Eye','Applies the Eye trim'),
-            ('Host', 'Host','Applies the Host trim'),
-            ('Raiser', 'Raiser','Applies the Raiser trim'),
-            ('Rib', 'Rib','Applies the Rib trim'),
-            ('Sentry', 'Sentry','Applies the Sentry trim'),
-            ('Shaper', 'Shaper','Applies the Shaper trim'),
-            ('Silence', 'Silence','Applies the Silence trim'),
-            ('Snout', 'Snout','Applies the Snout trim'),
-            ('Spire', 'Spire','Applies the Spire trim'),
-            ('Tide', 'Tide','Applies the Tide trim'),
-            ('Vex', 'Vex','Applies the Vex trim'),
-            ('Ward', 'Ward','Applies the Ward trim'),
-            ('Wayfinder', 'Wayfinder','Applies the Wayfinder trim'),
-            ('Wild', 'Wild','Applies the Wild trim')
+            ('none', getLanguageTranslation("ice_cube.ui.props.enum.none"),'description none'),
+            ('Coast', getLanguageTranslation("ice_cube.ui.props.enum.trim_coast"),'Applies the Coast trim'),
+            ('Dune', getLanguageTranslation("ice_cube.ui.props.enum.trim_dune"),'Applies the Dune trim'),
+            ('Eye', getLanguageTranslation("ice_cube.ui.props.enum.trim_eye"),'Applies the Eye trim'),
+            ('Host', getLanguageTranslation("ice_cube.ui.props.enum.trim_host"),'Applies the Host trim'),
+            ('Raiser', getLanguageTranslation("ice_cube.ui.props.enum.trim_raiser"),'Applies the Raiser trim'),
+            ('Rib', getLanguageTranslation("ice_cube.ui.props.enum.trim_rib"),'Applies the Rib trim'),
+            ('Sentry', getLanguageTranslation("ice_cube.ui.props.enum.trim_sentry"),'Applies the Sentry trim'),
+            ('Shaper', getLanguageTranslation("ice_cube.ui.props.enum.trim_shaper"),'Applies the Shaper trim'),
+            ('Silence', getLanguageTranslation("ice_cube.ui.props.enum.trim_silence"),'Applies the Silence trim'),
+            ('Snout', getLanguageTranslation("ice_cube.ui.props.enum.trim_snout"),'Applies the Snout trim'),
+            ('Spire', getLanguageTranslation("ice_cube.ui.props.enum.trim_spire"),'Applies the Spire trim'),
+            ('Tide', getLanguageTranslation("ice_cube.ui.props.enum.trim_tide"),'Applies the Tide trim'),
+            ('Vex', getLanguageTranslation("ice_cube.ui.props.enum.trim_vex"),'Applies the Vex trim'),
+            ('Ward', getLanguageTranslation("ice_cube.ui.props.enum.trim_ward"),'Applies the Ward trim'),
+            ('Wayfinder', getLanguageTranslation("ice_cube.ui.props.enum.trim_wayfinder"),'Applies the Wayfinder trim'),
+            ('Wild', getLanguageTranslation("ice_cube.ui.props.enum.trim_wild"),'Applies the Wild trim')
             ]
         )
 
@@ -817,16 +820,16 @@ bpy.types.Scene.armor_trim_material = EnumProperty(
         name = "Asset Entries",
         default= 'Amethyst',
         items = [
-            ('Amethyst', 'Amethyst','Sets the trim material to Amethyst'),
-            ('Copper', 'Copper','Sets the trim material to Copper'),
-            ('Diamond', 'Diamond','Sets the trim material to Diamond'),
-            ('Emerald', 'Emerald','Sets the trim material to Emerald'),
-            ('Gold', 'Gold','Sets the trim material to Gold'),
-            ('Iron', 'Iron','Sets the trim material to Iron'),
-            ('Lapis', 'Lapis','Sets the trim material to Lapis'),
-            ('Netherite', 'Netherite','Sets the trim material to Netherite'),
-            ('Quartz', 'Quartz','Sets the trim material to Quartz'),
-            ('Redstone', 'Redstone','Sets the trim material to Redstone')
+            ('Amethyst', getLanguageTranslation("ice_cube.ui.props.enum.mat_amethyst"),'Sets the trim material to Amethyst'),
+            ('Copper', getLanguageTranslation("ice_cube.ui.props.enum.mat_copper"),'Sets the trim material to Copper'),
+            ('Diamond', getLanguageTranslation("ice_cube.ui.props.enum.mat_diamond"),'Sets the trim material to Diamond'),
+            ('Emerald', getLanguageTranslation("ice_cube.ui.props.enum.mat_emerald"),'Sets the trim material to Emerald'),
+            ('Gold', getLanguageTranslation("ice_cube.ui.props.enum.mat_gold"),'Sets the trim material to Gold'),
+            ('Iron', getLanguageTranslation("ice_cube.ui.props.enum.mat_iron"),'Sets the trim material to Iron'),
+            ('Lapis', getLanguageTranslation("ice_cube.ui.props.enum.mat_lapis"),'Sets the trim material to Lapis'),
+            ('Netherite', getLanguageTranslation("ice_cube.ui.props.enum.mat_netherite"),'Sets the trim material to Netherite'),
+            ('Quartz', getLanguageTranslation("ice_cube.ui.props.enum.mat_quartz"),'Sets the trim material to Quartz'),
+            ('Redstone', getLanguageTranslation("ice_cube.ui.props.enum.mat_redstone"),'Sets the trim material to Redstone')
             ]
         )
 
@@ -886,6 +889,18 @@ bpy.types.Object.baked_version_filepath = StringProperty(
     subtype='FILE_PATH',
     default="")
 
+bpy.types.Object.import_icpreset_file = StringProperty(
+    name="import_icpreset_file",
+    description="Targets a .icpreset file to import",
+    subtype='FILE_PATH',
+    default="")
+
+bpy.types.Object.export_icpreset_file = StringProperty(
+    name="export_icpreset_file",
+    description="Targets a location to generate the .icpreset file",
+    subtype='DIR_PATH',
+    default="")
+
 bpy.types.Scene.target_thumbnail_generate = StringProperty(
     name="target_thumbnail_generate",
     description="Defines a png file to generate an asset pack from",
@@ -916,6 +931,8 @@ bpy.types.Scene.materialType = StringProperty(
     name="materialType",
     description="Defines which material the asset is (Leave default unless you know what you're doing)",
     default="default")
+
+
 
 
 classes = [

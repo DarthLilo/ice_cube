@@ -1,3 +1,10 @@
 {
-    "last_check_date": "2023-12-5"
+    "last_check_date": "2023-12-23",
+    "settings_version": "1.6.0",
+    "default_import_file": "Ice Cube",
+    "current_language_file": "english.ic_lang",
+    "language_id": "0",
+    "current_language_authors": [
+        "DarthLilo"
+    ]
 }

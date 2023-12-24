@@ -3,18 +3,21 @@ import bpy
 import os
 import shutil
 from bpy.props import EnumProperty
-import time
-import importlib
+from bpy_extras.io_utils import ImportHelper
+import datetime
 import random
-
+import zipfile
+import distutils
+from mathutils import Vector, Quaternion, Matrix, Euler
+import math
 
 #Custom Functions
-from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info,valid_dlcs
+from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info,valid_dlcs,settings_file
 
-from ice_cube_data.utils.general_func import BlenderVersConvert, IC_FKIK_Switch, bakeIceCube, badToTheBone, convertStringNumbers
-from ice_cube_data.utils.file_manage import getFiles
+from ice_cube_data.utils.general_func import BlenderVersConvert, IC_FKIK_Switch, bakeIceCube, badToTheBone, convertStringNumbers, setRestPose, resetRestPose, getLanguageTranslation
+from ice_cube_data.utils.file_manage import getFiles, open_json
 from ice_cube_data.utils.ui_tools import CustomErrorBox
-from ice_cube_data.utils.web_tools import CustomLink
+from ice_cube_data.utils.web_tools import CustomLink, ICDownloadImage
 from ice_cube_data.utils.selectors import isRigSelected, mat_holder_func, eye_mesh
 from ice_cube_data.operators import web
 
@@ -23,7 +26,7 @@ from . import os_management
 #Operator Functions
 from .append import append_preset_func, append_default_rig, append_emotion_line_func
 from .parenting import parent_left_arm, parent_right_arm, parent_right_leg, parent_left_leg, parent_body_func, parent_head_func
-from .os_management import open_user_packs, install_update_func, create_backup_func, refresh_backups_func, load_backup_func, delete_backup_func, export_settings_data, import_settings_data, reset_all_settings_func, IC_download_dlc, reset_all_ui_func
+from .os_management import open_user_packs, install_update_func, create_backup_func, refresh_backups_func, load_backup_func, delete_backup_func, export_settings_data, import_settings_data, reset_all_settings_func, IC_download_dlc, reset_all_ui_func, compressDirectory
 from .web import check_for_updates_func, refresh_dlc_func, IC_refresh_dlc
 
 
@@ -124,7 +127,7 @@ class append_preset(bpy.types.Operator):
 class append_defaultrig(bpy.types.Operator): #Appends the default version of the rig
     """Appends the default rig into your scene"""
     bl_idname = "append.defaultrig"
-    bl_label = "Ice Cube Rig"
+    bl_label = "Ice Cube "+getLanguageTranslation("ice_cube.ops.append_default_rig")
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -200,7 +203,7 @@ class parent_head(bpy.types.Operator):
 class rigpage(bpy.types.Operator):
     """Opens a link to the Ice Cube page"""
     bl_idname = "rigpage.link"
-    bl_label = "Ice Cube Carrd"
+    bl_label = getLanguageTranslation("ice_cube.ops.ice_cube_carrd")
     bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
@@ -212,7 +215,7 @@ class rigpage(bpy.types.Operator):
 class discord_link(bpy.types.Operator):
     """Opens a link to my Discord server"""
     bl_idname = "discordserver.link"
-    bl_label = "Join the Discord!"
+    bl_label = getLanguageTranslation("ice_cube.ops.discord_server")
     bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
@@ -229,7 +232,7 @@ class download_template_1(bpy.types.Operator):
     
     def execute(self, context):
     
-        CustomLink("https://cdn.discordapp.com/attachments/978737749995683851/978737884897107968/template_asset_pack.zip")
+        CustomLink("https://www.dropbox.com/scl/fi/wkjptijpqxlqkifss5ejj/template_asset_pack.zip?rlkey=l3qhq0wetdgfimeq8jhcx0jtr&dl=1")
         
         return {'FINISHED'}
 
@@ -241,14 +244,14 @@ class download_template_2(bpy.types.Operator):
     
     def execute(self, context):
     
-        CustomLink("https://cdn.discordapp.com/attachments/978737749995683851/978744989691555850/template_rig_pack.zip")
+        CustomLink("https://www.dropbox.com/scl/fi/xw1r9cqsu6vrtldvnrlao/template_rig_pack.zip?rlkey=32omitbebqv7ybzxfema20303&dl=1")
         
         return {'FINISHED'}
 
 class open_wiki(bpy.types.Operator):
     """Opens the Ice Cube wiki"""
     bl_idname = "wiki.open"
-    bl_label = "Ice Cube Wiki"
+    bl_label = getLanguageTranslation("ice_cube.ops.open_wiki")
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -260,7 +263,7 @@ class open_wiki(bpy.types.Operator):
 class open_custom_presets(bpy.types.Operator):
     """Opens the DLC folder"""
     bl_idname = "custom_presets.open"
-    bl_label = "DLC Folder"
+    bl_label = getLanguageTranslation("ice_cube.ops.dlc_folder")
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -270,7 +273,7 @@ class open_custom_presets(bpy.types.Operator):
 class append_emotion_line(bpy.types.Operator):
     """Appends an emotion line to the rig"""
     bl_idname = "append.emotion"
-    bl_label = "Append Emotion Line"
+    bl_label = getLanguageTranslation("ice_cube.ops.append_emotion_line")
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -313,7 +316,7 @@ class open_update_page(bpy.types.Operator):
 class create_backup(bpy.types.Operator):
     """Creates a backup of the currently installed version"""
     bl_idname = "create.backup"
-    bl_label = "Load Backup"
+    bl_label = "Create Backup"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -436,67 +439,6 @@ class generate_asset_pack(bpy.types.Operator):
         scene = context.scene
         if obj.get("ipaneltab6") == 0: #ASSETS
             CustomErrorBox("Generation for assets from the Ice Cube UI has been disabled, please use the new Scene UI found in the toolbar under \'Tool\'")
-            ##CHECKING FOR VARS
-            #if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "" and os.path.exists(obj.target_thumbnail_generate) is True:
-            #    #folder generation
-            #    inventory = f"{root_folder}/ice_cube_data/internal_files/user_packs/inventory"
-#
-            #    asset_pack_path = f"{inventory}/{obj.asset_pack_name}"
-#
-            #    list_of_dirs_to_gen = ["","assets","thumbnails",f"assets/{obj.entry_name_asset}"]
-#
-            #    for folder in list_of_dirs_to_gen:
-            #        if os.path.exists(f"{asset_pack_path}/{folder}") is False:
-            #            os.mkdir(f"{asset_pack_path}/{folder}")
-#
-            #    #settings json generation
-            #    settings_json_data = {
-            #        "pack_name": obj.asset_pack_name,
-            #        "author": obj.asset_author,
-            #        "version": obj.asset_version,
-            #    	"default": obj.entry_name_asset
-            #    }
-#
-            #    #info json generation
-            #    info_json_data = {
-            #        "asset_name": obj.entry_name_asset,
-            #        "author": obj.asset_author,
-            #        "asset_version": obj.asset_version
-            #    }
-#
-            #    converted_settings_json = json.dumps(settings_json_data,indent=4)
-            #    with open(f"{asset_pack_path}/settings.json", "w") as json_file:
-            #        json_file.write(converted_settings_json)
-#
-            #    converted_info_json = json.dumps(info_json_data,indent=4)
-            #    with open(f"{asset_pack_path}/assets/{obj.entry_name_asset}/info.json", "w") as json_file:
-            #        json_file.write(converted_info_json)
-#
-#
-            #    #saving a copy of the file
-            #    if bpy.data.is_saved is True and obj.asset_pack_name != "" and obj.entry_name_asset != "":
-            #        filepath = f"{inventory}/{obj.asset_pack_name}/assets/{obj.entry_name_asset}/{obj.entry_name_asset}.blend"
-            #        bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
-#
-            #    #thumbnail management
-            #    if obj.target_thumbnail_generate != "" and str(obj.target_thumbnail_generate).__contains__(".png"): #Copy Thumbnail
-            #        shutil.copyfile(obj.target_thumbnail_generate,f"{inventory}/{obj.asset_pack_name}/thumbnails/{obj.entry_name_asset}.png")
-#
-            #elif obj.asset_pack_name == "":
-            #    CustomErrorBox("Please enter a name for the pack!",'Invalid Name','ERROR')
-            #    return{'FINISHED'}
-            #elif obj.entry_name_asset == "":
-            #    CustomErrorBox("Please enter an asset name!","Invalid Name",'ERROR')
-            #    return{'FINISHED'}
-            #elif obj.asset_author == "":
-            #    CustomErrorBox("Please enter an author!","Invalid Author",'ERROR')
-            #    return{'FINISHED'}
-            #elif obj.asset_version == "":
-            #    CustomErrorBox("Please enter a valid version!","Invalid Version",'ERROR')
-            #    return{'FINISHED'}
-            #elif os.path.exists(obj.target_thumbnail_generate) is False:
-            #    CustomErrorBox("Please select a valid thumbnail!")
-            #    return{'FINISHED'}
 
         if obj.get("ipaneltab6") == 1:
             #CHECKING FOR VARS
@@ -504,12 +446,16 @@ class generate_asset_pack(bpy.types.Operator):
             if not bpy.data.is_saved:
                 CustomErrorBox("Please save the file first!",'Save Error','ERROR')
                 return{'FINISHED'}
+            
+            if obj.asset_pack_name == "":
+                CustomErrorBox("Please enter a name for the pack!",'Invalid Name','ERROR')
+                return{'FINISHED'}
+            
+            if obj.export_to_icpreset == True and obj.export_icpreset_file == "":
+                CustomErrorBox("Choose a valid export folder!",'Invalid export folder','ERROR')
+                return{'FINISHED'}
 
-            if obj.asset_pack_name != "" and obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "":
-
-                #if obj.has_baked_version is True and os.path.exists(obj.baked_version_filepath) is False:
-                #    CustomErrorBox("Please enter a valid baked file path!",'Invalid Thumbnail','ERROR')
-                #    return{'FINISHED'}
+            if obj.entry_name_asset != "" and obj.asset_author != "" and obj.asset_version != "":
                 
                 if os.path.exists(obj.target_thumbnail_generate) is False and obj.generate_thumbnail is False:
                     CustomErrorBox("Invalid Thumbnail Path!",'Invalid Thumbnail','ERROR')
@@ -522,13 +468,28 @@ class generate_asset_pack(bpy.types.Operator):
                 #folder generation
                 rigs = f"{root_folder}/ice_cube_data/internal_files/user_packs/rigs"
 
-                rig_pack_path = f"{rigs}/{obj.asset_pack_name}"
+                if not obj.export_to_icpreset:
+                    
+                    target_save_path = f"{rigs}/{obj.asset_pack_name}"
 
-                list_of_dirs_to_gen = ["","rigs","thumbnails",f"rigs/{obj.entry_name_asset}"]
+                    list_of_dirs_to_gen = ["","rigs","thumbnails",f"rigs/{obj.entry_name_asset}"]
 
-                for folder in list_of_dirs_to_gen:
-                    if os.path.exists(f"{rig_pack_path}/{folder}") is False:
-                        os.mkdir(f"{rig_pack_path}/{folder}")
+                    for folder in list_of_dirs_to_gen:
+                        if os.path.exists(f"{target_save_path}/{folder}") is False:
+                            os.mkdir(f"{target_save_path}/{folder}")
+                    
+                    
+                else:
+                    temp_gen_folder = f"{rigs}/temp_generation"
+                    if not os.path.exists(temp_gen_folder):
+                        os.mkdir(temp_gen_folder) #Making temp generation folder
+                    target_save_path = temp_gen_folder
+
+                    list_of_dirs_to_gen = ["","rigs","thumbnails",f"rigs/{obj.entry_name_asset}"]
+
+                    for folder in list_of_dirs_to_gen:
+                        if os.path.exists(f"{target_save_path}/{folder}") is False:
+                            os.mkdir(f"{target_save_path}/{folder}")
 
                 #settings json generation
                 settings_json_data = {
@@ -547,33 +508,45 @@ class generate_asset_pack(bpy.types.Operator):
                     "rig_version": obj.asset_version,
                 	"has_baked": f"{obj.generate_baked}"
                 }
+                current_time = datetime.datetime.now()
+                formatted_time = current_time.strftime("%m-%d-%Y")
+
+                metadata_json = {
+                    "creation_date": formatted_time,
+                    "type": "single_rig"
+                }
+
 
                 converted_settings_json = json.dumps(settings_json_data,indent=4)
-                with open(f"{rig_pack_path}/settings.json", "w") as json_file:
+                with open(f"{target_save_path}/settings.json", "w") as json_file:
                     json_file.write(converted_settings_json)
+                
+                if obj.export_to_icpreset:
+                    converted_metadata_json = json.dumps(metadata_json,indent=4)
+                    with open(f"{target_save_path}/metadata.json", "w") as json_file:
+                        json_file.write(converted_metadata_json)
 
                 converted_info_json = json.dumps(info_json_data,indent=4)
-                with open(f"{rig_pack_path}/rigs/{obj.entry_name_asset}/info.json", "w") as json_file:
+                with open(f"{target_save_path}/rigs/{obj.entry_name_asset}/info.json", "w") as json_file:
                     json_file.write(converted_info_json)
+                
+                #packing textures
+                bpy.ops.file.pack_all()
 
 
                 #saving a copy of the file
                 if bpy.data.is_saved is True:
-                    filepath = f"{rigs}/{obj.asset_pack_name}/rigs/{obj.entry_name_asset}/{obj.entry_name_asset}_NORMAL.blend"
+                    filepath = f"{target_save_path}/rigs/{obj.entry_name_asset}/{obj.entry_name_asset}_NORMAL.blend"
                     bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
-                
-                #if obj.has_baked_version is True:
-                #    baked_path = f"{rigs}/{obj.asset_pack_name}/rigs/{obj.entry_name_asset}/{obj.entry_name_asset}_BAKED.blend"
-                #    shutil.copyfile(obj.baked_version_filepath,baked_path)
 
                 #thumbnail management
                 if obj.target_thumbnail_generate != "" and str(obj.target_thumbnail_generate).__contains__(".png"): #Copy Thumbnail
-                    shutil.copyfile(obj.target_thumbnail_generate,f"{rigs}/{obj.asset_pack_name}/thumbnails/{obj.entry_name_asset}.png")
+                    shutil.copyfile(obj.target_thumbnail_generate,f"{target_save_path}/thumbnails/{obj.entry_name_asset}.png")
                 
                 if obj.generate_baked == True:
                     bakeIceCube(self,context,True)
                     if bpy.data.is_saved is True:
-                        filepath = f"{rigs}/{obj.asset_pack_name}/rigs/{obj.entry_name_asset}/{obj.entry_name_asset}_BAKED.blend"
+                        filepath = f"{target_save_path}/rigs/{obj.entry_name_asset}/{obj.entry_name_asset}_BAKED.blend"
                         bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
                 
                 #generating thumbnail
@@ -585,7 +558,7 @@ class generate_asset_pack(bpy.types.Operator):
                     #setting save loc
                     sce = bpy.context.scene.name
                     org_save_loc = bpy.data.scenes[sce].render.filepath
-                    bpy.data.scenes[sce].render.filepath = f"{rig_pack_path}/thumbnails/{obj.entry_name_asset}.png"
+                    bpy.data.scenes[sce].render.filepath = f"{target_save_path}/thumbnails/{obj.entry_name_asset}.png"
 
                     #generating camera
                     camera_data = bpy.data.cameras.new(name='AutoGenCam')
@@ -651,10 +624,7 @@ class generate_asset_pack(bpy.types.Operator):
                     bpy.context.space_data.shading.type = old_shading
                     bpy.context.space_data.shading.color_type = old_render_type
                     bpy.context.space_data.shading.light = old_lighting_type
-
-            elif obj.asset_pack_name == "":
-                CustomErrorBox("Please enter a name for the pack!",'Invalid Name','ERROR')
-                return{'FINISHED'}
+            
             elif obj.entry_name_asset == "":
                 CustomErrorBox("Please enter an asset name!","Invalid Name",'ERROR')
                 return{'FINISHED'}
@@ -667,8 +637,64 @@ class generate_asset_pack(bpy.types.Operator):
             elif os.path.exists(obj.target_thumbnail_generate) is False and obj.generate_thumbnail is False:
                 CustomErrorBox("Please select a valid thumbnail!","Invalid Path",'ERROR')
                 return{'FINISHED'}
+            
+            if obj.export_to_icpreset:
+                print("RAH")
+                rigs = f"{root_folder}/ice_cube_data/internal_files/user_packs/rigs"
+                temp_gen_folder = f"{rigs}/temp_generation"
+                compressDirectory(temp_gen_folder,f"{bpy.path.abspath(obj.export_icpreset_file)}/{obj.asset_pack_name}.icpreset")
+                shutil.rmtree(temp_gen_folder)
 
         return{'FINISHED'}
+
+class import_icpreset_file(bpy.types.Operator,ImportHelper):
+    """Generates an asset pack"""
+    bl_idname = "import.icpreset_file"
+    bl_label = "Import icpreset"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    filename_ext = ".icpreset"
+
+    filter_glob: bpy.props.StringProperty(
+        default="*.icpreset",
+        options={'HIDDEN'},
+        maxlen=255
+    )
+
+    def execute(self, context):
+        try:
+            selected_preset = self.filepath
+
+            filename = os.path.basename(selected_preset)
+            clean_filename = os.path.splitext(filename)[0]
+
+            downloads = f"{root_folder}/downloads"
+            extracted_path = f"{downloads}/{clean_filename}"
+            try:
+                shutil.rmtree(extracted_path)
+            except:
+                pass
+            os.mkdir(extracted_path)
+
+            with zipfile.ZipFile(selected_preset, 'r') as zip_ref:
+                zip_ref.extractall(extracted_path)
+
+            dlc_folder = root_folder+"/ice_cube_data/internal_files/user_packs/rigs/"
+
+            try:
+                #install the new DLC
+                distutils.dir_util.copy_tree(extracted_path, f"{dlc_folder}/{clean_filename}")
+                print("Finished Install!")
+                CustomErrorBox("Finished installing DLC!","Updated Finished",'INFO')
+            except:
+                print("Error Completing Install.")
+                CustomErrorBox("Error Completing Install.","Updated Cancelled",'ERROR')
+        except:
+            pass
+
+        return {'FINISHED'}
+
+
 
 class generate_asset_pack_global(bpy.types.Operator):
     """Generates an asset pack"""
@@ -1098,6 +1124,8 @@ class ic_update_bonelayer(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
+
+        rig = isRigSelected(context)
         
         if cur_blender_version >= 400:
             rig = isRigSelected(context)
@@ -1115,6 +1143,7 @@ class ic_update_bonelayer(bpy.types.Operator):
             "Layer 9" : "Right Arm Tweak",
             "Layer 10" : "Left Arm Tweak",
             "Layer 11" : "Twist",
+            "Layer 12" : "Custom Default",
             "Layer 16" : "Emotion Bones",
             "Layer 17" : "Face Tweak",
             "Layer 18" : "Right Arm FK",
@@ -1140,6 +1169,9 @@ class ic_update_bonelayer(bpy.types.Operator):
     
             if "Layer 16" not in collections:
                 collections.new("Layer 16")
+            
+            if "Layer 12" not in collections:
+                collections.new("Layer 12")
     
             for collection in collections:
                 try:
@@ -1151,6 +1183,116 @@ class ic_update_bonelayer(bpy.types.Operator):
                         else:
                             collection["layer"] = layer_update_dict[collection.name]
                             collection.name = layer_update_dict[collection.name]
+        
+        rig.data["UpdatedTo4.0"] = 1
+
+        return{'FINISHED'}
+
+class ic_set_rest_pose(bpy.types.Operator):
+    """Sets the rest pose to be the current pose of the rig"""
+    bl_idname = "ice_cube.setrestpose"
+    bl_label = "Set Rest Pose Ice Cube"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+
+        setRestPose(context)
+
+        return{'FINISHED'}
+
+class ic_reset_rest_pose(bpy.types.Operator):
+    """Resets the rest pose to be the base rest pose of the rig"""
+    bl_idname = "ice_cube.resetrestpose"
+    bl_label = "Reset Rest Pose Ice Cube"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        
+        
+        resetRestPose(context)
+
+        return{'FINISHED'}
+
+class ic_update_rest_pose(bpy.types.Operator):
+    """Updates the rest pose to be the current pose of the rig"""
+    bl_idname = "ice_cube.updaterestpose"
+    bl_label = "Update Rest Pose Ice Cube"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        
+        resetRestPose(context)
+        setRestPose(context)
+        
+        return{'FINISHED'}
+
+class update_default_rig(bpy.types.Operator):
+    """Updates the default rig to your current file"""
+    bl_idname = "ice_cube.updatedefaultrig"
+    bl_label = "Update Default File"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    default_name : bpy.props.StringProperty(name="Default Name?:", default="")
+
+    def execute(self,context):
+        name = self.default_name
+        rigs_folder = f"{root_folder}/ice_cube_data/internal_files/rigs"
+
+        if not bpy.data.is_saved:
+            CustomErrorBox("Please save the file first!",'Save Error','ERROR')
+            return{'FINISHED'}
+        
+        if name.__contains__("Ice Cube"):
+            CustomErrorBox("Name cannot contain \"Ice Cube\"!",'Name Error','ERROR')
+            return{'FINISHED'}
+        
+        rig = isRigSelected(context)
+        ice_cube_col = rig.users_collection
+        ice_cube_col[0].name = name
+
+        settings_data = open_json(settings_file)
+
+        settings_data["default_import_file"] = name
+
+        if cur_blender_version >= 400:
+            filepath = f"{rigs_folder}/{name} 4.0+.blend"
+        else:
+            filepath = f"{rigs_folder}/{name}.blend"
+        bpy.ops.file.pack_all()
+        bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
+
+        converted_settings_data = json.dumps(settings_data, indent=4)
+        with open(settings_file, "w") as json_file:
+            json_file.write(converted_settings_data)
+        
+
+
+
+        return{'FINISHED'}
+    
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+
+class reset_default_rig(bpy.types.Operator):
+    """Resets the default rig back to the vanilla Ice Cube file"""
+    bl_idname = "ice_cube.resetdefaultrig"
+    bl_label = "Update Default File"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self,context):
+
+        settings_data = open_json(settings_file)
+
+        settings_data["default_import_file"] = "Ice Cube"
+
+        converted_settings_data = json.dumps(settings_data, indent=4)
+        with open(settings_file, "w") as json_file:
+            json_file.write(converted_settings_data)
+        
+
+
+
         return{'FINISHED'}
 
 class IC_DEVONLY_UpdateInternalRig(bpy.types.Operator):
@@ -1161,14 +1303,24 @@ class IC_DEVONLY_UpdateInternalRig(bpy.types.Operator):
 
     def execute(self, context):
 
-        filepath = f"{root_folder}/ice_cube_data/internal_files/rigs/Ice Cube.blend"
-        bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
-        blend1 = f"{root_folder}/ice_cube_data/internal_files/rigs/Ice Cube.blend1"
+        if cur_blender_version >= 400:
+            filepath = f"{root_folder}/ice_cube_data/internal_files/rigs/Ice Cube 4.0+.blend"
+            bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
+            blend1 = f"{root_folder}/ice_cube_data/internal_files/rigs/Ice Cube 4.0+.blend1"
 
-        if os.path.exists(blend1):
-            os.remove(blend1)
+            if os.path.exists(blend1):
+                os.remove(blend1)
+        else:
+            filepath = f"{root_folder}/ice_cube_data/internal_files/rigs/Ice Cube.blend"
+            bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
+            blend1 = f"{root_folder}/ice_cube_data/internal_files/rigs/Ice Cube.blend1"
 
-        return{'FINISHED'}
+            if os.path.exists(blend1):
+                os.remove(blend1)
+
+        return {'FINISHED'}
+
+
 
 class IC_DevMode_TestOperator(bpy.types.Operator):
     """DO NOT RUN UNLESS YOU KNOW WHAT YOU'RE DOING"""
@@ -1177,7 +1329,8 @@ class IC_DevMode_TestOperator(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        badToTheBone()
+        
+        print(getLanguageTranslation("ice_cube.experimentations.test"))
 
         return{'FINISHED'}
 
@@ -1283,6 +1436,7 @@ classes = [
     update_backups_list,
     reset_all_settings,
     generate_asset_pack,
+    import_icpreset_file,
     generate_asset_pack_global,
     r_arm_ik_to_fk,
     l_arm_ik_to_fk,
@@ -1311,6 +1465,11 @@ classes = [
     ic_parent_all,
     ic_bake_rig,
     ic_update_bonelayer,
+    ic_set_rest_pose,
+    ic_reset_rest_pose,
+    ic_update_rest_pose,
+    update_default_rig,
+    reset_default_rig,
     IC_DEVONLY_UpdateInternalRig
 ]
 

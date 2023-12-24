@@ -9,7 +9,7 @@ from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,dlc_date,cur_asset_
 from ice_cube_data.properties import properties
 from ice_cube_data.systems import inventory_system
 
-from ice_cube_data.utils.general_func import GetListIndex
+from ice_cube_data.utils.general_func import GetListIndex, getLanguageTranslation
 from ice_cube_data.utils.file_manage import getFiles
 from ice_cube_data.utils.selectors import isRigSelected
 from ice_cube_data.utils.ui_tools import button_toggle
@@ -74,7 +74,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
         box = layout.box()
         b = box.row(align=True)
         b.scale_y=scale
-        b.prop(obj, "dlc_menu_switcher", text="Mode")
+        b.prop(obj, "dlc_menu_switcher", text=getLanguageTranslation("ice_cube.ui.tabs.dlc_mode"))
         wm = context.window_manager
 
     
@@ -82,7 +82,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
         if obj.get("dlc_menu_switcher") == 0: #APPEND MENU
             b = box.row(align=True)
             b.scale_y=scale
-            b.prop(obj,"ipaneltab6",text="DLC Type")
+            b.prop(obj,"ipaneltab6",text=getLanguageTranslation("ice_cube.ui.tabs.dlc_type"))
             b = box.row(align=True)
             b.scale_y=scale
             dlc_sub_box = b.box()
@@ -129,8 +129,8 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
                 asset_json_pack_version = str(asset_packdata['version'])
                 asset_json_pack_default = str(asset_packdata['default'])
 
-                if str(asset_infodata['asset_name']) == "MISSING FILE":
-                    bpy.data.window_managers["WinMan"].inventory_preview = str(asset_json_pack_default+".png")
+                #if str(asset_infodata['asset_name']) == "MISSING FILE":
+                #    bpy.data.window_managers["WinMan"].inventory_preview = str(asset_json_pack_default+".png")
                 asset_json_asset_name = str(asset_infodata['asset_name'])
                 asset_json_asset_id = str(asset_infodata['asset_id'])
                 asset_json_asset_author = str(asset_infodata['author'])
@@ -152,19 +152,19 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
                     
 
                 #Updating Customization Panel
-                dlc_sub_row.label(text= "Select an asset to append!", icon='BLENDER')
+                dlc_sub_row.label(text= getLanguageTranslation("ice_cube.ui.tabs.select_asset"), icon='BLENDER')
                 dlc_sub_row = dlc_sub_box.row(align=True)
                 dlc_sub_row.template_icon_view(wm, "inventory_preview")
                 dlc_sub_row = dlc_sub_box.row(align=True)
                 dlc_sub_row.prop(scene, "selected_inv_asset",text="")
                 dlc_sub_row.operator("refresh.inv_list",text="",icon='FILE_REFRESH')
                 dlc_sub_row = dlc_sub_box.row(align=True)
-                dlc_sub_row.operator("append.asset", text = "Append Selected")
+                dlc_sub_row.operator("append.asset", text = getLanguageTranslation("ice_cube.ops.append_selected"))
                 if asset_json_customizable:
                     dlc_sub_row.operator("refresh.customizations", text="",icon ='BRUSH_DATA')
                 dlc_sub_row = dlc_sub_box.row(align=True)
-                dlc_sub_row.operator("custom_presets.open", text = "DLC Folder")
-                dlc_sub_row.operator("template1.download", text = "Asset Template")
+                dlc_sub_row.operator("custom_presets.open", text = getLanguageTranslation("ice_cube.ops.dlc_folder"))
+                dlc_sub_row.operator("template1.download", text = getLanguageTranslation("ice_cube.ops.download_asset_template"))
                 
                 if asset_json_customizable and cur_asset_id[0] == asset_json_asset_id:
                     if has_entries:
@@ -184,29 +184,29 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
 
                 box = layout.box()
                 b = box.row(align=True)
-                b.label(text="Asset Pack Info:", icon='INFO')
+                b.label(text=getLanguageTranslation("ice_cube.ui.tabs.asset_pack_info"), icon='INFO')
                 try:
                     row_labels = {
-                                   "Pack Name": asset_json_pack_name,
-                                   "Author": asset_json_pack_author,
-                                   "Version": asset_json_pack_version
+                                   "ice_cube.ui.misc.pack_name": asset_json_pack_name,
+                                   "ice_cube.ui.misc.pack_author": asset_json_pack_author,
+                                   "ice_cube.ui.misc.pack_version": asset_json_pack_version
                                 }
                     for label in row_labels:
                         b = box.row(align = True)
-                        b.label(text = f"{label}: {row_labels[label]}")
+                        b.label(text = f"{getLanguageTranslation(label)}: {row_labels[label]}")
                 except:
                     b.label(text = "Select a pack from the list")
 
                 box = layout.box()
                 b = box.row(align=True)
-                b.label(text="Current Asset Info:", icon='INFO')
+                b.label(text=getLanguageTranslation("ice_cube.ui.tabs.current_asset_info"), icon='INFO')
                 b = box.row(align=True)
                 b = box.row(align=True)
-                b.label(text="Name: " + asset_json_asset_name)
+                b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_name") + ": " + asset_json_asset_name)
                 b = box.row(align=True)
-                b.label(text="Author: " + asset_json_asset_author)
+                b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_author") + ": " + asset_json_asset_author)
                 b = box.row(align=True)
-                b.label(text="Version: " + asset_json_asset_version)
+                b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_version") + ": " + asset_json_asset_version)
 
             if obj.get("ipaneltab6") == 1: #PRESETS
                 thumbnail = bpy.data.window_managers["WinMan"].my_previews_presets
@@ -256,21 +256,21 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
                 json_base_version = str(infodata['base_rig_vers'])
                 json_rig_baked = str(infodata['has_baked'])
 
-                dlc_sub_row.label(text= "Select a preset to append!", icon='BLENDER')
+                dlc_sub_row.label(text= getLanguageTranslation("ice_cube.ui.tabs.select_preset"), icon='BLENDER')
                 dlc_sub_row = dlc_sub_box.row(align=True)
                 dlc_sub_row.template_icon_view(wm, "my_previews_presets")
                 dlc_sub_row = dlc_sub_box.row(align=True)
                 dlc_sub_row.prop(scene, "selected_rig_preset",text="")
                 dlc_sub_row.operator("refresh.rig_list",text="",icon='FILE_REFRESH')
                 dlc_sub_row = dlc_sub_box.row(align=True)
-                dlc_sub_row.operator("append.preset", text = "Append Selected")
+                dlc_sub_row.operator("append.preset", text = getLanguageTranslation("ice_cube.ops.append_selected"))
                 b1 = dlc_sub_row.row(align=True)
                 if rig_baked == True:
-                    b1.operator("rig.bakedbutton", text= "Baked", icon= 'LAYER_ACTIVE')
+                    b1.operator("rig.bakedbutton", text= getLanguageTranslation("ice_cube.ui.misc.baked"), icon= 'LAYER_ACTIVE')
                     if json_rig_baked == "False":
                         rig_baked = False
                 else:
-                    b1.operator("rig.bakedbutton", text= "Normal", icon= 'LAYER_USED')
+                    b1.operator("rig.bakedbutton", text= getLanguageTranslation("ice_cube.ui.misc.normal"), icon= 'LAYER_USED')
                 if json_rig_baked == "True":
                     b1.enabled = True
                 else:
@@ -278,47 +278,47 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
                     if properties.global_rig_baked == True:
                         properties.global_rig_baked = False
                 dlc_sub_row = dlc_sub_box.row(align=True)
-                dlc_sub_row.operator("custom_presets.open", text = "DLC Folder")
-                dlc_sub_row.operator("template2.download", text = "Rig Template")
+                dlc_sub_row.operator("custom_presets.open", text = getLanguageTranslation("ice_cube.ops.dlc_folder"))
+                dlc_sub_row.operator("template2.download", text = getLanguageTranslation("ice_cube.ops.download_preset_template"))
 
                 box = layout.box()
                 b = box.row(align=True)
-                b.label(text="Rig Pack Info:", icon='INFO')
+                b.label(text=getLanguageTranslation("ice_cube.ui.tabs.rig_pack_info"), icon='INFO')
                 try:
                     row_labels = {
-                                   "Pack Name": json_pack_name,
-                                   "Author": json_pack_author,
-                                   "Version": json_pack_version
+                                   "ice_cube.ui.misc.pack_name": json_pack_name,
+                                   "ice_cube.ui.misc.pack_author": json_pack_author,
+                                   "ice_cube.ui.misc.pack_version": json_pack_version
                                 }
                     for label in row_labels:
                         b = box.row(align = True)
-                        b.label(text = f"{label}: {row_labels[label]}")
+                        b.label(text = f"{getLanguageTranslation(label)}: {row_labels[label]}")
                 except:
-                    b.label(text = "No Pack Selected!")
+                    b.label(text = getLanguageTranslation("ice_cube.errors.no_pack_selected"))
 
                 box = layout.box()
                 b = box.row(align=True)
-                b.label(text="Current Rig Info:", icon='INFO')
+                b.label(text=getLanguageTranslation("ice_cube.ui.current_rig_info"), icon='INFO')
                 b = box.row(align=True)
                 b = box.row(align=True)
-                b.label(text="Name: " + json_rig_name)
+                b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_name") + ": " + json_rig_name)
                 b = box.row(align=True)
-                b.label(text="Author: " + json_rig_author)
+                b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_author") + ": " + json_rig_author)
                 b = box.row(align=True)
-                b.label(text="Version: " + json_rig_version)
+                b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_version") + ": " + json_rig_version)
                 b = box.row(align=True)
-                b.label(text="Base Rig: " + json_base_rig)
+                b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_base_rig") + ": " + json_base_rig)
                 b = box.row(align=True)
-                b.label(text="Base Rig Version: " + json_base_version)
+                b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_base_version") + ": " + json_base_version)
                 b = box.row(align=True)
-                b.label(text="Has \"BAKED\" version?: " + json_rig_baked)
+                b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_has_baked") + ": " + json_rig_baked)
 
         if obj.get("dlc_menu_switcher") == 1: #DOWNLOAD MENU
             box = layout.box()
             b = box.row(align=True)
             b.scale_y=scale
             rig = isRigSelected(context)
-            b.label(text = "DLC Manager",icon='IMPORT')
+            b.label(text = getLanguageTranslation("ice_cube.ui.tabs.dlc_manager"),icon='IMPORT')
             b = box.row(align=True)
             b.scale_y=scale
             b.template_icon_view(wm, "dlc_img_cache_folder")
@@ -328,6 +328,8 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
             colb = b.column()
             colb.operator("refresh_grab.dlc", text="", icon='FILE_REFRESH')
             colb.operator("download_selected.dlc", text="", icon='IMPORT')
+            b = box.row(align=True)
+            b.operator("import.icpreset_file",text=getLanguageTranslation("ice_cube.ops.manually_import_icpreset"),icon='IMPORT')
 
         if obj.get("dlc_menu_switcher") == 2: #GENERATE MENU
             b.prop(obj,"ipaneltab6",text="")
@@ -335,65 +337,88 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
             b.scale_y=scale
 
             if obj.get("ipaneltab6") == 0: #ASSETS
-                b.label(text="Disabled, please use the in the main toolbar under \'Tool\'")
-                b = box.row(align=True)
-                b.enabled = False
-                b1 = b.row(align=True)
-                b1.prop(obj,"generate_thumbnail",text="Generate Thumbnail?")
-                b1.enabled = False
-                b = box.row(align=True)
-                b.enabled = False
-                b.scale_y=scale
-                b.prop(obj, "target_thumbnail_generate", text="Thumbnail")
-                b = box.row(align=True)
-                b.enabled = False
-                b.scale_y=scale
-                b.prop(obj, "asset_pack_name", text="")
-                b.prop(obj, "entry_name_asset", text="")
-                b = box.row(align=True)
-                b.enabled = False
-                b.scale_y=scale
-                b.prop(obj, "asset_author", text="")
-                b.prop(obj, "asset_version", text="")
-                b = box.row(align=True)
-                b.enabled = False
-                b.scale_y=scale
-                b.operator("generate.asest_pack",text="Generate Pack")
+                b.label(text=getLanguageTranslation("ice_cube.errors.asset_generation_disabled")) #"Disabled, please use the in the main toolbar under \'Tool\'"
+                #b = box.row(align=True)
+                #b.enabled = False
+                #b1 = b.row(align=True)
+                #b1.scale_y=scale
+                #b1.prop(obj,"generate_thumbnail",text="Generate Thumbnail?")
+                #b1.enabled = False
+                #b = box.row(align=True)
+                #b.enabled = False
+                #b.scale_y=scale
+                #b.prop(obj, "target_thumbnail_generate", text="Thumbnail")
+                #b = box.row(align=True)
+                #b.enabled = False
+                #b.scale_y=scale
+                #b.prop(obj, "asset_pack_name", text="")
+                #b.prop(obj, "entry_name_asset", text="")
+                #b = box.row(align=True)
+                #b.enabled = False
+                #b.scale_y=scale
+                #b.prop(obj, "asset_author", text="")
+                #b.prop(obj, "asset_version", text="")
+                #b = box.row(align=True)
+                #b.enabled = False
+                #b.scale_y=scale
+                #b.operator("generate.asest_pack",text="Generate Pack")
 
             if obj.get("ipaneltab6") == 1: #PRESETS
-                b.prop(obj, "generate_baked", text="Generate Baked?")
-                b.prop(obj,"generate_thumbnail",text="Generate Thumbnail?")
+                b.prop(obj,"export_to_icpreset",text=getLanguageTranslation("ice_cube.ui.props.use_icpreset"))
+                b.prop(obj, "generate_baked", text=getLanguageTranslation("ice_cube.ui.props.generate_baked"))
+                b = box.row(align=True)
+                b.scale_y=scale
+                b.prop(obj,"generate_thumbnail",text=getLanguageTranslation("ice_cube.ui.props.generate_thumbnail"))
                 b1 = box.row(align=True)
                 baking_box = b1.box()
                 baking_bad = baking_box.row(align=True)
+                baking_bad.scale_y=scale
                 if not obj.generate_baked: baking_bad.enabled = False
-                baking_bad.label(text="Baking Manager",icon='FILE_ARCHIVE')
+                baking_bad.label(text=getLanguageTranslation("ice_cube.ui.tabs.baking_manager"),icon='FILE_ARCHIVE')
                 if obj.generate_baked:
                     baking_bad = baking_box.row(align=True)
-                    baking_bad.prop(obj,"bake_eye_textures",text="Bake Eye Textures?")
-                    baking_bad.prop(obj,"bake_all_unused_features",text="Bake Unused Features?")
+                    baking_bad.scale_y=scale
+                    baking_bad.prop(obj,"bake_eye_textures",text=getLanguageTranslation("ice_cube.ui.props.bake_eyes"))
+                    baking_bad.prop(obj,"bake_all_unused_features",text=getLanguageTranslation("ice_cube.ui.props.bake_unused"))
                     baking_bad = baking_box.row(align=True)
+                    baking_bad.scale_y=scale
                     disable_row = baking_bad
                     if not obj.bake_eye_textures:
                         disable_row.enabled = False
-                    disable_row.prop(obj,"split_eye_bakes",text="Split Eye Bakes?")
-                    disable_row.prop(obj,"eye_bake_resolution",text="Texture Resolution")
+                    disable_row.prop(obj,"split_eye_bakes",text=getLanguageTranslation("ice_cube.ui.props.split_baked_eyes"))
+                    disable_row.prop(obj,"eye_bake_resolution",text=getLanguageTranslation("ice_cube.ui.props.eye_bake_resolution"))
                 b1 = box.row(align=True)
                 b1.scale_y=scale
-                b1.prop(obj, "target_thumbnail_generate", text="Thumbnail")
+                b1.prop(obj, "target_thumbnail_generate", text=getLanguageTranslation("ice_cube.ui.props.thumbnail_path"))
                 if obj.get("generate_thumbnail") == True:
                     b1.enabled = False
                 b = box.row(align=True)
-                b.scale_y=scale
-                b.prop(obj, "asset_pack_name", text="")
-                b.prop(obj, "entry_name_asset", text="")
-                b = box.row(align=True)
-                b.scale_y=scale
-                b.prop(obj, "asset_author", text="")
-                b.prop(obj, "asset_version", text="")
-                b = box.row(align=True)
-                b.scale_y=scale
-                b.operator("generate.asest_pack",text="Generate Pack")
+                if obj.get("export_to_icpreset") == False:
+                    b.scale_y=scale
+                    b.prop(obj, "asset_pack_name", text="")
+                    b.prop(obj, "entry_name_asset", text="")
+                    b = box.row(align=True)
+                    b.scale_y=scale
+                    b.prop(obj, "asset_author", text="")
+                    b.prop(obj, "asset_version", text="")
+                    b = box.row(align=True)
+                    b.scale_y=scale
+                    b.operator("generate.asest_pack",text=getLanguageTranslation("ice_cube.ops.generate_pack"))
+                else:
+                    b.scale_y=scale
+                    b.prop(obj,"export_icpreset_file",text="")
+                    b = box.row(align=True)
+                    b.prop(obj, "asset_pack_name", text="")
+                    b.prop(obj, "entry_name_asset", text="")
+                    b = box.row(align=True)
+                    b.scale_y=scale
+                    b.prop(obj, "asset_author", text="")
+                    b.prop(obj, "asset_version", text="")
+                    b = box.row(align=True)
+                    b.scale_y=scale
+                    b.operator("generate.asest_pack",text=getLanguageTranslation("ice_cube.ops.export_icpreset"))
+                
+                
 
     elif menu_type == "ToolMenuAppend":
         box = layout.box()
@@ -453,7 +478,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
 
             b = box.row(align=True)
             b.scale_y=scale
-            b.label(text= "Select a preset to append!", icon='BLENDER')
+            b.label(text= getLanguageTranslation("ice_cube.ui.tabs.select_preset"), icon='BLENDER')
             b = box.row(align=True)
             b.scale_y=scale
             b.template_icon_view(wm, "my_previews_presets")
@@ -463,14 +488,14 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
             b.operator("refresh.rig_list",text="",icon='FILE_REFRESH')
             b = box.row(align=True)
             b.scale_y=scale
-            b.operator("append.preset", text = "Append Selected")
+            b.operator("append.preset", text = getLanguageTranslation("ice_cube.ops.append_selected"))
             b1 = b.row(align=True)
             if rig_baked == True:
-                b1.operator("rig.bakedbutton", text= "Baked", icon= 'LAYER_ACTIVE')
+                b1.operator("rig.bakedbutton", text= getLanguageTranslation("ice_cube.ui.misc.baked"), icon= 'LAYER_ACTIVE')
                 if json_rig_baked == "False":
                     rig_baked = False
             else:
-                b1.operator("rig.bakedbutton", text= "Normal", icon= 'LAYER_USED')
+                b1.operator("rig.bakedbutton", text= getLanguageTranslation("ice_cube.ui.misc.normal"), icon= 'LAYER_USED')
             if json_rig_baked == "True":
                 b1.enabled = True
             else:
@@ -479,39 +504,39 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
                     properties.global_rig_baked = False
             b = box.row(align=True)
             b.scale_y=scale
-            b.operator("custom_presets.open", text = "DLC Folder")
-            b.operator("template2.download", text = "Rig Template")
+            b.operator("custom_presets.open", text = getLanguageTranslation("ice_cube.ops.dlc_folder"))
+            b.operator("template2.download", text = getLanguageTranslation("ice_cube.ops.download_preset_template"))
             box = layout.box()
             b = box.row(align=True)
             b.label(text="Rig Pack Info:", icon='INFO')
             try:
                 row_labels = {
-                               "Pack Name": json_pack_name,
-                               "Author": json_pack_author,
-                               "Version": json_pack_version
+                               "ice_cube.ui.misc.pack_name": json_pack_name,
+                               "ice_cube.ui.misc.pack_author": json_pack_author,
+                               "ice_cube.ui.misc.pack_version": json_pack_version
                             }
                 for label in row_labels:
                     b = box.row(align = True)
-                    b.label(text = f"{label}: {row_labels[label]}")
+                    b.label(text = f"{getLanguageTranslation(label)}: {row_labels[label]}")
             except:
                 b.label(text = "No Pack Selected!")
 
             box = layout.box()
             b = box.row(align=True)
-            b.label(text="Current Rig Info:", icon='INFO')
+            b.label(text=getLanguageTranslation("ice_cube.ui.current_rig_info"), icon='INFO')
             b = box.row(align=True)
             b = box.row(align=True)
-            b.label(text="Name: " + json_rig_name)
+            b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_name") + ": " + json_rig_name)
             b = box.row(align=True)
-            b.label(text="Author: " + json_rig_author)
+            b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_author") + ": " + json_rig_author)
             b = box.row(align=True)
-            b.label(text="Version: " + json_rig_version)
+            b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_version") + ": " + json_rig_version)
             b = box.row(align=True)
-            b.label(text="Base Rig: " + json_base_rig)
+            b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_base_rig") + ": " + json_base_rig)
             b = box.row(align=True)
-            b.label(text="Base Rig Version: " + json_base_version)
+            b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_base_version") + ": " + json_base_version)
             b = box.row(align=True)
-            b.label(text="Has \"BAKED\" version?: " + json_rig_baked)
+            b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_has_baked") + ": " + json_rig_baked)
         
         elif scene.append_tab_global == 'one':
             thumbnail = bpy.data.window_managers["WinMan"].inventory_preview
@@ -580,7 +605,7 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
 
             b = box.row(align=True)
             b.scale_y=scale
-            b.label(text= "Select an asset to append!", icon='BLENDER')
+            b.label(text= getLanguageTranslation("ice_cube.ui.tabs.select_asset"), icon='BLENDER')
             b = box.row(align=True)
             b.scale_y=scale
             b.template_icon_view(wm, "inventory_preview")
@@ -590,13 +615,13 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
             b.operator("refresh.inv_list",text="",icon='FILE_REFRESH')
             b = box.row(align=True)
             b.scale_y=scale
-            b.operator("append.asset", text = "Append Selected")
+            b.operator("append.asset", text = getLanguageTranslation("ice_cube.ops.append_selected"))
             if asset_json_customizable:
                 b.operator("refresh.customizations", text="",icon ='BRUSH_DATA')
             b = box.row(align=True)
             b.scale_y=scale
-            b.operator("custom_presets.open", text = "DLC Folder")
-            b.operator("template1.download", text = "Asset Template")
+            b.operator("custom_presets.open", text = getLanguageTranslation("ice_cube.ops.dlc_folder"))
+            b.operator("template1.download", text = getLanguageTranslation("ice_cube.ops.download_asset_template"))
             
             if asset_json_customizable and cur_asset_id[0] == asset_json_asset_id:
                 if has_entries:
@@ -621,36 +646,37 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
             b.label(text="Asset Pack Info:", icon='INFO')
             try:
                 row_labels = {
-                               "Pack Name": asset_json_pack_name,
-                               "Author": asset_json_pack_author,
-                               "Version": asset_json_pack_version
+                               "ice_cube.ui.misc.pack_name": asset_json_pack_name,
+                               "ice_cube.ui.misc.pack_author": asset_json_pack_author,
+                               "ice_cube.ui.misc.pack_version": asset_json_pack_version
                             }
                 for label in row_labels:
                     b = box.row(align = True)
-                    b.label(text = f"{label}: {row_labels[label]}")
+                    b.label(text = f"{getLanguageTranslation(label)}: {row_labels[label]}")
             except:
                 b.label(text = "Select a pack from the list")
 
             box = layout.box()
             b = box.row(align=True)
-            b.label(text="Current Asset Info:", icon='INFO')
+            b.label(text=getLanguageTranslation("ice_cube.ui.tabs.current_asset_info"), icon='INFO')
             b = box.row(align=True)
             b = box.row(align=True)
-            b.label(text="Name: " + asset_json_asset_name)
+            b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_name") + ": " + asset_json_asset_name)
             b = box.row(align=True)
-            b.label(text="Author: " + asset_json_asset_author)
+            b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_author") + ": " + asset_json_asset_author)
             b = box.row(align=True)
-            b.label(text="Version: " + asset_json_asset_version)
+            b.label(text=getLanguageTranslation("ice_cube.ui.misc.current_version") + ": " + asset_json_asset_version)
+            
     elif menu_type == "ToolMenuGenerate":
         box = layout.box()
         b = box.row(align=True)
         b.scale_y=scale
-        b.label(text="Select Generator Type",icon='GEOMETRY_NODES')
+        b.label(text=getLanguageTranslation("ice_cube.ui.tabs.select_generator"),icon='GEOMETRY_NODES')
         b = box.row(align=True)
 
         b = box.row(align=True)
         b.scale_y=scale
-        b.prop(scene, "target_thumbnail_generate", text="Thumbnail")
+        b.prop(scene, "target_thumbnail_generate", text=getLanguageTranslation("ice_cube.ui.props.thumbnail_path"))
         b = box.row(align=True)
         b.scale_y=scale
         b.prop(scene, "asset_pack_name", text="")
@@ -663,17 +689,17 @@ def advanced_dlc_ui(self, context, layout, rig_baked, menu_type,icon,scale):
         b.scale_y=scale
         newbox = box.box()
         b1 = newbox.row(align=True)
-        b1.prop(scene,"asset_customizable",text="Customizable")
+        b1.prop(scene,"asset_customizable",text=getLanguageTranslation("ice_cube.ui.props.asset_customizable"))
         if scene.asset_customizable:
-            b1.prop(scene,"has_entries",text="Has Entries")
+            b1.prop(scene,"has_entries",text=getLanguageTranslation("ice_cube.ui.props.asset_has_entries"))
             b1 = newbox.row(align=True)
-            b1.prop(scene,"supports_armor_trims",text="Armor Trims")
-            b1.prop(scene,"leggings_half",text="Leggings Half")
+            b1.prop(scene,"supports_armor_trims",text=getLanguageTranslation("ice_cube.ui.props.asset_supports_trims"))
+            b1.prop(scene,"leggings_half",text=getLanguageTranslation("ice_cube.ui.props.asset_leggings_half"))
             b1 = newbox.row(align=True)
-            b1.prop(scene,"materialType",text="Material")
+            b1.prop(scene,"materialType",text=getLanguageTranslation("ice_cube.ui.props.material"))
         b = box.row(align=True)
         b.scale_y=scale
-        b.operator("generate.asest_pack_global",text="Generate Pack")
+        b.operator("generate.asest_pack_global",text=getLanguageTranslation("ice_cube.ops.generate_pack"))
 
 def advanced_parenting_ui(self, context, layout,scale):
     obj = context.object
@@ -686,23 +712,21 @@ def advanced_parenting_ui(self, context, layout,scale):
     b.scale_y=scale
     parenting_box = b.box()
     parenting_row = parenting_box.row(align=True)
-    parenting_row.label(text="Buttons",icon='OUTLINER_COLLECTION')
-    if button_toggle(obj,parenting_row,"advanced_button_settings"):
-        parenting_row = parenting_box.row(align=True)
-        parenting_row.operator("parent.allcollections",text="Update Parenting")
+    parenting_row.operator("parent.allcollections",text=getLanguageTranslation("ice_cube.ops.update_parenting"))
+        
 
     b = box.row(align=True)
     b.scale_y=scale
     guide_box = b.box()
     guide_row = guide_box.row(align=True)
-    guide_row.label(text="Guide",icon='HELP')
+    guide_row.label(text=getLanguageTranslation("ice_cube.ui.tabs.advanced_guide"),icon='HELP')
     if button_toggle(obj,guide_row,"advanced_guide"):
         guide_row = guide_box.row(align=True)
-        guide_row.label(text= "To parent something to the rig and make it")
+        guide_row.label(text= getLanguageTranslation("ice_cube.ui.misc.advanced_guide_1")) #"To parent something to the rig and make it"
         guide_row = guide_box.row(align=True)
-        guide_row.label(text= "follow the bends, drag your object into the correct")
+        guide_row.label(text= getLanguageTranslation("ice_cube.ui.misc.advanced_guide_2")) #"follow the bends, drag your object into the correct"
         guide_row = guide_box.row(align=True)
-        guide_row.label(text= "collection under Ice Cube > Main Mesh")
+        guide_row.label(text= getLanguageTranslation("ice_cube.ui.misc.advanced_guide_3")) #"collection under Ice Cube > Main Mesh"
 
 def advanced_system_ui(self, context, layout, obj,scale):
     obj = context.object
@@ -712,70 +736,75 @@ def advanced_system_ui(self, context, layout, obj,scale):
     b.scale_y=scale
     update_box = b.box()
     update_row = update_box.row(align=True)
-    update_row.label(text="Update Manager",icon='URL')
+    update_row.label(text=getLanguageTranslation("ice_cube.ui.tabs.update_manager"),icon='URL')
     if button_toggle(obj,update_row,"update_manager"):
         if platform == invalid_platform:
             update_row = update_box.row(align=True)
-            update_row.label(text= "UPDATE MANAGER NOT SUPPORTED ON MACOS!", icon='ERROR')
+            update_row.label(text= getLanguageTranslation("ice_cube.errors.macos_not_available"), icon='ERROR') #"UPDATE MANAGER NOT SUPPORTED ON MACOS!"
         else:
             update_row = update_box.row(align=True)
-            update_row.label(text="WARNING: DO NOT RESTART WHEN INSTALLING",icon='ERROR')
+            update_row.label(text=getLanguageTranslation("ice_cube.errors.do_not_restart_install"),icon='ERROR') #"WARNING: DO NOT RESTART WHEN INSTALLING"
             update_row = update_box.row(align=True)
             if ice_cube.update_available == True:
-                update_row.operator("install.update", text="Install Update", icon='MOD_WAVE')
+                update_row.operator("install.update", text=getLanguageTranslation("ice_cube.ops.install_update"), icon='MOD_WAVE')
             else:
-                update_row.operator("ice_cube_check.updates", text="Check For Updates", icon='FILE_REFRESH')
+                update_row.operator("ice_cube_check.updates", text=getLanguageTranslation("ice_cube.ops.check_for_updates"), icon='FILE_REFRESH')
     b = box.row(align=True)
     b.scale_y=scale
     settings_box = b.box()
     settings_row = settings_box.row(align=True)
-    settings_row.label(text="Settings Data",icon='TOOL_SETTINGS')
+    settings_row.label(text=getLanguageTranslation("ice_cube.ui.tabs.settings_manager"),icon='TOOL_SETTINGS')
     if button_toggle(obj,settings_row,"setting_data_manager"):
         if platform == invalid_platform:
             settings_row = settings_box.row(align=True)
-            settings_row.label(text= "SETTINGS MANAGER NOT SUPPORTED ON MACOS", icon='ERROR')
+            settings_row.label(text= getLanguageTranslation("ice_cube.errors.macos_not_available"), icon='ERROR')
             settings_row = settings_box.row(align=True)
         else:
             settings_row = settings_box.row(align=True)
 
             clipboard = settings_row
-            clipboard.prop(obj,"prop_clipboard",text="Use Clipboard?")
+            clipboard.prop(obj,"prop_clipboard",text=getLanguageTranslation("ice_cube.ui.props.use_clipboard"))
             settings_row.prop(obj,"ipaneltab7",text="")
             if obj.get("ipaneltab7") == 0:
                 if obj.get("prop_clipboard") == 0:
                     settings_row = settings_box.row(align=True)
-                    settings_row.prop(obj,"export_settings_filepath",text="Export Loc",icon='EXPORT')
+                    settings_row.prop(obj,"export_settings_filepath",text=getLanguageTranslation("ice_cube.ui.props.export_location"),icon='EXPORT')
                     settings_row = settings_box.row(align=True)
-                    settings_row.prop(obj,"export_settings_name",text="Filename",icon='INFO')
-                    export_name = "Export to File"
+                    settings_row.prop(obj,"export_settings_name",text=getLanguageTranslation("ice_cube.ui.props.export_filename"),icon='INFO')
+                    export_name = "ice_cube.ops.export_to_file"
                 else:
-                    export_name = "Export to Clipboard"
+                    export_name = "ice_cube.ops.export_to_clipboard"
                 settings_row = settings_box.row(align=True)
-                settings_row.operator("export.settings",text=export_name)
+                settings_row.operator("export.settings",text=getLanguageTranslation(export_name))
                 settings_row = settings_box.row(align=True)
             else:
                 settings_row = settings_box.row(align=True)
-                settings_row.prop(obj,"import_settings_filepath",text="Import File",icon='IMPORT')
+                settings_row.prop(obj,"import_settings_filepath",text=getLanguageTranslation("ice_cube.ui.props.import_location"),icon='IMPORT')
                 settings_row = settings_box.row(align=True)
-                settings_row.operator("import.settings", text="Import from Clipboard" if obj.get("prop_clipboard") else "Import from File")
+                settings_row.operator("import.settings", text=getLanguageTranslation("ice_cube.ops.import_from_clipboard") if obj.get("prop_clipboard") else getLanguageTranslation("ice_cube.ops.import_from_file"))
                 settings_row = settings_box.row(align=True)
-        settings_row.operator("reset.settings",text="Reset to Default")
+        
+        settings_row.operator("ice_cube.updatedefaultrig",text=getLanguageTranslation("ice_cube.ops.update_default_rig"))
+        settings_row.operator("ice_cube.resetdefaultrig",text=getLanguageTranslation("ice_cube.ops.reset_default_rig"))
+
         settings_row = settings_box.row(align=True)
-        settings_row.operator("reset_to_default.icecube",text="FULL ICE CUBE RESET")
+        settings_row.operator("reset.settings",text=getLanguageTranslation("ice_cube.ops.reset_ice_cube_settings"))
+        settings_row = settings_box.row(align=True)
+        settings_row.operator("reset_to_default.icecube",text=getLanguageTranslation("ice_cube.ops.full_ice_cube_reset"))
         settings_row.prop(obj, "confirm_ice_cube_reset", toggle=True, text="", icon="ERROR")
         
     b = box.row(align=True)
     b.scale_y=scale
     backup_box = b.box()
     backup_row = backup_box.row(align=True)
-    backup_row.label(text="Backup Manager",icon='TEMP')
+    backup_row.label(text=getLanguageTranslation("ice_cube.ui.tabs.backup_manager"),icon='TEMP')
     if button_toggle(obj,backup_row,"backup_data_manager"):
         backup_row = backup_box.row(align=True)
         backups_folder = root_folder+"/backups"
         backup_folder_scan = os.listdir(backups_folder)
         if platform == invalid_platform:
             backup_row = backup_box.row(align=True)
-            backup_row.label(text= "BACKUP MANAGER NOT SUPPORTED ON MACOS!", icon='ERROR')
+            backup_row.label(text= getLanguageTranslation("ice_cube.errors.macos_not_available"), icon='ERROR')
         else:
             virtual_ice_cube = root_folder+""
             virtual_ice_cube = os.path.normpath(virtual_ice_cube)
@@ -785,11 +814,9 @@ def advanced_system_ui(self, context, layout, obj,scale):
                 os.mkdir(backups_folder)
 
             backup_row_box = backup_row.box()
-            backup_row_box_row = backup_row_box.row(align=True)
-            backup_row_box_row.label(text = "Backup Manager", icon='FILE_FOLDER')
             rig = isRigSelected(context)
             backup_row_box_row = backup_row_box.row(align=True)
-            backup_row_box_row.prop(obj, "backup_name", text="Name", icon='FILE_BACKUP')
+            backup_row_box_row.prop(obj, "backup_name", text=getLanguageTranslation("ice_cube.ui.misc.name"), icon='FILE_BACKUP')
             backup_row_box_row = backup_row_box.row(align=True)
             backup_row_box_row.template_list("IC_BACKUP_UL_list_i", "", rig, "ic_backups_i", rig, "ic_backups_active_index")
             colb = backup_row_box_row.column(align=True)
@@ -801,23 +828,23 @@ def advanced_system_ui(self, context, layout, obj,scale):
     b = box.row(align=True)
     b.scale_y=scale
     if obj.upgraded_ui:
-        b.label(text="OUTDATED RIG, BAKING DISABLED",icon='ERROR')
+        b.label(text=getLanguageTranslation("ice_cube.errors.outdated_rig_baking"),icon='ERROR')
     else:
         baking_box = b.box()
         baking_bad = baking_box.row(align=True)
-        baking_bad.label(text="Baking Manager",icon='FILE_ARCHIVE')
+        baking_bad.label(text=getLanguageTranslation("ice_cube.ui.tabs.baking_manager"),icon='FILE_ARCHIVE')
         if button_toggle(obj,baking_bad,"baking_data_manager"):
             baking_bad = baking_box.row(align=True)
-            baking_bad.prop(obj,"bake_eye_textures",text="Bake Eye Textures?")
-            baking_bad.prop(obj,"bake_all_unused_features",text="Bake Unused Features?")
+            baking_bad.prop(obj,"bake_eye_textures",text=getLanguageTranslation("ice_cube.ui.props.bake_eyes"))
+            baking_bad.prop(obj,"bake_all_unused_features",text=getLanguageTranslation("ice_cube.ui.props.bake_unused"))
             baking_bad = baking_box.row(align=True)
             disable_row = baking_bad
             if not obj.bake_eye_textures:
                 disable_row.enabled = False
-            disable_row.prop(obj,"split_eye_bakes",text="Split Eye Bakes?")
-            disable_row.prop(obj,"eye_bake_resolution",text="Texture Resolution")
+            disable_row.prop(obj,"split_eye_bakes",text=getLanguageTranslation("ice_cube.ui.props.split_baked_eyes"))
+            disable_row.prop(obj,"eye_bake_resolution",text=getLanguageTranslation("ice_cube.ui.props.eye_bake_resolution"))
             baking_bad = baking_box.row(align=True)
-            baking_bad.operator("ice_cube.bake_rig",text="Bake Rig",icon='FILE_TICK')
+            baking_bad.operator("ice_cube.bake_rig",text=getLanguageTranslation("ice_cube.ops.bake_rig"),icon='FILE_TICK')
             baking_bad.prop(obj,"confirm_rig_bake",text="",icon='ERROR')
 
             

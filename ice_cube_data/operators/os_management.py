@@ -9,12 +9,13 @@ import shutil
 import distutils.dir_util
 import datetime
 import pathlib
+import zipfile
 
-from ice_cube import root_folder, latest_dlc, github_url
+from ice_cube import root_folder, latest_dlc, github_url, bl_info
 
 from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.file_manage import ClearDirectory, getFiles, open_json
-from ice_cube_data.utils.general_func import GetListIndex, getIndexCustom
+from ice_cube_data.utils.general_func import GetListIndex, getIndexCustom, BlenderVersConvert
 
 properties_to_export = ["r_arm_ik","l_arm_ik","r_leg_ik","l_leg_ik","ankle_r","ankle_l","stretch_leg_r","stretch_leg_l","stretch_arm_r","stretch_arm_l","fingers_r","fingers_l","wrist_lock_r","wrist_lock_l","eyelashes","wireframe","jaw","round_jaw","bevelmouth","teeth_cartoon","antilag","teeth_bool","tongue","facerig",
     "leg_deform","body_deforms","dynamichair","eyebrowdeform","togglepupil","togglegradient","togglesparkle1","togglesparkle2","toggleemission","toggle_1","toggle_2","squaremouth","mouthrotate","toggle_3","toggle_4","breastswitch","line_mouth","baked_rig","global_head_rotation","squish_arm_r","squish_arm_l","squish_leg_r",
@@ -550,15 +551,20 @@ def reset_all_ui_func(self,context):
     return{'FINISHED'}
 
 
+default_settings_json_data = {
+        "last_check_date" : "",
+        "default_import_file" : "Ice Cube",
+        "current_language_file": "english.ic_lang",
+        "current_language_authors": ["DarthLilo"],
+        "language_id": 0,
+        "settings_version" : BlenderVersConvert(bl_info['version'], has_v=False)
+    }
+
 def generate_settings_json():
 
     settings_json_path = f"{root_folder}\\ice_cube_data\\settings.json"
 
-    settings_json_data = {
-        "last_check_date" : ""
-    }
-
-    converted_settings_data = json.dumps(settings_json_data, indent=4)
+    converted_settings_data = json.dumps(default_settings_json_data, indent=4)
 
     
     with open(settings_json_path, "w") as json_file:
@@ -566,6 +572,30 @@ def generate_settings_json():
     
 
     return{'FINISHED'}
+
+def update_settings_json():
+
+    settings_json_path = f"{root_folder}\\ice_cube_data\\settings.json"
+    settings_data = open_json(settings_json_path)
+    for key in default_settings_json_data.keys():
+        if key not in settings_data.keys():
+            settings_data[key] = default_settings_json_data[key]
+    settings_data["settings_version"] = BlenderVersConvert(bl_info['version'], has_v=False)
+    converted_settings_data = json.dumps(settings_data, indent=4)
+    with open(settings_json_path, "w") as json_file:
+        json_file.write(converted_settings_data)
+    
+
+    return{'FINISHED'}
+
+
+def compressDirectory(directory,zip_filename):
+    with zipfile.ZipFile(zip_filename,'w') as zipf:
+        for foldername, subfolders, filenames in os.walk(directory):
+            for filename in filenames:
+                filepath = os.path.join(foldername,filename)
+                relative_path = os.path.relpath(filepath,directory)
+                zipf.write(filepath,arcname=relative_path)
 
 classes = [
            ]

@@ -19,7 +19,7 @@ from ice_cube_data.systems import inventory_system, skin_downloader,search_syste
 #Custom Functions
 from ice_cube_data.utils.selectors import isRigSelected, main_face
 from ice_cube_data.utils.file_manage import getFiles, open_json
-from ice_cube_data.utils.general_func import GetListIndex,convertStringNumbers
+from ice_cube_data.utils.general_func import GetListIndex,convertStringNumbers, getLanguageTranslation
 
 #UI Panels
 from ice_cube_data.ui import old_credits_info, credits_info
@@ -223,7 +223,7 @@ def dlc_img_cache(self, context):
     return pcoll.dlc_img_cache_folder
 
 class UIPANEL_PT_IceCube(bpy.types.Panel):
-    bl_label = "Ice Cube"
+    bl_label = getLanguageTranslation("ice_cube.ui.main.title")
     bl_idname = "UIPANEL_PT_IceCube"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -247,7 +247,6 @@ class UIPANEL_PT_IceCube(bpy.types.Panel):
             if ice_cube.has_checked_for_updates == False:
                 check_for_updates_auto()
         
-        
 
         #custom variables
         rig = isRigSelected(context)
@@ -258,10 +257,19 @@ class UIPANEL_PT_IceCube(bpy.types.Panel):
         except:
             skin_mat = False
 
-        
+        if cur_blender_version >= 400:
+            collections = rig.data.collections
+
+            if not "UpdatedTo4.0" in rig.data and not "Main Bones" in collections:
+                box = layout.box()
+                box.scale_y=5.0
+                box.alert = True
+                box.operator("updateic.bonelayer",text=getLanguageTranslation("ice_cube.errors.update_bonelayer"))
+                
+                return
 
         if obj.get("icecube_menu_version") == 0: #New UI
-            credits_info.credits_info_panel(self,context,preview_collections,cur_blender_version)
+            credits_info.credits_info_panel(self,context,preview_collections)
 
             box = layout.box()
             box.prop(obj,"ice_cube_search_filter",text="",icon='VIEWZOOM')
@@ -284,7 +292,7 @@ class UIPANEL_PT_IceCube(bpy.types.Panel):
                     box.scale_y=scale
 
                 b = box.row(align=True)
-                b.label(text="Settings Tab",icon='TOOL_SETTINGS')
+                b.label(text=getLanguageTranslation("ice_cube.ui.tabs.settings"),icon='TOOL_SETTINGS')
                 b= box.row(align=True)
                 b.prop(obj,"main_panel_switcher",text="Main Panel Switcher",expand=True)
 
@@ -393,7 +401,7 @@ class TOOLSAPPEND_PT_IceCube(bpy.types.Panel):
         obj = context.object
         row = layout.row()
 
-        old_dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "ToolMenuAppend",preview_collections)
+        advanced.advanced_dlc_ui(self,context,layout, properties.global_rig_baked, "ToolMenuAppend",preview_collections,1)
 
 class TOOLSGENERATE_PT_IceCube(bpy.types.Panel):
     bl_label = "Generate Asset"
@@ -408,7 +416,7 @@ class TOOLSGENERATE_PT_IceCube(bpy.types.Panel):
         obj = context.object
         row = layout.row()
 
-        old_dlc_ui.dlc_menu(self,context,layout, properties.global_rig_baked, "ToolMenuGenerate",preview_collections)
+        advanced.advanced_dlc_ui(self,context,layout, properties.global_rig_baked, "ToolMenuGenerate",preview_collections,1)
 
 #Register
 
