@@ -32,44 +32,64 @@ def l_fingers_update(self, context):
             bpy.data.objects[self.name].data.layers[21] = self.fingers_l
 
 def r_arm_ik_update(self, context):
+    if self.r_arm_ik > 0:
+        prop_val = 1
+    else:
+        prop_val = 0
+
     if self.enable_control_linking:
         if cur_blender_version >= 400:
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Right Arm IK")
-            target_collection.is_visible = self.r_arm_ik
+            target_collection.is_visible = prop_val
         else:
-            bpy.data.objects[self.name].data.layers[1] = self.r_arm_ik
+            bpy.data.objects[self.name].data.layers[1] = prop_val
 
 def l_arm_ik_update(self, context):
+    if self.l_arm_ik > 0:
+        prop_val = 1
+    else:
+        prop_val = 0
+
     if self.enable_control_linking:
         if cur_blender_version >= 400:
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Left Arm IK")
-            target_collection.is_visible = self.l_arm_ik
+            target_collection.is_visible = prop_val
         else:
-            bpy.data.objects[self.name].data.layers[2] = self.l_arm_ik
+            bpy.data.objects[self.name].data.layers[2] = prop_val
 
 def r_leg_ik_update(self, context):
+    if self.r_leg_ik > 0:
+        prop_val = 1
+    else:
+        prop_val = 0
+
     if self.enable_control_linking:
         if cur_blender_version >= 400:
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Right Leg IK")
-            target_collection.is_visible = self.r_leg_ik
+            target_collection.is_visible = prop_val
 
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Right Leg FK")
-            target_collection.is_visible = not self.r_leg_ik
+            target_collection.is_visible = not prop_val
         else:
-            bpy.data.objects[self.name].data.layers[3] = self.r_leg_ik
-            bpy.data.objects[self.name].data.layers[19] = not self.r_leg_ik
+            bpy.data.objects[self.name].data.layers[3] = prop_val
+            bpy.data.objects[self.name].data.layers[19] = not prop_val
 
 def l_leg_ik_update(self, context):
+    if self.l_leg_ik > 0:
+        prop_val = 1
+    else:
+        prop_val = 0
+
     if self.enable_control_linking:
         if cur_blender_version >= 400:
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Left Leg IK")
-            target_collection.is_visible = self.l_leg_ik
+            target_collection.is_visible = prop_val
 
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Left Leg FK")
-            target_collection.is_visible = not self.l_leg_ik
+            target_collection.is_visible = not prop_val
         else:
-            bpy.data.objects[self.name].data.layers[4] = self.l_leg_ik
-            bpy.data.objects[self.name].data.layers[20] = not self.l_leg_ik
+            bpy.data.objects[self.name].data.layers[4] = prop_val
+            bpy.data.objects[self.name].data.layers[20] = not prop_val
 
 def dynamic_hair_update(self, context):
     if self.enable_control_linking:
@@ -98,17 +118,17 @@ def armtype_update(self,context):
 
 #Bool Prop
 
-bpy.types.Object.r_arm_ik = BoolProperty(
-name="r_arm_ik", description="Enables IK for the right arm", default=False,update=r_arm_ik_update)
+bpy.types.Object.r_arm_ik = FloatProperty(
+name="r_arm_ik", description="Enables IK for the right arm", default=0,min=0,max=1,update=r_arm_ik_update)
     
-bpy.types.Object.l_arm_ik = BoolProperty(
-name="l_arm_ik", description="Enables IK for the left arm", default=False,update=l_arm_ik_update)
+bpy.types.Object.l_arm_ik = FloatProperty(
+name="l_arm_ik", description="Enables IK for the left arm", default=0,min=0,max=1,update=l_arm_ik_update)
     
-bpy.types.Object.r_leg_ik = BoolProperty(
-name="r_leg_ik", description="Enables IK for the right leg", default=True,update=r_leg_ik_update)
+bpy.types.Object.r_leg_ik = FloatProperty(
+name="r_leg_ik", description="Enables IK for the right leg", default=1,min=0,max=1,update=r_leg_ik_update)
     
-bpy.types.Object.l_leg_ik = BoolProperty(
-name="l_leg_ik", description="Enables IK for the left leg", default=True,update=l_leg_ik_update)
+bpy.types.Object.l_leg_ik = FloatProperty(
+name="l_leg_ik", description="Enables IK for the left leg", default=1,min=0,max=1,update=l_leg_ik_update)
     
 bpy.types.Object.ankle_r = BoolProperty(
 name="ankle_r", description="Toggles the ankle for the right leg, requires IK to be enabled", default=True)

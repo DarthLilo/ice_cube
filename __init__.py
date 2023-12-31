@@ -109,7 +109,6 @@ def language_update(self,context):
     authors.clear()
     authors = language_file_data['metadata']['authors']
     settings_data['current_language_file'] = language_file
-    settings_data['language_id'] = selected_language
     settings_data['current_language_authors'] = language_file_data['metadata']['authors']
 
     converted_settings_data = json.dumps(settings_data, indent=4)
@@ -143,7 +142,7 @@ class iceCubeAddonPreferneces(bpy.types.AddonPreferences):
 
     available_languages : bpy.props.EnumProperty(
         name="Available Languages",
-        default=settings_data['language_id'],
+        default=0,
         items=languages,
         update=language_update
     )

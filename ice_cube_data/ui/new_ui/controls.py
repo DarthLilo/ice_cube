@@ -74,7 +74,7 @@ def controls_ui(self,context,layout,obj,scale,cur_blender_version):
         ik_col = ik_row.column(align=True)
         #Right
         ik_col.scale_y = 1.2
-        ik_col.prop(obj,"r_arm_ik",text=getLanguageTranslation("ice_cube.ui.props.right_arm_ik"),toggle=True)
+        ik_col.prop(obj,"r_arm_ik",text=getLanguageTranslation("ice_cube.ui.props.right_arm_ik"),slider=True)
         if obj.get("r_arm_ik"):
             smaller_scale = ik_col.row(align=True)
             smaller_scale.prop(obj,"stretch_arm_r",text=getLanguageTranslation("ice_cube.ui.props.right_arm_stretch"),toggle=True)
@@ -83,7 +83,7 @@ def controls_ui(self,context,layout,obj,scale,cur_blender_version):
         #Left
         ik_col = ik_row.column(align=True)
         ik_col.scale_y = 1.2
-        ik_col.prop(obj,"l_arm_ik",text=getLanguageTranslation("ice_cube.ui.props.left_arm_ik"),toggle=True)
+        ik_col.prop(obj,"l_arm_ik",text=getLanguageTranslation("ice_cube.ui.props.left_arm_ik"),slider=True)
         if obj.get("l_arm_ik"):
             smaller_scale = ik_col.row(align=True)
             smaller_scale.prop(obj,"stretch_arm_l",text=getLanguageTranslation("ice_cube.ui.props.left_arm_stretch"),toggle=True)
@@ -95,7 +95,7 @@ def controls_ui(self,context,layout,obj,scale,cur_blender_version):
         ik_col = ik_row.column(align=True)
         #Right
         ik_col.scale_y = 1.2
-        ik_col.prop(obj,"r_leg_ik",text=getLanguageTranslation("ice_cube.ui.props.right_leg_ik"),toggle=True)
+        ik_col.prop(obj,"r_leg_ik",text=getLanguageTranslation("ice_cube.ui.props.right_leg_ik"),slider=True)
         if obj.get("r_leg_ik"):
             smaller_scale = ik_col.row(align=True)
             smaller_scale.prop(obj,"stretch_leg_r",text=getLanguageTranslation("ice_cube.ui.props.right_leg_stretch"),toggle=True)
@@ -103,7 +103,7 @@ def controls_ui(self,context,layout,obj,scale,cur_blender_version):
         #Left
         ik_col = ik_row.column(align=True)
         ik_col.scale_y = 1.2
-        ik_col.prop(obj,"l_leg_ik",text=getLanguageTranslation("ice_cube.ui.props.left_leg_ik"),toggle=True)
+        ik_col.prop(obj,"l_leg_ik",text=getLanguageTranslation("ice_cube.ui.props.left_leg_ik"),slider=True)
         if obj.get("l_leg_ik"):
             smaller_scale = ik_col.row(align=True)
             smaller_scale.prop(obj,"stretch_leg_l",text=getLanguageTranslation("ice_cube.ui.props.left_leg_stretch"),toggle=True)

@@ -556,7 +556,6 @@ default_settings_json_data = {
         "default_import_file" : "Ice Cube",
         "current_language_file": "english.ic_lang",
         "current_language_authors": ["DarthLilo"],
-        "language_id": 0,
         "settings_version" : BlenderVersConvert(bl_info['version'], has_v=False)
     }
 

@@ -5,6 +5,7 @@ from urllib import request
 import bpy
 from mathutils import Matrix, Vector, Quaternion
 import aud
+import os
 
 from ice_cube import github_url, root_folder, settings_file
 
@@ -796,7 +797,11 @@ def resetRestPose(context):
         bpy.ops.object.mode_set(mode='OBJECT')
 
 settings_data = open_json(settings_file)
-current_language_file = open_json(f"{root_folder}/lang/{settings_data['current_language_file']}")
+
+cur_file_loc = f"{root_folder}/lang/{settings_data['current_language_file']}"
+english = f"{root_folder}/lang/english.ic_lang"
+
+current_language_file = open_json(cur_file_loc if os.path.exists(cur_file_loc) else english)
 
 class IC_DevMode_SortLanguage(bpy.types.Operator):
     """DO NOT RUN UNLESS YOU KNOW WHAT YOU'RE DOING"""
