@@ -561,7 +561,7 @@ default_settings_json_data = {
 
 def generate_settings_json():
 
-    settings_json_path = f"{root_folder}\\ice_cube_data\\settings.json"
+    settings_json_path = f"{root_folder}/ice_cube_data/settings.json"
 
     converted_settings_data = json.dumps(default_settings_json_data, indent=4)
 
@@ -574,7 +574,7 @@ def generate_settings_json():
 
 def update_settings_json():
 
-    settings_json_path = f"{root_folder}\\ice_cube_data\\settings.json"
+    settings_json_path = f"{root_folder}/ice_cube_data/settings.json"
     settings_data = open_json(settings_json_path)
     for key in default_settings_json_data.keys():
         if key not in settings_data.keys():

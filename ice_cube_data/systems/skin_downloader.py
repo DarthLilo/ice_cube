@@ -171,7 +171,7 @@ class delete_skin(bpy.types.Operator):
             current_skin = skin_nodes.nodes['Skin Tex'].image
             skin_path = root_folder+"/ice_cube_data/internal_files/skins/"
             default_skin = root_folder+"/ice_cube_data/internal_files/rigs/textures/skin.png"
-            skin_path = skin_path+"\\"+thumbnail
+            skin_path = skin_path+"/"+thumbnail
             skin_path = os.path.normpath(skin_path)
             #if the skin on the rig matches the selected skin, unpack it, reset it to default, and re-pack it
             current_skin1 = os.path.normpath(current_skin.filepath)

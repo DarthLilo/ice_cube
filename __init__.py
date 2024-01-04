@@ -9,7 +9,7 @@ import json
 bl_info ={
     "name": "Ice Cube",
     "author": "DarthLilo",
-    "version": (1, 6, 0),
+    "version": (1, 6, 1),
     "blender": (3, 4, 0),
     "location": "View3D > Tool",
     "description": "The official python panel for Ice Cube!",
@@ -20,8 +20,8 @@ bl_info ={
 
 #File Variables
 root_folder = os.path.dirname(os.path.abspath(__file__))
-settings_file = f"{root_folder}\\ice_cube_data\\settings.json"
-lang_folder = f"{root_folder}\\lang"
+settings_file = f"{root_folder}/ice_cube_data/settings.json"
+lang_folder = f"{root_folder}/lang"
 github_url = "https://api.github.com/repos/DarthLilo/ice_cube/releases/latest"
 latest_dlc = "https://raw.githubusercontent.com/DarthLilo/ice_cube/master/ice_cube_data/dlc_list.json"
 dlc_id = []
