@@ -19,7 +19,7 @@ from ice_cube_data.systems import inventory_system, skin_downloader,search_syste
 #Custom Functions
 from ice_cube_data.utils.selectors import isRigSelected, main_face
 from ice_cube_data.utils.file_manage import getFiles, open_json
-from ice_cube_data.utils.general_func import GetListIndex,convertStringNumbers, getLanguageTranslation
+from ice_cube_data.utils.general_func import GetListIndex, getLanguageTranslation
 
 #UI Panels
 from ice_cube_data.ui import old_credits_info, credits_info
@@ -39,8 +39,6 @@ rig_id = "ice_cube"
 
 
 #InFileDefs
-
-cur_blender_version = convertStringNumbers(list(bpy.app.version))
 
 def presets_menu(self, context):
     """presets menu thing"""
@@ -257,7 +255,7 @@ class UIPANEL_PT_IceCube(bpy.types.Panel):
         except:
             skin_mat = False
 
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             collections = rig.data.collections
 
             if not "UpdatedTo4.0" in rig.data and not "Main Bones" in collections:
@@ -308,7 +306,7 @@ class UIPANEL_PT_IceCube(bpy.types.Panel):
                     elif obj.get("style_menu_switcher") == 1:
                         style.mesh_style_ui(self,context,layout,obj,preview_collections,scale)
                 elif cur_panel == 1: #Controls
-                        controls.controls_ui(self,context,layout,obj,scale,cur_blender_version)
+                        controls.controls_ui(self,context,layout,obj,scale)
                 elif cur_panel == 2: #Materials
                     b= box.row(align=True)
                     b.prop(obj,"material_menu_switcher",expand=True)

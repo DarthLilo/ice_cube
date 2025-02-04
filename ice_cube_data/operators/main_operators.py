@@ -14,7 +14,7 @@ import math
 #Custom Functions
 from ice_cube import root_folder, dlc_id,dlc_type,dlc_author,bl_info,valid_dlcs,settings_file
 
-from ice_cube_data.utils.general_func import BlenderVersConvert, IC_FKIK_Switch, bakeIceCube, badToTheBone, convertStringNumbers, setRestPose, resetRestPose, getLanguageTranslation
+from ice_cube_data.utils.general_func import BlenderVersConvert, IC_FKIK_Switch, bakeIceCube, badToTheBone, setRestPose, resetRestPose, getLanguageTranslation
 from ice_cube_data.utils.file_manage import getFiles, open_json
 from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.web_tools import CustomLink, ICDownloadImage
@@ -41,7 +41,6 @@ import ice_cube
 rig_pack_list = []
 rig_pack_names = []
 rig_id = "ice_cube"
-cur_blender_version = convertStringNumbers(list(bpy.app.version))
 
 internalfiles = os.path.join(root_folder, "ice_cube_data/internal_files/user_packs/rigs")
 user_packs = os.path.normpath(internalfiles)
@@ -1127,7 +1126,7 @@ class ic_update_bonelayer(bpy.types.Operator):
 
         rig = isRigSelected(context)
         
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             rig = isRigSelected(context)
             collections = rig.data.collections
     
@@ -1254,7 +1253,7 @@ class update_default_rig(bpy.types.Operator):
 
         settings_data["default_import_file"] = name
 
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             filepath = f"{rigs_folder}/{name} 4.0+.blend"
         else:
             filepath = f"{rigs_folder}/{name}.blend"
@@ -1303,7 +1302,7 @@ class IC_DEVONLY_UpdateInternalRig(bpy.types.Operator):
 
     def execute(self, context):
 
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             filepath = f"{root_folder}/ice_cube_data/internal_files/rigs/Ice Cube 4.0+.blend"
             bpy.ops.wm.save_as_mainfile(filepath=filepath,copy=True)
             blend1 = f"{root_folder}/ice_cube_data/internal_files/rigs/Ice Cube 4.0+.blend1"

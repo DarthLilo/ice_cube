@@ -227,11 +227,6 @@ def IC_FKIK_Switch(context, type, limb):
             Leg_FK_L_upper.rotation_quaternion = [1,0,0,0]
             Leg_FK_L_lower.rotation_quaternion = [1,0,0,0]
 
-def convertStringNumbers(list):
-    s = [str(i) for i in list]
-    res = int("".join(s))
-    return(res)
-
 def selectBoneCollection(collections,target):
     for collection in collections:
         try:
@@ -241,14 +236,12 @@ def selectBoneCollection(collections,target):
         except:
             pass
 
-cur_blender_version = convertStringNumbers(list(bpy.app.version))
-
 def applyMod(mesh,modifier):
 
     c = {'object': mesh}
 
     try:
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             with bpy.context.temp_override(**c):
                 bpy.ops.object.modifier_apply(modifier=modifier)
         else:
@@ -444,7 +437,7 @@ def bakeIceCube(self,context,override=False):
         for mod in modifier_to_apply:
             applyMod(mesh,mod)
     
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             collections = rig.data.collections
             twist_collection = selectBoneCollection(collections,"Twist")
             twist_active = twist_collection.is_visible
@@ -597,7 +590,7 @@ def newCopyRotation(source,target,subtarget,name):
     copy_rotation.target_space = 'LOCAL'
     copy_rotation.owner_space = 'LOCAL'
     context_override = {'active_pose_bone' : source}
-    if cur_blender_version >= 400:
+    if bpy.app.version >= (4, 0, 0):
         with bpy.context.temp_override(**context_override):
             bpy.ops.constraint.move_to_index(constraint=copy_rotation.name,owner='BONE',index=0)
     else:
@@ -612,7 +605,7 @@ def newCopyLocation(source,target,subtarget,name):
     copy_location.owner_space = 'LOCAL'
     copy_location.use_offset = True
     context_override = {'active_pose_bone' : source}
-    if cur_blender_version >= 400:
+    if bpy.app.version >= (4, 0, 0):
         with bpy.context.temp_override(**context_override):
             bpy.ops.constraint.move_to_index(constraint=copy_location.name,owner='BONE',index=0)
     else:
@@ -627,7 +620,7 @@ def newCopyScale(source,target,subtarget,name):
     copy_scale.owner_space = 'LOCAL'
     copy_scale.use_offset = True
     context_override = {'active_pose_bone' : source}
-    if cur_blender_version >= 400:
+    if bpy.app.version >= (4, 0, 0):
         with bpy.context.temp_override(**context_override):
             bpy.ops.constraint.move_to_index(constraint=copy_scale.name,owner='BONE',index=0)
     else:
@@ -701,7 +694,7 @@ def setRestPose(context):
             if reset_loc:
                 newCopyLocation(bone,rig,new_bone,f"{bone.name}_{new_bone.name}_LOCATION")
             
-            if cur_blender_version >= 400:
+            if bpy.app.version >= (4, 0, 0):
                 collections = rig.data.collections
                 custom_default = selectBoneCollection(collections,"Custom Default")
                 custom_default.assign(new_bone)
@@ -743,7 +736,7 @@ def resetRestPose(context):
                 rotation_constraint = bone.constraints.get(f"{bone.name}_{boneOverrideData}_ROTATION")
                 scale_constraint = bone.constraints.get(f"{bone.name}_{boneOverrideData}_SCALE")
 
-                if cur_blender_version >= 400:
+                if bpy.app.version >= (4, 0, 0):
                     if location_constraint:
                         context_override = {'active_pose_bone' : bone}
                         with context.temp_override(**context_override):

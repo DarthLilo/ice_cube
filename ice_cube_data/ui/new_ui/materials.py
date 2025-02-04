@@ -3,15 +3,13 @@ import bpy
 
 from ice_cube_data.utils.ui_tools import button_toggle
 from ice_cube_data.utils.selectors import isRigSelected,mat_holder_func
-from ice_cube_data.utils.general_func import convertStringNumbers, getLanguageTranslation
+from ice_cube_data.utils.general_func import getLanguageTranslation
 
 def newEnum(layout,display,source,prop,expand):
     if display != "":
         layout.label(text=display)
     layout.prop(data=source,property=prop,expand=expand)
 
-
-cur_blender_version = convertStringNumbers(list(bpy.app.version))
 
 def material_skin_ui(self, context, layout, scale):
     obj = context.object

@@ -1,14 +1,12 @@
 import bpy
 from bpy.props import StringProperty
 import re
-from ice_cube_data.utils.general_func import convertStringNumbers,selectBoneCollection, getLanguageTranslation
+from ice_cube_data.utils.general_func import selectBoneCollection, getLanguageTranslation
 
 
 
 
 matching_props = []
-
-cur_blender_version = convertStringNumbers(list(bpy.app.version))
 
 bpy.types.Object.ice_cube_search_filter = StringProperty(
     name="ice_cube_search_filter",
@@ -144,7 +142,7 @@ def ic_search_ui(self,context,scale):
     sep(getLanguageTranslation("ice_cube.search.terms.mouth_influence"),"mouth_influence",getLanguageTranslation("ice_cube.search.display.mouth_influence")), #Mouth Influence Controls
 
     #bone layers
-    if cur_blender_version >= 400:
+    if bpy.app.version >= (4, 0, 0):
         sep(getLanguageTranslation("ice_cube.search.terms.bonelayer.main"),"is_visible",source="bone_collection",prop_tag="Main Bones"), #Main Rig Bone Layer
         sep(getLanguageTranslation("ice_cube.search.terms.bonelayer.face"),"is_visible",source="bone_collection",prop_tag="Face Panel Bones"), #Face Panel Bone Layer
         sep(getLanguageTranslation("ice_cube.search.terms.bonelayer.armRIK"),"is_visible",source="bone_collection",prop_tag="Right Arm IK"), #Right Arm IK Bone Layer

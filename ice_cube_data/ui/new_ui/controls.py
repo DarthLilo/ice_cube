@@ -14,8 +14,8 @@ def newEnum(layout,display,source,prop,expand):
 
 
 
-def newBoneLayer(context,layout,index,text,prop_tag,cur_blender_version):
-    if cur_blender_version >= 400:
+def newBoneLayer(context,layout,index,text,prop_tag):
+    if bpy.app.version >= (4, 0, 0):
         collections = context.active_object.data.collections
         target_collection = selectBoneCollection(collections,prop_tag)
         if target_collection != None:
@@ -24,7 +24,7 @@ def newBoneLayer(context,layout,index,text,prop_tag,cur_blender_version):
         layers = context.active_object.data
         layout.prop(layers, 'layers', index=index, toggle=True, text=getLanguageTranslation(text))
 
-def controls_ui(self,context,layout,obj,scale,cur_blender_version):
+def controls_ui(self,context,layout,obj,scale):
     box = layout.box()
     box.label(text= getLanguageTranslation("ice_cube.ui.tabs.control_settings"), icon= 'NETWORK_DRIVE')
     b = box.row(align=True)
@@ -161,8 +161,8 @@ def controls_ui(self,context,layout,obj,scale,cur_blender_version):
         face_row.label(text=getLanguageTranslation("ice_cube.ui.tabs.face_bones"),icon='GROUP_BONE')
         if button_toggle(obj,face_row,"bone_set_face"):
             face_row = face_box.row(align=True)
-            newBoneLayer(context,face_row,0,'ice_cube.ui.bone_layers.main','Main Bones',cur_blender_version)
-            newBoneLayer(context,face_row,23,'ice_cube.ui.bone_layers.face_panel','Face Panel Bones',cur_blender_version)
+            newBoneLayer(context,face_row,0,'ice_cube.ui.bone_layers.main','Main Bones')
+            newBoneLayer(context,face_row,23,'ice_cube.ui.bone_layers.face_panel','Face Panel Bones')
         
         bonelayer_row = bonelayer_box.row(align=True)
         arm_box = bonelayer_row.box()
@@ -172,14 +172,14 @@ def controls_ui(self,context,layout,obj,scale,cur_blender_version):
             arm_row = arm_box.row(align=True)
             #right
             arm_col = arm_row.column(align=True)
-            newBoneLayer(context,arm_col,1,'ice_cube.ui.bone_layers.right_arm_ik','Right Arm IK',cur_blender_version)
-            newBoneLayer(context,arm_col,17,'ice_cube.ui.bone_layers.right_arm_fk','Right Arm FK',cur_blender_version)
-            newBoneLayer(context,arm_col,5,'ice_cube.ui.bone_layers.right_fingers','Right Fingers',cur_blender_version)
+            newBoneLayer(context,arm_col,1,'ice_cube.ui.bone_layers.right_arm_ik','Right Arm IK')
+            newBoneLayer(context,arm_col,17,'ice_cube.ui.bone_layers.right_arm_fk','Right Arm FK')
+            newBoneLayer(context,arm_col,5,'ice_cube.ui.bone_layers.right_fingers','Right Fingers')
             #left
             arm_col = arm_row.column(align=True)
-            newBoneLayer(context,arm_col,2,'ice_cube.ui.bone_layers.left_arm_ik','Left Arm IK',cur_blender_version)
-            newBoneLayer(context,arm_col,18,'ice_cube.ui.bone_layers.left_arm_fk','Left Arm FK',cur_blender_version)
-            newBoneLayer(context,arm_col,21,'ice_cube.ui.bone_layers.left_fingers','Left Fingers',cur_blender_version)
+            newBoneLayer(context,arm_col,2,'ice_cube.ui.bone_layers.left_arm_ik','Left Arm IK')
+            newBoneLayer(context,arm_col,18,'ice_cube.ui.bone_layers.left_arm_fk','Left Arm FK')
+            newBoneLayer(context,arm_col,21,'ice_cube.ui.bone_layers.left_fingers','Left Fingers')
         
         bonelayer_row = bonelayer_box.row(align=True)
         leg_box = bonelayer_row.box()
@@ -189,12 +189,12 @@ def controls_ui(self,context,layout,obj,scale,cur_blender_version):
             leg_row = leg_box.row(align=True)
             #right
             leg_col = leg_row.column(align=True)
-            newBoneLayer(context,leg_col,3,'ice_cube.ui.bone_layers.right_leg_ik','Right Leg IK',cur_blender_version)
-            newBoneLayer(context,leg_col,19,'ice_cube.ui.bone_layers.right_leg_fk','Right Leg FK',cur_blender_version)
+            newBoneLayer(context,leg_col,3,'ice_cube.ui.bone_layers.right_leg_ik','Right Leg IK')
+            newBoneLayer(context,leg_col,19,'ice_cube.ui.bone_layers.right_leg_fk','Right Leg FK')
             #left
             leg_col = leg_row.column(align=True)
-            newBoneLayer(context,leg_col,4,'ice_cube.ui.bone_layers.left_leg_ik','Left Leg IK',cur_blender_version)
-            newBoneLayer(context,leg_col,20,'ice_cube.ui.bone_layers.left_leg_fk','Left Leg FK',cur_blender_version)
+            newBoneLayer(context,leg_col,4,'ice_cube.ui.bone_layers.left_leg_ik','Left Leg IK')
+            newBoneLayer(context,leg_col,20,'ice_cube.ui.bone_layers.left_leg_fk','Left Leg FK')
         
         bonelayer_row = bonelayer_box.row(align=True)
         tweak_box = bonelayer_row.box()
@@ -203,13 +203,13 @@ def controls_ui(self,context,layout,obj,scale,cur_blender_version):
         if button_toggle(obj,tweak_row,"bone_set_tweak"):
             tweak_row = tweak_box.row(align=True)
             tweak_col = tweak_row.column(align=True)
-            newBoneLayer(context,tweak_col,7,'ice_cube.ui.bone_layers.body_tweak','Body Tweak',cur_blender_version)
-            newBoneLayer(context,tweak_col,8,'ice_cube.ui.bone_layers.right_arm_tweak','Right Arm Tweak',cur_blender_version)
-            newBoneLayer(context,tweak_col,24,'ice_cube.ui.bone_layers.right_leg_tweak','Right Leg Tweak',cur_blender_version)
+            newBoneLayer(context,tweak_col,7,'ice_cube.ui.bone_layers.body_tweak','Body Tweak')
+            newBoneLayer(context,tweak_col,8,'ice_cube.ui.bone_layers.right_arm_tweak','Right Arm Tweak')
+            newBoneLayer(context,tweak_col,24,'ice_cube.ui.bone_layers.right_leg_tweak','Right Leg Tweak')
             tweak_col = tweak_row.column(align=True)
-            newBoneLayer(context,tweak_col,16,'ice_cube.ui.bone_layers.face_tweak','Face Tweak',cur_blender_version)
-            newBoneLayer(context,tweak_col,9,'ice_cube.ui.bone_layers.left_arm_tweak','Left Arm Tweak',cur_blender_version)
-            newBoneLayer(context,tweak_col,25,'ice_cube.ui.bone_layers.left_leg_tweak','Left Leg Tweak',cur_blender_version)
+            newBoneLayer(context,tweak_col,16,'ice_cube.ui.bone_layers.face_tweak','Face Tweak')
+            newBoneLayer(context,tweak_col,9,'ice_cube.ui.bone_layers.left_arm_tweak','Left Arm Tweak')
+            newBoneLayer(context,tweak_col,25,'ice_cube.ui.bone_layers.left_leg_tweak','Left Leg Tweak')
         
         bonelayer_row = bonelayer_box.row(align=True)
         misc_box = bonelayer_row.box()
@@ -219,14 +219,14 @@ def controls_ui(self,context,layout,obj,scale,cur_blender_version):
             misc_row = misc_box.row(align=True)
             misc_col = misc_row.column(align=True)
 
-            newBoneLayer(context,misc_col,10,'ice_cube.ui.bone_layers.twist','Twist',cur_blender_version)
-            newBoneLayer(context,misc_col,6,'ice_cube.ui.bone_layers.dynamic_hair','Dynamic Hair',cur_blender_version)
+            newBoneLayer(context,misc_col,10,'ice_cube.ui.bone_layers.twist','Twist')
+            newBoneLayer(context,misc_col,6,'ice_cube.ui.bone_layers.dynamic_hair','Dynamic Hair')
             misc_col = misc_row.column(align=True)
-            newBoneLayer(context,misc_col,22,'ice_cube.ui.bone_layers.extras','Extra',cur_blender_version)
-            newBoneLayer(context,misc_col,26,'ice_cube.ui.bone_layers.footroll','Footroll',cur_blender_version)
+            newBoneLayer(context,misc_col,22,'ice_cube.ui.bone_layers.extras','Extra')
+            newBoneLayer(context,misc_col,26,'ice_cube.ui.bone_layers.footroll','Footroll')
             misc_col = misc_row.column(align=True)
-            newBoneLayer(context,misc_col,15,'ice_cube.ui.bone_layers.emotion_bones','Emotion Bones',cur_blender_version)
-            newBoneLayer(context,misc_col,27,'ice_cube.ui.bone_layers.cartoon_mouth','Cartoon Mouth',cur_blender_version)
+            newBoneLayer(context,misc_col,15,'ice_cube.ui.bone_layers.emotion_bones','Emotion Bones')
+            newBoneLayer(context,misc_col,27,'ice_cube.ui.bone_layers.cartoon_mouth','Cartoon Mouth')
 
 
 
