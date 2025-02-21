@@ -11,7 +11,6 @@ Ice Cube is a Minecraft rig designed to run in Blender 3.4+ and is made to be as
 
 
 
-
 ## Contributors
 
 * DarthLilo - *Project Management, Rigging, Coding*
