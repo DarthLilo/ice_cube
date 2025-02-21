@@ -6,9 +6,7 @@ from ice_cube import root_folder, settings_file
 from ice_cube_data.utils.file_manage import getFiles,open_json
 from ice_cube_data.utils.ui_tools import CustomErrorBox
 from ice_cube_data.utils.selectors import isRigSelected
-from ice_cube_data.utils.general_func import convertStringNumbers,selectBoneCollection
-
-cur_blender_version = convertStringNumbers(list(bpy.app.version))
+from ice_cube_data.utils.general_func import selectBoneCollection
 
 def append_preset_func(self, context, rig_baked):
         files_list = []
@@ -104,7 +102,7 @@ def append_default_rig(self, context):
 
     target_name = settings_data["default_import_file"]
 
-    if cur_blender_version >= 400:
+    if bpy.app.version >= (4, 0, 0):
         blendfile = os.path.join(script_directory, f"{target_name} 4.0+.blend")
         if not os.path.exists(blendfile):
             blendfile = os.path.join(script_directory, f"{target_name}.blend")
@@ -127,7 +125,7 @@ def append_emotion_line_func(self, context):
         emotion_line_dir = root_folder+"/ice_cube_data/internal_files/rigs"
         emotion_line_dir = os.path.normpath(emotion_line_dir)
 
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             blendfile = os.path.join(emotion_line_dir, "emotion_line 4.0+.blend")
         else:
             blendfile = os.path.join(emotion_line_dir, "emotion_line.blend")
@@ -155,13 +153,13 @@ def append_emotion_line_func(self, context):
         c["active_object"] = bpy.data.objects[str(rig.name)]
         c["selected_objects"] = obs
         c["selected_editable_objects"] = obs
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             with context.temp_override(**c):
                 bpy.ops.object.join()
         else:
             bpy.ops.object.join(c)
         
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             collections = rig.data.collections
             hide_layer = selectBoneCollection(collections,"hide_layer")
             merge_layer = selectBoneCollection(collections,"merge_layer")

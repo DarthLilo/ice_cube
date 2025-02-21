@@ -8,16 +8,13 @@ from bpy.props import (StringProperty,
                         )
 
 from ice_cube_data.utils.selectors import isRigSelected
-from ice_cube_data.utils.general_func import convertStringNumbers, selectBoneCollection, getLanguageTranslation
-
-cur_blender_version = convertStringNumbers(list(bpy.app.version))
-
+from ice_cube_data.utils.general_func import selectBoneCollection, getLanguageTranslation
 
 # classes
 
 def r_fingers_update(self, context):
     if self.enable_control_linking:
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Right Fingers")
             target_collection.is_visible = self.fingers_r
         else:
@@ -25,7 +22,7 @@ def r_fingers_update(self, context):
 
 def l_fingers_update(self, context):
     if self.enable_control_linking:
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Left Fingers")
             target_collection.is_visible = self.fingers_l
         else:
@@ -38,7 +35,7 @@ def r_arm_ik_update(self, context):
         prop_val = 0
 
     if self.enable_control_linking:
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Right Arm IK")
             target_collection.is_visible = prop_val
         else:
@@ -51,7 +48,7 @@ def l_arm_ik_update(self, context):
         prop_val = 0
 
     if self.enable_control_linking:
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Left Arm IK")
             target_collection.is_visible = prop_val
         else:
@@ -64,7 +61,7 @@ def r_leg_ik_update(self, context):
         prop_val = 0
 
     if self.enable_control_linking:
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Right Leg IK")
             target_collection.is_visible = prop_val
 
@@ -81,7 +78,7 @@ def l_leg_ik_update(self, context):
         prop_val = 0
 
     if self.enable_control_linking:
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Left Leg IK")
             target_collection.is_visible = prop_val
 
@@ -93,7 +90,7 @@ def l_leg_ik_update(self, context):
 
 def dynamic_hair_update(self, context):
     if self.enable_control_linking:
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Dynamic Hair")
             target_collection.is_visible = self.dynamichair
         else:
@@ -101,7 +98,7 @@ def dynamic_hair_update(self, context):
 
 def face_rig_update(self, context):
     if self.enable_control_linking:
-        if cur_blender_version >= 400:
+        if bpy.app.version >= (4, 0, 0):
             target_collection = selectBoneCollection(bpy.data.objects[self.name].data.collections,"Face Panel Bones")
             target_collection.is_visible = self.facerig
             
