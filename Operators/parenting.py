@@ -1,0 +1,126 @@
+import bpy, os
+
+from ..ice_cube_selectors import GetCollection, GetLattice
+
+class GeneralModFunc():
+    def move_modifier(obj,mod_name, loc):
+        cur_index = obj.modifiers.find(mod_name)
+        while cur_index > loc:
+            with bpy.context.temp_override(**{'object':obj}):
+                bpy.ops.object.modifier_move_up(modifier=mod_name)
+            cur_index -= 1
+
+class ICECUBE_UpdateParenting(bpy.types.Operator):
+    bl_options = {'REGISTER', 'UNDO'}
+    bl_idname = 'ice_cube.update_parenting'
+    bl_label = "Update Parenting"
+
+    def execute(self, context):
+
+        rig = context.object
+        rig_collections = rig.users_collection
+        collections = GetCollection(rig_collections,"ice_cube.main").children_recursive
+
+        ice_cube_collections = {
+            GetCollection(collections,"ice_cube.head") : {
+                "armature": {
+                    "vertex_group_name":"Head",
+                    "index": 0
+                },
+                "deform": {
+                    "id": "ice_cube.head_twist",
+                    "index": 1
+                },
+                "cosmetic": {
+                    "id": "ice_cube.head_cosmetic",
+                    "index": 2
+                }
+                },
+            GetCollection(collections,"ice_cube.body") : {
+                "deform": {
+                    "id": "ice_cube.body_deform",
+                    "index": 1
+                },
+                "cosmetic": {
+                    "id": "ice_cube.body_cosmetic",
+                    "index": 0
+                }
+            },
+            GetCollection(collections,"ice_cube.left_arm") : {
+                "deform": {
+                    "id": "ice_cube.left_arm_deform",
+                    "index": 1
+                },
+                "cosmetic": {
+                    "id": "ice_cube.left_arm_cosmetic",
+                    "index": 0
+                }
+            },
+            GetCollection(collections,"ice_cube.right_arm") : {
+                "deform": {
+                    "id": "ice_cube.right_arm_deform",
+                    "index": 1
+                },
+                "cosmetic": {
+                    "id": "ice_cube.right_arm_cosmetic",
+                    "index": 0
+                }
+            },
+            GetCollection(collections,"ice_cube.left_leg") : {
+                "deform": {
+                    "id": "ice_cube.left_leg_deform",
+                    "index": 1
+                },
+                "cosmetic": {
+                    "id": "ice_cube.left_leg_cosmetic",
+                    "index": 0
+                }
+            },
+            GetCollection(collections,"ice_cube.right_leg") : {
+                "deform": {
+                    "id": "ice_cube.right_leg_deform",
+                    "index": 1
+                },
+                "cosmetic": {
+                    "id": "ice_cube.right_leg_cosmetic",
+                    "index": 0
+                }
+            }
+        }
+        #[GetCollection(collections,"ice_cube.head"),GetCollection(collections,"ice_cube.body"),GetCollection(collections,"ice_cube.left_arm"),GetCollection(collections,"ice_cube.right_arm"),GetCollection(collections,"ice_cube.left_leg"),GetCollection(collections,"ice_cube.right_leg")]
+
+        for collection in ice_cube_collections.keys():
+            for obj in collection.all_objects:
+                if 'ice_cube.parented' in obj and obj['ice_cube.parented'] == True:
+                    continue
+                
+                lattice_data = ice_cube_collections[collection]
+
+                if "armature" in lattice_data:
+                    self.full_weight_paint(obj,lattice_data['armature']['vertex_group_name'])
+                    self.add_armature_modifier(obj,rig,lattice_data['armature']['index'])
+                
+                self.add_lattice_modifier(obj,"Deform",GetLattice(rig,lattice_data['deform']['id']),lattice_data["deform"]['index'])
+                self.add_lattice_modifier(obj,"Cosmetic",GetLattice(rig,lattice_data['cosmetic']['id']),lattice_data["cosmetic"]['index'])
+
+                obj['ice_cube.parented'] = True
+                obj.parent = rig
+
+        return {'FINISHED'}
+    
+    def add_lattice_modifier(self, obj, name, target_lattice, index):
+        lattice_mod = obj.modifiers.new(name=name, type='LATTICE')
+        lattice_mod.object = target_lattice
+        GeneralModFunc.move_modifier(obj,name,index)
+    
+    def full_weight_paint(self, obj, vertex_group_name):
+        vertex_group = obj.vertex_groups.new(name=vertex_group_name)
+        verts = []
+        for vert in obj.data.vertices:
+            verts.append(vert.index)
+        vertex_group.add(verts, 1.0, 'ADD')
+    
+    def add_armature_modifier(self, obj, rig, index):
+        modifier = obj.modifiers.new(name="Ice Cube",type='ARMATURE')
+        modifier.object = rig
+        GeneralModFunc.move_modifier(obj,"Ice Cube",index)

@@ -1,8 +1,8 @@
-# Ice Cube <br/> <br/> ![GitHub all releases](https://img.shields.io/github/downloads/DarthLilo/ice_cube/total?color=blue) <br/> <br/> ![Ice Cube Logo](https://i.imgur.com/LIUAxJ2.png)
+# Ice Cube <br/> <br/> ![GitHub all releases](https://img.shields.io/github/downloads/DarthLilo/ice_cube/total?color=blue) <br/> <br/> ![Ice Cube Logo](https://i.imgur.com/54MjhT7.png)
 
 # About
 
-Ice Cube is a Minecraft rig designed to run in Blender 3.4+ and is made to be as flexible, feature packed, and powerful as possible. 
+Ice Cube is a Minecraft rig built on Blender 4.2+ and is made to be as flexible, feature packed, and powerful as possible. 
 
 
 
@@ -14,6 +14,7 @@ Ice Cube is a Minecraft rig designed to run in Blender 3.4+ and is made to be as
 ## Contributors
 
 * DarthLilo - *Project Management, Rigging, Coding*
+* atobreeze (Archie) - *Rigging Contributions*
 * MineAPI - *Coding Contributions*
 * A Windows Boi - *Coding Contributions*
 * Thaliaphobia - *Skin Redesign*
