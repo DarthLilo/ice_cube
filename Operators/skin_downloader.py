@@ -74,7 +74,7 @@ class ICECUBE_APPLY_SKIN(bpy.types.Operator):
 
     def execute(self, context):
         try:
-            selected_skin = context.window_manager.ice_cube_skin_library
+            selected_skin = context.window_manager.ice_cube_skin_library.skin_library
             if not selected_skin:
                 return {'FINISHED'}
             
@@ -116,7 +116,7 @@ class ICECUBE_DELETE_SKIN(bpy.types.Operator):
 
     def execute(self, context):
         try:
-            selected_skin = context.window_manager.ice_cube_skin_library
+            selected_skin = context.window_manager.ice_cube_skin_library.skin_library
             if not selected_skin:
                 return {'FINISHED'}
             

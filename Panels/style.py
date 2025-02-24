@@ -301,7 +301,7 @@ class ICECUBERIG_PT_StyleSkin(bpy.types.Panel):
         row.operator("image.reload", text="",icon='FILE_REFRESH')
 
         row = layout.row(align=True)
-        row.template_icon_view(context.window_manager,"ice_cube_skin_library")
+        row.template_icon_view(context.window_manager.ice_cube_skin_library,"skin_library")
         row = layout.row(align=True)
         row.operator("ice_cube.apply_skin",text="Apply Skin", icon='IMAGE_DATA')
         row.operator("ice_cube.delete_skin",text="Delete Skin",icon='TRASH')
