@@ -5,6 +5,7 @@ from . import workflow
 from . import style
 from . import add_menu
 from . import ice_cube
+from . import parenting
 
 classes = (
     ice_cube.ICECUBERIG_PT_IceCubeMain,
@@ -18,6 +19,7 @@ classes = (
     style.ICECUBERIG_PT_StyleMouth,
     style.ICECUBERIG_PT_StyleSkin,
     style.ICECUBERIG_PT_StyleMaterial,
+    parenting.ICECUBERIG_PT_Parenting,
     add_menu.ICECUBERIG_MT_3dview_add
 )
 

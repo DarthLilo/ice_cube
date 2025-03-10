@@ -4,8 +4,10 @@ from . import enumerators
 from . import floats
 from . import booleans
 from . import strings
+from . import pointers
 
-classes = (
-)
+def register():
+    pointers.register()
 
-register, unregister = bpy.utils.register_classes_factory(classes)
+def unregister():
+    pointers.unregister()

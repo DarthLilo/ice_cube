@@ -33,6 +33,7 @@ classes = (
     dev.ICECUBE_DEVupdateIceCube14px,
     dev.ICECUBE_DEVupdateIceCube10px,
     parenting.ICECUBE_UpdateParenting,
+    parenting.ICECUBE_ParentArmor,
     url_stuff.ICECUBE_OPEN_WEBSITE,
     url_stuff.ICECUBE_OPEN_DISCORD,
     url_stuff.ICECUBE_OPEN_WIKI,

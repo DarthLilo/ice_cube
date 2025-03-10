@@ -24,5 +24,5 @@ class ICECUBE_OPEN_WIKI(bpy.types.Operator):
     bl_label = "Open Ice Cube Wiki"
 
     def execute(self, context):
-        webbrowser.open_new("https://darthlilo.gitbook.io/ice-cube-wiki/main/homepage")
+        webbrowser.open_new("https://darthlilo.gitbook.io/ice-cube-wiki")
         return {'FINISHED'}
