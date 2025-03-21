@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "ice_cube_rig"
-version = "2.0.4"
+version = "2.0.5"
 name = "Ice Cube Rig"
 tagline = "UI and backend addon for the Minecraft Ice Cube Rig!"
 maintainer = "DarthLilo"
