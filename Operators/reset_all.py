@@ -96,6 +96,7 @@ class ICECUBE_Reset(bpy.types.Operator):
             "blush_strength",
             "left_tear",
             "right_tear",
+            "eyelashes_lower",
         ]
 
         #Reset Properties
