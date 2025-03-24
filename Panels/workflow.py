@@ -139,6 +139,7 @@ class ICECUBERIG_PT_Workflow(bpy.types.Panel):
                 face_rig_row.prop(obj,"body_squish",text="Body Squish")
                 face_rig_row = face_rig_box.row(align=True)
                 face_rig_row.prop(obj,"lock_limb_rotation",text="Lock Limb Rotation",toggle=True,icon='DECORATE_LOCKED')
+                face_rig_row.prop(obj,"minecraft_accurate_scaling",text="Minecraft Scale",icon='CON_TRANSFORM')
                 face_rig_row = face_rig_box.row(align=True)
                 face_rig_row.operator("ice_cube.set_custom_default_pose",text="Update Rest Pose",icon='ARMATURE_DATA')
                 face_rig_row.operator("ice_cube.reset_custom_default_pose",text="Reset Rest Pose",icon='LOOP_BACK')
