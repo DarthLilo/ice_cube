@@ -9,6 +9,7 @@ from . import dev
 from . import parenting
 from . import url_stuff
 from . import reset_all
+from . import update_checker
 
 classes = (
     skin_downloader.ICECUBE_DOWNLOAD_SKIN,
@@ -38,6 +39,7 @@ classes = (
     url_stuff.ICECUBE_OPEN_DISCORD,
     url_stuff.ICECUBE_OPEN_WIKI,
     reset_all.ICECUBE_Reset,
+    update_checker.ICECUBE_CheckForUpdates
 )
 
 register, unregister = bpy.utils.register_classes_factory(classes)

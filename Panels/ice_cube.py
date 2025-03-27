@@ -33,3 +33,5 @@ class ICECUBERIG_PT_IceCubeMain(bpy.types.Panel):
         row = layout.row(align=True)
         row.operator("ice_cube.open_wiki",text="Wiki",icon='TEXT')
         row.prop(obj,"advanced_mode",text="Advanced Mode",icon='MODIFIER')
+        row = layout.row(align=True)
+        row.operator("ice_cube.check_for_updates",text="Check for Updates",icon='INTERNET')

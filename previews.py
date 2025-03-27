@@ -1,4 +1,5 @@
 import bpy, os
+from bpy.utils import previews
 
 from .constants import SKIN_STORAGE
 
@@ -45,7 +46,7 @@ def register():
     bpy.utils.register_class(PreviewsClass)
     bpy.types.WindowManager.ice_cube_skin_library = bpy.props.PointerProperty(type=PreviewsClass)
 
-    pcoll = bpy.utils.previews.new()
+    pcoll = previews.new()
     pcoll.skin_library = ()
     ice_cube_skin_collections['ice_cube_skin_library'] = pcoll
 
@@ -53,7 +54,7 @@ def unregister():
     del bpy.types.WindowManager.ice_cube_skin_library
 
     for pcoll in ice_cube_skin_collections.values():
-        bpy.utils.previews.remove(pcoll)
+        previews.remove(pcoll)
     ice_cube_skin_collections.clear()
 
     bpy.utils.unregister_class(PreviewsClass)

@@ -1,7 +1,8 @@
 import bpy, os
 
 
-RIG_VERSION = "Ice Cube 2.0.7"
+RIG_VERSION = "Ice Cube 2.0.8"
+INTERNAL_VERSION = "2.0.8"
 
 RIG_ID = "Ice_Cube_v2_Remake"
 LOCAL_STORAGE = bpy.utils.extension_path_user(__package__, path="", create=True)
@@ -13,3 +14,4 @@ DEFAULT_SKIN = os.path.join(ASSETS_STORAGE,"ice_cube_default.png")
 ICE_CUBE_DEFAULT = os.path.join(ASSETS_STORAGE,"ice_cube.blend")
 ICE_CUBE_14PX = os.path.join(ASSETS_STORAGE,"ice_cube_14px.blend")
 ICE_CUBE_10PX = os.path.join(ASSETS_STORAGE,"ice_cube_10px.blend")
+GITHUB_URL = "https://api.github.com/repos/DarthLilo/ice_cube/releases/latest"

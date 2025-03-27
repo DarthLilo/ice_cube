@@ -1,5 +1,5 @@
 import bpy, os, pathlib
-import bpy.utils.previews
+from bpy.utils import previews
 
 from .constants import ICONS
 
@@ -17,9 +17,9 @@ class IconLoaderMethod:
     @staticmethod
     def reload_icons() -> None:
         for pcoll in ice_cube_icons_collection.values():
-            bpy.utils.previews.remove(pcoll)
+            previews.remove(pcoll)
         
-        pcoll = bpy.utils.previews.new()
+        pcoll = previews.new()
         IconLoaderMethod.load_icons(pcoll)
         ice_cube_icons_collection["ice_cube_remake"] = pcoll
 
@@ -31,6 +31,6 @@ def register():
 def unregister():
     del bpy.types.WindowManager.ice_cube_skin_library
     for pcoll in ice_cube_icons_collection.values():
-        bpy.utils.previews.remove(pcoll)
+        previews.remove(pcoll)
 
     ice_cube_icons_collection.clear()
