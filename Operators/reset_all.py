@@ -9,16 +9,7 @@ def get_default(holder, prop_name):
 
     return prop.default
 
-class ICECUBE_Reset(bpy.types.Operator):
-    bl_options = {'REGISTER', 'UNDO'}
-    bl_idname = 'ice_cube.reset_all'
-    bl_label = "Reset All"
-
-    def execute(self, context):
-
-        obj = context.object
-
-        properties = [
+ice_cube_properties = [
             "arm_type",
             "advanced_mode",
             "left_fingers",
@@ -99,8 +90,28 @@ class ICECUBE_Reset(bpy.types.Operator):
             "eyelashes_lower",
         ]
 
+def get_modified_settings():
+    modified_properties = {}
+    for property in ice_cube_properties:
+        cur_value = getattr(bpy.context.object, property)
+        default_value = get_default(bpy.context.object,property)
+
+        if cur_value != default_value:
+            modified_properties[property] = cur_value
+    
+    return(modified_properties)
+
+class ICECUBE_Reset(bpy.types.Operator):
+    bl_options = {'REGISTER', 'UNDO'}
+    bl_idname = 'ice_cube.reset_all'
+    bl_label = "Reset All"
+
+    def execute(self, context):
+
+        obj = context.object
+
         #Reset Properties
-        for prop in properties:
+        for prop in ice_cube_properties:
             default = get_default(obj,prop)
             setattr(obj,prop,default)
 

@@ -9,6 +9,7 @@ class ArmSettings():
         name = "Left Arm IK",
         default=0,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -16,6 +17,7 @@ class ArmSettings():
         name = "Left Arm Stretch",
         default=0,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -23,6 +25,7 @@ class ArmSettings():
         name = "Left Arm Wrist Lock",
         default=0,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -30,6 +33,7 @@ class ArmSettings():
         name = "Right Arm IK",
         default=0,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -37,6 +41,7 @@ class ArmSettings():
         name = "Right Arm Stretch",
         default=0,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -44,6 +49,7 @@ class ArmSettings():
         name = "Right Arm Wrist Lock",
         default=0,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -53,6 +59,7 @@ class LegSettings():
         name = "Left Leg IK",
         default=1,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -60,6 +67,7 @@ class LegSettings():
         name = "Left Leg Stretch",
         default=1,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -67,6 +75,7 @@ class LegSettings():
         name = "Left Leg Ankle Lock",
         default=1,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -74,6 +83,7 @@ class LegSettings():
         name = "Right Leg IK",
         default=1,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -81,6 +91,7 @@ class LegSettings():
         name = "Right Leg Stretch",
         default=1,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -88,6 +99,7 @@ class LegSettings():
         name = "Right Leg Ankle Lock",
         default=1,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -97,6 +109,7 @@ class FaceSettings():
         name = "Fluid Face Strength",
         default=0,
         min=0, max=1,
+        subtype="PERCENTAGE",
         override={"LIBRARY_OVERRIDABLE"}
     )
 
@@ -296,7 +309,7 @@ class BreastSettings():
     bpy.types.Object.breast_size = FloatProperty(
         name="Breast Size",
         default=0,
-        min=0,max=2,
+        min=0,max=1.5,
         override={"LIBRARY_OVERRIDABLE"}
     )
 

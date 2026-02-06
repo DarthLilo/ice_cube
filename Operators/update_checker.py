@@ -20,8 +20,8 @@ class ICECUBE_CheckForUpdates(bpy.types.Operator):
             self.CustomPopupWindow("Error when checking for updates! :(")
             pass
         
-        if self.format_version(INTERNAL_VERSION) < self.format_version(github_request_vers):
-            self.CustomPopupWindow(f"There are updates available! {github_request_vers} > {INTERNAL_VERSION}\n Download them from the Ice Cube website!", "Ice Cube Updater")
+        if INTERNAL_VERSION < self.format_version(github_request_vers):
+            self.CustomPopupWindow(f"There are updates available! {github_request_vers} > {'.'.join(INTERNAL_VERSION)}\n Download them from the Ice Cube website!", "Ice Cube Updater")
         else:
             self.CustomPopupWindow("You are up to date, no new updates!", "Ice Cube Updater")
 

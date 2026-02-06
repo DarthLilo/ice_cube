@@ -10,6 +10,8 @@ from . import parenting
 from . import url_stuff
 from . import reset_all
 from . import update_checker
+from . import statistics
+from . import blender_5_0_fix
 
 classes = (
     skin_downloader.ICECUBE_DOWNLOAD_SKIN,
@@ -39,7 +41,10 @@ classes = (
     url_stuff.ICECUBE_OPEN_DISCORD,
     url_stuff.ICECUBE_OPEN_WIKI,
     reset_all.ICECUBE_Reset,
-    update_checker.ICECUBE_CheckForUpdates
+    update_checker.ICECUBE_CheckForUpdates,
+    statistics.ICECUBE_StatsExport,
+    statistics.ICECUBE_StatsImport,
+    blender_5_0_fix.ICECUBE_Blender5_0_Fix
 )
 
 register, unregister = bpy.utils.register_classes_factory(classes)

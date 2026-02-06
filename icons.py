@@ -29,7 +29,11 @@ def register():
     IconLoaderMethod.reload_icons()
 
 def unregister():
-    del bpy.types.WindowManager.ice_cube_skin_library
+    try:
+        del bpy.types.WindowManager.ice_cube_skin_library
+    except AttributeError:
+        pass
+    
     for pcoll in ice_cube_icons_collection.values():
         previews.remove(pcoll)
 

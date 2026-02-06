@@ -135,3 +135,10 @@ bpy.types.Object.minecraft_accurate_scaling = BoolProperty(
     description="Scales the rig to fit to most minecraft scenes!",
     override={"LIBRARY_OVERRIDABLE"}
 )
+
+bpy.types.Object.ik_fk_keyframe = BoolProperty(
+    name="IK FK Keyframe",
+    default=False,
+    description="Turns on keyframing for the IK FK conversion buttons",
+    override={"LIBRARY_OVERRIDABLE"}
+)

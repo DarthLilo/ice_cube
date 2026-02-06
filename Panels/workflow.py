@@ -30,6 +30,12 @@ class UI_Chunks():
             right_arm_col.operator('ice_cube.arm_r_ik_to_fk',text="Convert To IK",icon='RESTRICT_INSTANCED_OFF')
             right_arm_col.operator('ice_cube.arm_r_fk_to_ik',text="Convert To FK",icon='RESTRICT_INSTANCED_ON')
 
+            arm_settings_row = arm_settings_box.row(align=True)
+            
+            arm_settings_row.prop(obj,"ik_fk_keyframe",text="IK FK Keyframing",icon='DECORATE_KEYFRAME')
+
+
+
     def LegSettings(layout, obj):
         leg_settings_box = layout.box()
         leg_settings_row = leg_settings_box.row(align=True)
@@ -131,6 +137,10 @@ class ICECUBERIG_PT_Workflow(bpy.types.Panel):
                 face_rig_row.operator("ice_cube.bake_rig",text="Bake Rig",icon='ERROR')
                 face_rig_row = face_rig_box.row(align=True)
                 face_rig_row.operator("ice_cube.reset_all",text="Reset All",icon='ERROR')
+                face_rig_row = face_rig_box.row(align=True)
+                face_rig_row.operator("ice_cube.statsexport",text="Export Debug",icon='EXPORT')
+                face_rig_row.operator("ice_cube.statsimport",text="Import Debug",icon='IMPORT')
+
             else:
                 face_rig_row.prop(obj,"global_head_rotation",text="Global Head Rot")
                 face_rig_row.prop(obj,"shoulder_deform",text="Shoulder Deform")
@@ -146,6 +156,9 @@ class ICECUBERIG_PT_Workflow(bpy.types.Panel):
                 face_rig_row = face_rig_box.row(align=True)
                 face_rig_row.operator("ice_cube.bake_rig",text="Bake Rig",icon='ERROR')
                 face_rig_row.operator("ice_cube.reset_all",text="Reset All",icon='ERROR')
+                face_rig_row = face_rig_box.row(align=True)
+                face_rig_row.operator("ice_cube.statsexport",text="Export Debug",icon='EXPORT')
+                face_rig_row.operator("ice_cube.statsimport",text="Import Debug",icon='IMPORT')
         else:
             face_rig_row.prop(obj,"global_head_rotation",text="Global Head Rot",toggle=True,icon='DRIVER_ROTATIONAL_DIFFERENCE')
             if obj.face_rig:
