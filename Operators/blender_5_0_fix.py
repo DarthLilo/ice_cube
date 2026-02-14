@@ -20,11 +20,11 @@ class ICECUBE_Blender5_0_Fix(bpy.types.Operator):
         for obj in bpy.context.scene.objects:
             self.fix_driver_def(obj)
 
-            if obj.name.__contains__("Arm Bend Fix lat"):
+            if obj.name.__contains__("Arm Bend Fix lat") or obj.name.__contains__("Leg Bend Fix lat"):
                 key = obj.data.shape_keys
                 if key.animation_data and key.animation_data.drivers:
                     for driver_fcurve in key.animation_data.drivers:
-                        if obj.name.__contains__("Right"):
+                        if obj.name.__contains__("Right") and not obj.name.__contains__("Leg"):
                             driver_fcurve.driver.expression = "tan(var/2)*(1-bend_smoothness if bend_smoothness <= 0 else 1)"
                         else:
                             driver_fcurve.driver.expression = "-tan(var/2)*(1-bend_smoothness if bend_smoothness <= 0 else 1)"
