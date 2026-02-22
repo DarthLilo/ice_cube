@@ -33,6 +33,8 @@ class ICECUBERIG_PT_BoneCollections(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         row = layout.row(align=True)
+        row.prop(context.object, "responsive_bone_layers",text="Responsive Bone Layers",toggle=True)
+        row = layout.row(align=True)
 
 
         # HEAD BONES
@@ -80,6 +82,7 @@ class ICECUBERIG_PT_BoneCollections(bpy.types.Panel):
         row = layout.row(align=True)
         right_leg_col = row.column(align=True)
         left_leg_col = row.column(align=True)
+        row = layout.row(align=True)
         
 
         BoneCollectionManager.new_bone_layer(self,context,left_leg_col,'ice_cube.left_leg',"Left Leg")
@@ -91,3 +94,6 @@ class ICECUBERIG_PT_BoneCollections(bpy.types.Panel):
         BoneCollectionManager.new_bone_layer(self,context,right_leg_col,'ice_cube.right_leg_ik',"IK Bones")
         BoneCollectionManager.new_bone_layer(self,context,right_leg_col,'ice_cube.right_leg_fk',"FK Bones")
         BoneCollectionManager.new_bone_layer(self,context,right_leg_col,'ice_cube.right_leg_tweak',"Tweak")
+
+        if GetBoneCollection(context.active_object.data.collections_all,'ice_cube.internal'):
+            BoneCollectionManager.new_bone_layer(self,context,row,'ice_cube.internal','Internal')

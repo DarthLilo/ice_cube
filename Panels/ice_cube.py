@@ -1,6 +1,6 @@
 import bpy
 
-from ..constants import RIG_ID, ADDON_VERSION, INTERNAL_VERSION
+from ..constants import RIG_ID, ADDON_VERSION, INTERNAL_VERSION, LIBRARIES
 from ..icons import ice_cube_icons_collection
 from ..Operators.statistics import GetIceCubeVersion
 
@@ -52,6 +52,10 @@ class ICECUBERIG_PT_IceCubeMain(bpy.types.Panel):
         row.prop(obj,"advanced_mode",text="Advanced Mode",icon='MODIFIER')
         row = layout.row(align=True)
         row.operator("ice_cube.check_for_updates",text="Check for Updates",icon='INTERNET')
+        open_library_folder = row.operator("ice_cube.open_folder",text="Manage Library", icon='FILE_FOLDER')
+        open_library_folder.folder_path = LIBRARIES
+        row = layout.row(align=True)
+        row.operator("ice_cube.save_character",text="Save Character to Add Menu",icon='FILE_TICK')
 
         
 

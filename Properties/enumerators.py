@@ -23,6 +23,53 @@ bpy.types.Object.arm_type = EnumProperty(
     override={"LIBRARY_OVERRIDABLE"}
 )
 
+bpy.types.Object.left_arm_IK_parent = EnumProperty(
+    name = "Left Arm IK Parent",
+    default='root',
+    items = [
+        ('root','Root','Parents the IK controller to the root bone'),
+        ('waist','Waist','Parents the IK controller to the waist bone'),
+        ('body','Body','Parents the IK controller to the body bone'),
+        ('local','Local','Treats the IK controller as just another control method'),
+        ('world','World','Lets the IK controller free-float, useful for custom parenting')
+    ]
+)
+
+bpy.types.Object.right_arm_IK_parent = EnumProperty(
+    name = "Right Arm IK Parent",
+    default='root',
+    items = [
+        ('root','Root','Parents the IK controller to the root bone'),
+        ('waist','Waist','Parents the IK controller to the waist bone'),
+        ('body','Body','Parents the IK controller to the body bone'),
+        ('local','Local','Treats the IK controller as just another control method'),
+        ('world','World','Lets the IK controller free-float, useful for custom parenting')
+    ]
+)
+
+bpy.types.Object.left_leg_IK_parent = EnumProperty(
+    name = "Left Leg IK Parent",
+    default='root',
+    items = [
+        ('root','Root','Parents the IK controller to the root bone'),
+        ('waist','Waist','Parents the IK controller to the waist bone'),
+        ('body','Body','Parents the IK controller to the body bone'),
+        ('world','World','Lets the IK controller free-float, useful for custom parenting')
+    ]
+)
+
+bpy.types.Object.right_leg_IK_parent = EnumProperty(
+    name = "Right Leg IK Parent",
+    default='root',
+    items = [
+        ('root','Root','Parents the IK controller to the root bone'),
+        ('waist','Waist','Parents the IK controller to the waist bone'),
+        ('body','Body','Parents the IK controller to the body bone'),
+        ('world','World','Lets the IK controller free-float, useful for custom parenting')
+    ]
+)
+
+
 bpy.types.Object.eyelashes = EnumProperty(
     name = "Eyelash Type",
     default='1',

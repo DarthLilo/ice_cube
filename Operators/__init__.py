@@ -12,6 +12,8 @@ from . import reset_all
 from . import update_checker
 from . import statistics
 from . import blender_5_0_fix
+from . import save_character
+from . import open_folder
 
 classes = (
     skin_downloader.ICECUBE_DOWNLOAD_SKIN,
@@ -44,7 +46,9 @@ classes = (
     update_checker.ICECUBE_CheckForUpdates,
     statistics.ICECUBE_StatsExport,
     statistics.ICECUBE_StatsImport,
-    blender_5_0_fix.ICECUBE_Blender5_0_Fix
+    blender_5_0_fix.ICECUBE_Blender5_0_Fix,
+    save_character.ICECUBE_SaveCharacter,
+    open_folder.ICECUBE_OpenFolder
 )
 
 register, unregister = bpy.utils.register_classes_factory(classes)

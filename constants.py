@@ -1,12 +1,14 @@
 import bpy, os
 
 
-ADDON_VERSION = "Ice Cube 2.0.10"
-INTERNAL_VERSION = (2,0,10)
+ADDON_VERSION = "Ice Cube 2.1.0"
+INTERNAL_VERSION = (2,1,0)
 
 RIG_ID = "Ice_Cube_v2_Remake"
 LOCAL_STORAGE = bpy.utils.extension_path_user(__package__, path="", create=True)
-SKIN_STORAGE = os.path.join(LOCAL_STORAGE,'libraries/skins')
+LIBRARIES = os.path.join(LOCAL_STORAGE, 'libraries')
+SKIN_STORAGE = os.path.join(LIBRARIES,'skins')
+CHARACTER_STORAGE = os.path.join(LIBRARIES,'characters')
 ADDON_PATH = os.path.dirname(os.path.abspath(__file__))
 ASSETS_STORAGE = os.path.join(ADDON_PATH,"Assets")
 ICONS = os.path.join(ASSETS_STORAGE,"icons")

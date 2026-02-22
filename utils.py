@@ -1,4 +1,4 @@
-import bpy, imghdr, struct
+import bpy, struct, struct
 
 def CustomPopupBox(message, title, icon='INFO'):
     def draw(self, context):
@@ -16,17 +16,35 @@ def UnpackImage(img):
         else:
             return img.unpack(method='REMOVE')
 
+def GetPNGDim(filepath):
+    """
+    Will get the hight and width of a PNG file without using IMGHDR since it was removed
+    """
+
+    with open(filepath, 'rb') as f:
+        header = f.read(24)
+
+        if len(header) < 24:
+            return None
+        
+        if header[:8] != b'\x89PNG\r\n\x1a\n':
+            print("PNG signature did not match!")
+            return None
+        
+        if header[12:16] != b'IHDR':
+            print("IHDR chunk check failed")
+            return None
+        
+        width, height = struct.unpack(">II", header[16:24])
+        return width, height
+
+
 def IsOldSkinFormat(skin): #Checks if the specified skin is up to date (checks if image is 64x64 or 64x32)
 
-    with open(skin, 'rb') as fhandle:
-        head = fhandle.read(24)
-        if len(head) != 24:
-            return
-        if imghdr.what(skin) == 'png':
-            check = struct.unpack('>i', head[4:8])[0]
-            if check != 0x0d0a1a0a:
-                return
-            width, height = struct.unpack('>ii', head[16:24])
+    dim = GetPNGDim(skin)
+    
+    width, height = dim
+
     if height == 64:
         return False
     else:

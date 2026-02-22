@@ -36,6 +36,7 @@ def GetBoneCollection(collections, target):
                     return collection
             except:
                 pass
+        return None
 
 def GetCollection(collections, target):
     for collection in collections:

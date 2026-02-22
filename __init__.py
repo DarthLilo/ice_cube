@@ -11,7 +11,7 @@ from . import previews
 bl_info = {
     "name": "Ice Cube Rig",
     "author": "DarthLilo",
-    "version": (2, 0, 10),
+    "version": (2, 1, 0),
     "blender": (4, 2, 0)
 }
 

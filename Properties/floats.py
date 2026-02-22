@@ -2,6 +2,30 @@ import bpy
 from bpy.props import (
     FloatProperty,
 )
+from ..ice_cube_selectors import GetBoneCollection
+
+class Update():
+    def generic_bone_update(self, context, layer_id, state):
+        if self.responsive_bone_layers:
+            collections = context.active_object.data.collections_all
+            bone_collection = GetBoneCollection(collections, layer_id)
+            bone_collection.is_visible = state
+
+    def l_arm_ik_update(self, context):
+        Update.generic_bone_update(self,context,"ice_cube.left_arm_ik", self.left_arm_ik > 0)
+        Update.generic_bone_update(self,context,"ice_cube.left_arm_fk", not self.left_arm_ik > 0)
+
+    def r_arm_ik_update(self, context):
+        Update.generic_bone_update(self,context,"ice_cube.right_arm_ik", self.right_arm_ik > 0)
+        Update.generic_bone_update(self,context,"ice_cube.right_arm_fk", not self.right_arm_ik > 0)
+
+    def l_leg_ik_update(self, context):
+        Update.generic_bone_update(self,context,"ice_cube.left_leg_ik", self.left_leg_ik > 0)
+        Update.generic_bone_update(self,context,"ice_cube.left_leg_fk", not self.left_leg_ik > 0)
+
+    def r_leg_ik_update(self, context):
+        Update.generic_bone_update(self,context,"ice_cube.right_leg_ik", self.right_leg_ik > 0)
+        Update.generic_bone_update(self,context,"ice_cube.right_leg_fk", not self.right_leg_ik > 0)
 
 # Arm Settings
 class ArmSettings():
@@ -10,7 +34,8 @@ class ArmSettings():
         default=0,
         min=0, max=1,
         subtype="PERCENTAGE",
-        override={"LIBRARY_OVERRIDABLE"}
+        override={"LIBRARY_OVERRIDABLE"},
+        update=Update.l_arm_ik_update
     )
 
     bpy.types.Object.left_arm_stretch = FloatProperty(
@@ -34,7 +59,8 @@ class ArmSettings():
         default=0,
         min=0, max=1,
         subtype="PERCENTAGE",
-        override={"LIBRARY_OVERRIDABLE"}
+        override={"LIBRARY_OVERRIDABLE"},
+        update=Update.r_arm_ik_update
     )
 
     bpy.types.Object.right_arm_stretch = FloatProperty(
@@ -60,7 +86,8 @@ class LegSettings():
         default=1,
         min=0, max=1,
         subtype="PERCENTAGE",
-        override={"LIBRARY_OVERRIDABLE"}
+        override={"LIBRARY_OVERRIDABLE"},
+        update=Update.l_leg_ik_update
     )
 
     bpy.types.Object.left_leg_stretch = FloatProperty(
@@ -84,7 +111,8 @@ class LegSettings():
         default=1,
         min=0, max=1,
         subtype="PERCENTAGE",
-        override={"LIBRARY_OVERRIDABLE"}
+        override={"LIBRARY_OVERRIDABLE"},
+        update=Update.r_leg_ik_update
     )
 
     bpy.types.Object.right_leg_stretch = FloatProperty(

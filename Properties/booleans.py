@@ -40,6 +40,18 @@ bpy.types.Object.face_rig = BoolProperty(
     override={"LIBRARY_OVERRIDABLE"}
 )
 
+bpy.types.Object.mouth_toggle = BoolProperty(
+    name="Mouth Toggle",
+    default=True,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+
+bpy.types.Object.eye_toggle = BoolProperty(
+    name="Eye Toggle",
+    default=True,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+
 bpy.types.Object.eyetracker = BoolProperty(
     name="Eyetracker",
     default=False,
@@ -100,6 +112,84 @@ bpy.types.Object.emotion_anger = BoolProperty(
     override={"LIBRARY_OVERRIDABLE"}
 )
 
+bpy.types.Object.emotion_eyebags = BoolProperty(
+    name="Eye Bags",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+
+bpy.types.Object.emotion_eyebrow_point_L = BoolProperty(
+    name="Eyebrow Point L",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eyebrow_line_L = BoolProperty(
+    name="Eyebrow Line L",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eyebrow_line_U_L = BoolProperty(
+    name="Eyebrow Line Upper L",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eyebrow_shocked_L = BoolProperty(
+    name="Eyebrow Shockeed L",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eye_line_L = BoolProperty(
+    name="Eye Line L",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eye_point_L = BoolProperty(
+    name="Eye Point L",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eye_shocked_L = BoolProperty(
+    name="Eye Shocked L",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+
+bpy.types.Object.emotion_eyebrow_point_R = BoolProperty(
+    name="Eyebrow Point R",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eyebrow_line_R = BoolProperty(
+    name="Eyebrow Line R",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eyebrow_line_U_R = BoolProperty(
+    name="Eyebrow Line Upper R",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eyebrow_shocked_R = BoolProperty(
+    name="Eyebrow Shockeed R",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eye_line_R = BoolProperty(
+    name="Eye Line R",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eye_point_R = BoolProperty(
+    name="Eye Point R",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+bpy.types.Object.emotion_eye_shocked_R = BoolProperty(
+    name="Eye Shocked R",
+    default=False,
+    override={"LIBRARY_OVERRIDABLE"}
+)
+
 
 # Body
 bpy.types.Object.body_squish = BoolProperty(
@@ -140,5 +230,26 @@ bpy.types.Object.ik_fk_keyframe = BoolProperty(
     name="IK FK Keyframe",
     default=False,
     description="Turns on keyframing for the IK FK conversion buttons",
+    override={"LIBRARY_OVERRIDABLE"}
+)
+
+bpy.types.Object.responsive_bone_layers = BoolProperty(
+    name="Responsive Bone Layers",
+    default=True,
+    description="Allows bone layers to respond to changes in the rig",
+    override={"LIBRARY_OVERRIDABLE"}
+)
+
+bpy.types.Object.bevel_toggle_viewport = BoolProperty(
+    name="Bevel Toggle Viewport",
+    default=False,
+    description="Enables bevel in the viewport",
+    override={"LIBRARY_OVERRIDABLE"}
+)
+
+bpy.types.Object.bevel_toggle_render = BoolProperty(
+    name="Bevel Toggle Render",
+    default=False,
+    description="Enables bevel in the render",
     override={"LIBRARY_OVERRIDABLE"}
 )
