@@ -1,8 +1,8 @@
 import bpy, os
 
 
-ADDON_VERSION = "Ice Cube 2.1.0"
-INTERNAL_VERSION = (2,1,0)
+ADDON_VERSION = "Ice Cube 2.1.1"
+INTERNAL_VERSION = (2,1,1)
 
 RIG_ID = "Ice_Cube_v2_Remake"
 LOCAL_STORAGE = bpy.utils.extension_path_user(__package__, path="", create=True)

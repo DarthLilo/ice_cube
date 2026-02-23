@@ -28,15 +28,10 @@ class ICECUBE_SaveCharacter(bpy.types.Operator):
 
         return items
     
-    def default_collection(seelf, context):
-        scene = context.scene
-        children = scene.collection.children
-
-        if not children:
-            return "NONE"
-        
-        highest_col = max(children, key=lambda c: len(c.all_objects))
-        return highest_col.name
+    def default_collection(self):
+        for collection in bpy.data.collections:
+            if collection.get("ice_cube_collection_id") == "ice_cube.main":
+                return collection.name
     
     author: bpy.props.StringProperty(name="Author")
     version: bpy.props.StringProperty(name="Version", default="1")
@@ -115,5 +110,5 @@ class ICECUBE_SaveCharacter(bpy.types.Operator):
             self.report({'ERROR'}, "No collections in scene")
             return {'CANCELLED'}
 
-        self.collection = self.default_collection(context)
+        self.collection = self.default_collection()
         return context.window_manager.invoke_props_dialog(self, width=400)
